@@ -1,0 +1,51 @@
+AUTO-------------------------------------------------
+-id				           -
+-marca                                                                      -
+-modello                                                                   -
+-carburante                                                             -
+-sede                                                                         -
+-targa                                                                        ----------------CARBURANTE NECESSARIO
+-patente necessaria                                                -		-id_auto
+-kW                                                                           -		-id_carbu
+-tara                                                                          -
+-capienza (piccola, media, grande)                      -
+-data assicurazione                                                 -
+                                                                                  -
+CARBURANTE(TIPOLOGIA)---------------------
+-tipo
+
+PATENTE (TIPOLOGIE)---------
+-tipo                                            -
+                  	                -
+                                                    -
+                                                    - ---------POSSESSIONE PATENTE (RELAZIONE)
+		                - 	-id_dipe
+                         	                - 	-id_tipo
+DIPENDENTE---------------------------	-data
+-nome                                                    -
+-cognome			         -
+-data nascita/CF?                                -
+-sede                                                     -
+-user                                                      -----------------------DIPENDENTE MANSIONE
+-pass                                                      -			-id_dipe
+                                                               -			-id_livello
+LIVELLO DIPENDENTE---------------
+-livello
+
+MANUTENZIONE(ORD.TIPO)
+-tagliando
+-revisione
+
+NECESSITA' MANUT.ORD (RELAZIONE AUTO MAN.ORD.)
+-id_auto
+-id_manut
+-data
+
+IMPREVISTI 
+-livello imprevisto
+
+NECESSITA' MANUT.STRA (RELAZIONE AUTO IMPR)
+-id_auto
+-id_imprevisto
+-data
+-descrizione
