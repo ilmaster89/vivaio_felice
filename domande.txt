@@ -1,10 +1,10 @@
--Quali sono le auto che posso prenotare per il mio lavoro?
+-Quali sono le auto che posso prenotare per il mio lavoro? --da rivedere
 
 -Quando saranno disponibili quelle che desidero se ora non lo sono?
 
 -Quanti km ha fatto quest'auto in questo lasso di tempo?
 
--Perché quest'auto non è disponibile?
+-Perché quest'auto non è disponibile? \\fatta
 
 -Quanto ho speso per la manutenzione di quest'auto in questo lasso di tempo?
 
@@ -14,31 +14,31 @@
 
 -In quale sede era quest'auto in questa data?
 
--Come è stata utilizzata un'auto in questa sede in un lasso di tempo?
+-Come è stata utilizzata un'auto in questa sede in un lasso di tempo? 
 
--Quali auto sono attualmente in manutenzione?
+-Quali auto sono attualmente in manutenzione? \\fatta
 
--Per quali auto è programmata una manutenzione nei prossimi X giorni?
+-Per quali auto è programmata una manutenzione nei prossimi X giorni? \\fatta
 
--Quanto durerà la manutenzione?
+-Quanto durerà la manutenzione? \\fatta
 
 -Chi è il responsabile di uno o più trasferimenti auto?
 
--Quali dipendenti hanno un determinato livello?
+-Quali dipendenti hanno un determinato livello? \\fatta
 
--Quali auto sono state prenotate in un determinato giorno/sede/lasso di tempo/area?
+-Quali auto sono state prenotate in un determinato giorno/sede/lasso di tempo/area? \\fatta
 
--Che patente ha il dipendente X?
+-Che patente ha il dipendente X? \\fatta
 
--In che sede lavora questo dipendente?
+-In che sede lavora questo dipendente? \\fatta
 
 -Quanti km ha fatto un certo dipendente in un lasso di tempo/con un'auto/ecc?
 
--Che dipendenti lavorano in questa sede?
+-Che dipendenti lavorano in questa sede? \\fatta
 
--Che modello/marca/ecc di auto ho in una o più sedi?
+-Che modello/marca/ecc di auto ho in una o più sedi? --da rivedere
 
--Quali auto hanno l'assicurazione in scadenza e quando?
+-Quali auto hanno l'assicurazione in scadenza e quando? \\fatta
 
--A che auto corrisponde una targa?
+-A che auto corrisponde una targa? \\fatta
 
