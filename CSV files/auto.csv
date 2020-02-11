@@ -1,0 +1,7 @@
+"id";"id_patente";"carburante";"marca";"modello";"targa";"kw";"tara";"data_assicurazione"
+1;1;"Benzina";"Fiat";"Panda";"DB191YC";50.0;900.0;"2020-02-09"
+2;1;"Elettrica";"Toyota";"Yaris";"AA547TT";55.0;920.0;"2020-02-09"
+3;2;"Diesel";"Iveco";"Daily";"CR878RE";130.0;2500.0;"2019-03-15"
+4;1;"Diesel";"Citroen";"DS3";"EL628KG";65.0;1200.0;"2019-12-10"
+5;1;"Benzina";"Ranault";"Clio";"FV666CC";80.0;850.0;"2019-10-05"
+6;1;"Benzina";"Mercedes";"Vito";"CC789DD";90.0;1500.0;"2019-05-05"
