@@ -1,6 +1,0 @@
-Questione CURDATE sulla data parcheggio:
-
-update parcheggio set data_parch= curdate()
-where id in (sarcazzo)
-
-Le due colonne di tipo DATE rappresentano la data in cui un'auto è stata portata in una sede e l'eventuale data in cui ha smesso di esserci. Il software aggiornerà ogni giorno la seconda colonna (con ultimo id parcheggio di ogni id_auto) con la data corrente, in modo che, facendo un trasferimento auto e generando dunque un nuovo record, il record relativo alla sede precedente non verrà più modificato, rimanendo utile ai fini di un report storico. 
