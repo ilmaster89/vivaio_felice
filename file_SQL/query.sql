@@ -53,12 +53,14 @@ dipendenti join livelli on livelli.id = dipendenti.id_livello
 where livelli.id = 1;
 /*dipendenti che corrispondono ad un livello*/
 
-select marca,modello,targa,regione,citta,data_parch from
-auto join parcheggio on auto.id = parcheggio.id_auto
-join sede on sede.id = parcheggio.id_sede
-where sede.id = 2 or sede.id=1
-group by marca,modello
-order by data_parch desc
+
+select targa, citta, p1.data_parch, p1.id_auto, modello, marca from parcheggio as p1 
+left outer join parcheggio as p2 on p1.id_auto=p2.id_auto and p1.data_parch < p2.data_parch 
+join auto on p1.id_auto = auto.id 
+join sede on sede.id = p1.id_sede 
+where p2.id is null
+
+
 
 
 
