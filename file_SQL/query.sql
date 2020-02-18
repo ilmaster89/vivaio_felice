@@ -110,5 +110,11 @@ where data_fine between "2019-01-01" and "2020-01-01"
 and id_auto = 6;
 /*com'è stata usata un'auto in un determinato periodo*/
 
-
+select marca,modello,targa,nome,cognome,(p2.km-p1.km) as km_percorsi
+from prenotazioni as p1 join prenotazioni as p2 on p1.id_auto = p2.id_auto
+join auto on auto.id = p1.id_auto join dipendenti on dipendenti.id = p1.id_dipendente
+where p2.data_fine <= "2019-07-31" 
+and p1.data_fine >= "2019-07-01" 
+order by p2.data_fine desc, p1.data_fine asc limit 1;
+/*km percorsi presi dalle prenotazioni*/
 
