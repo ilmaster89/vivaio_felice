@@ -1,28 +1,24 @@
--Quali sono le auto che posso prenotare per il mio lavoro? --da rivedere
+-Quali sono le auto che posso prenotare per il mio lavoro? --da rivedere con spring
 
--Quando saranno disponibili quelle che desidero se ora non lo sono?
-
--Quanti km ha fatto quest'auto in questo lasso di tempo?
+-Quando saranno disponibili quelle che desidero se ora non lo sono? \\fatta
 
 -Perché quest'auto non è disponibile? \\fatta
 
--Quanto ho speso per la manutenzione di quest'auto in questo lasso di tempo?
+-Quanto ho speso per la manutenzione di quest'auto in questo lasso di tempo? \\fatta
 
--Quali auto ho disponibili in questa determinata sede?
+-Quali auto ho disponibili in questa determinata sede? \\fatta
 
--Quali auto può guidare un dipendente con la sua patente (compreso me stesso)?
+-Quali auto può guidare un dipendente con la sua patente (compreso me stesso)? \\fatta, manca if in java per i neopatentati
 
--In quale sede era quest'auto in questa data?
+-In quale sede era quest'auto in questa data? \\fatta
 
--Come è stata utilizzata un'auto in questa sede in un lasso di tempo? 
+-Come è stata utilizzata un'auto in un lasso di tempo? \\fatta
 
 -Quali auto sono attualmente in manutenzione? \\fatta
 
 -Per quali auto è programmata una manutenzione nei prossimi X giorni? \\fatta
 
 -Quanto durerà la manutenzione? \\fatta
-
--Chi è il responsabile di uno o più trasferimenti auto?
 
 -Quali dipendenti hanno un determinato livello? \\fatta
 
@@ -32,13 +28,14 @@
 
 -In che sede lavora questo dipendente? \\fatta
 
--Quanti km ha fatto un certo dipendente in un lasso di tempo/con un'auto/ecc?
+-Quanti km ha fatto un certo dipendente in un lasso di tempo/con un'auto/ecc? 
+
+-Quanti km ha fatto quest'auto in questo lasso di tempo?
 
 -Che dipendenti lavorano in questa sede? \\fatta
 
--Che modello/marca/ecc di auto ho in una o più sedi? --da rivedere
+-Che modello/marca/ecc di auto ho in una o più sedi? \\fatta
 
 -Quali auto hanno l'assicurazione in scadenza e quando? \\fatta
 
 -A che auto corrisponde una targa? \\fatta
-
