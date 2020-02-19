@@ -10,6 +10,8 @@
 
 -Quali auto può guidare un dipendente con la sua patente (compreso me stesso)? \\fatta, manca if in java per i neopatentati
 
+-Da quanti anni ho la patente? \\fatta
+
 -In quale sede era quest'auto in questa data? \\fatta
 
 -Come è stata utilizzata un'auto in un lasso di tempo? \\fatta
@@ -28,9 +30,9 @@
 
 -In che sede lavora questo dipendente? \\fatta
 
--Quanti km ha fatto un certo dipendente in un lasso di tempo/con un'auto/ecc? 
+-Quanti km ha fatto un certo dipendente in un lasso di tempo/con un'auto/ecc? \\fatta
 
--Quanti km ha fatto quest'auto in questo lasso di tempo?
+-Quanti km ha fatto quest'auto in questo lasso di tempo? \\fatta 
 
 -Che dipendenti lavorano in questa sede? \\fatta
 
