@@ -12,7 +12,7 @@ ul{
     display: inline;
 }
 
-li{
+#menu li{
     float: left;
     width: 200px;
     padding-bottom: 10px;
