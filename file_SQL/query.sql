@@ -97,11 +97,13 @@ where auto.id_patente = possesso_patenti.id_patente
 and dipendenti.id=3;
 /*auto che posso guidare con la mia patente se non sono neoP*/
 
-select marca,modello,targa,regione,citta
+select marca,modello,regione,citta,id_sede
 from auto join parcheggio on auto.id = parcheggio.id_auto
 join sede on parcheggio.id_sede = sede.id
-where parcheggio.id_auto = 1 and data_parch = "2020-01-01";
+where parcheggio.id_auto = 1 and data_parch <= "2019-02-01"
+order by data_parch desc limit 1;
 /*in quale sede è un'auto in una determinata data*/
+/*IMPORTANTE: I TRASFERIMENTI GENERANO UN NUOVO RECORD CON NUOVA SEDE E DATA DEL TRASFERIMENTO*/
 
 select marca,modello,targa,descrizione,data_inizio,data_fine
 from auto join prenotazioni on prenotazioni.id_auto = auto.id
@@ -156,7 +158,6 @@ left join causale on prenotazioni.id_causale = causale.id
 left join spesa_manutenzione on auto.id = spesa_manutenzione.id_auto
 where (id_causale = 1 and data_fine is null or id_causale = 2 and data_fine is null);
 /*inserimento dati di fine manutenzione (BOTTONE PER RECUPERARE DATA FINE)*/
-
 
 
 
