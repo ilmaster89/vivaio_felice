@@ -5,9 +5,11 @@
   <head>
     <title>Lvl-4-primaPagina</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="..\stylePagina.css">
-    <link rel="stylesheet" href="..\styleMenu.css">
-    <link rel="stylesheet" href="..\styleOperai.css">
+    <link rel="stylesheet" href="..\CSS\stylePagina.css">
+    <link rel="stylesheet" href="..\CSS\styleMenu.css">
+
+    <script src="..\Js\PopUp.js"></script>
+      
   </head>
 
   <body>
@@ -17,6 +19,7 @@
     </header>
 
     <section id="central">
+
       <div id="menu">
         <ul>
 
@@ -26,19 +29,17 @@
               <li class="subli"><a href="..\Operai\Operai_InserimentoKm.html">Inserisci Km</a></li>
             </ul>
           </li>
-
-
-          <li>&nbsp;Inserimenti</li>
-          <li>&nbsp;Manutenzione</li>
-          <li>&nbsp;Trasferimenti</li>
-          <li>&nbsp;Dashboard</li>
+          <li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
+          <li><a onclick="myFunction()">&nbsp;Manutenzione</a></li>
+          <li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
+          <li><a onclick="myFunction()">&nbsp;Dashboard</a></li>
         </ul>
       </div>
-      <button><a href="..\Home.html">Cambia Utente</a></button>
 
-       
+      <button id="BottoneCambio"><a href="..\Home.html">Cambia Utente</a></button><!--pulsante per tornare al log in-->
 
     </section>
+
 
     <footer>
         <p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
@@ -46,3 +47,9 @@
 
   </body>
   </html>
+
+
+
+
+
+

@@ -5,8 +5,10 @@
   <head>
     <title>Lvl-3-Dip_PrimaPagina</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="..\stylePagina.css">
-    <link rel="stylesheet" href="..\styleMenu.css">
+    <link rel="stylesheet" href="..\CSS\stylePagina.css">
+    <link rel="stylesheet" href="..\CSS\styleMenu.css">
+
+    <script src="..\Js\PopUp.js"></script>
   </head>
 
   <body>
@@ -18,7 +20,7 @@
     <section id="central">
       <div id="menu">
         <ul>
-          <li>&nbsp;Prenotazioni</li>
+          <li><a onclick="myFunction()">&nbsp;Prenotazioni</a></li>
           <!--Menu a tendina per inserimenti auto e dipendenti-->
           <li id="about">&nbsp;Inserimenti
             <ul class="subitems">  
@@ -36,14 +38,14 @@
           </li>
 
 
-          <li>&nbsp;Trasferimenti</li>
+          <li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
 
           <li><a href="..\impiegati\Dipendenti_DashBoard.html">&nbsp;Dashboard</a></li>
         </ul>
       </div>
 
 
-      <button><a href="..\Home.html">Cambia Utente</a></button>
+      <button id="BottoneCambio"><a href="..\Home.html">Cambia Utente</a></button>
 
     </section>
 

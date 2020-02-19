@@ -5,9 +5,13 @@
   <head>
     <title>Lvl-2-Resp_PrimaPagina</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="..\stylePagina.css">
-    <link rel="stylesheet" href="..\styleMenu.css">
+    <link rel="stylesheet" href="..\CSS\stylePagina.css">
+    <link rel="stylesheet" href="..\CSS\styleMenu.css">
+
+    <script src="..\Js\PopUp.js"></script>
   </head>
+
+
 
   <body>
     <header>
@@ -28,8 +32,7 @@
 
 
           <!--Menu a tendina per inserimenti auto e dipendenti-->
-          <li>&nbsp;Inserimenti
-          </li>
+          <li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
 
 
             <!--Menu a tendina per inserimenti Manutenzione e Spese-->
@@ -48,9 +51,9 @@
         </ul>
 
       </div>
-      <p>RESPONSABILE DI SEDE PRIMA PAGINA</p>
-      <button><a href="..\Home.html">Cambia Utente</a></button>
 
+      <button id="BottoneCambio"><a href="..\Home.html">Cambia Utente</a></button>
+      <p>RESPONSABILE DI SEDE PRIMA PAGINA</p>
     </section>
 
     <footer>

@@ -69,3 +69,16 @@ a:hover{
   #menu #about:hover .subitems {
     display: block;
   }
+
+
+
+  /*CSS per pulsante di cambio UTENTE. Presente in tutte le nostre pagine */
+
+  #BottoneCambio{
+    float: right;
+    margin-top: 40px;
+    margin-right: 60px;
+    padding: 10px;
+    border-radius: 15px;
+    border-color:chartreuse;
+  }

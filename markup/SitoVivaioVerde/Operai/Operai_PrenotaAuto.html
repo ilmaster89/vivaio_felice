@@ -5,9 +5,11 @@
   <head>
     <title>Lvl-4-PrenotaAuto</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="..\stylePagina.css">
-    <link rel="stylesheet" href="..\styleMenu.css">
-    <link rel="stylesheet" href="..\styleOperai.css">
+    <link rel="stylesheet" href="..\CSS\stylePagina.css">
+    <link rel="stylesheet" href="..\CSS\styleMenu.css">
+    <link rel="stylesheet" href="..\CSS\styleMenuPrenota.css">
+
+    <script src="..\Js\PopUp.js"></script>
   </head>
 
   <body>
@@ -19,23 +21,44 @@
     <section id="central">
       <div id="menu">
         <ul>
-          <li><a href="..\Operai\OperaiPrimaPagina.html">&nbsp;Prenotazioni</a></li>
-          <li>&nbsp;Inserimenti</li>
-          <li>&nbsp;Manutenzione</li>
-          <li>&nbsp;Trasferimenti</li>
-          <li>&nbsp;Dashboard</li>
+          <li>&nbsp;Prenotazioni</li>
+          <li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
+          <li><a onclick="myFunction()">&nbsp;Manutenzione</a></li>
+          <li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
+          <li><a onclick="myFunction()">&nbsp;Dashboard</a></li>
         </ul>
       </div>
         
-      <div id="secondoMenu">
-        <ul>
-          <li class="colore">Data inizio</li>
-          <li class="colore">Data fine</li>
-          <li class="colore">Kilometraggio</li>
-        </ul>
-      </div>
 
-      <button><a href="..\Operai\OperaiPrimaPagina.html">Torna Indietro</a></button>
+
+      <button id="BottoneCambio"><a href="..\Operai\OperaiPrimaPagina.html">Torna Indietro</a></button>
+
+      <div class="menuPrenotaAuto">
+        <ul>
+          <li>  <!--inserimento dei campi di data, e l'ora???-->
+            <label for="start" class="inserimentoDati">Data inizio:</label>
+                <input type="date" name="trip-start"
+                    value="2018-01-01"
+                    min="2018-01-30" max="2020-12-31">
+          </li>
+          <li>&nbsp;</li>
+          <li>&nbsp;</li>
+          <li>  
+            <label for="start" class="inserimentoDati">Data fine:&nbsp;&nbsp;&nbsp;</label>
+            <input type="date" id="start" name="trip-start"
+                   value="2018-01-01"
+                   min="2018-01-30" max="2020-12-31">
+          </li>
+          <button class="visualizzaData"><a href=""> Visualizza</a></button>
+        </ul>
+
+        <ul>
+          <li>Marca<input></li>
+          <li>Modello<input></li>
+          <li>Targa<input></li>
+        </ul>
+        <button class="visualizzaData"><a href="">Prenota</a></button>
+      </div>
 
     </section>
 
