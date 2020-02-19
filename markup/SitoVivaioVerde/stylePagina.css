@@ -35,7 +35,7 @@ img{
     border: 3px solid green;
     margin-top: 80px;
     margin-left: 37%;
-    position: fixed;
+    position: absolute;
 }
 
 h1{
