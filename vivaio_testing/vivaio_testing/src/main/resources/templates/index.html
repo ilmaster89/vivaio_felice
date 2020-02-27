@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>Home</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleLog.css">
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+
+		<div id="login">
+			<div id="lato">
+				<form th:action="@{/logged}" th:object="${dipendente}" method="post">
+					<table>
+						<th:block>
+							<tr>
+								<td>User:</td>
+							</tr>
+							<tr>
+								<td><input type="text" th:field="*{user_name}" /></td>
+
+							</tr>
+							<tr>
+								<td>Pass:</td>
+							</tr>
+							<tr>
+								<td><input type="text" th:field="*{password}" /></td>
+							</tr>
+							<tr>
+								<td><input type="submit" value="Log In"></td>
+							</tr>
+							<tr>
+								<td><a href="/lista">Vai alla lista dei dipendenti</a></td>
+							</tr>
+						</th:block>
+					</table>
+				</form>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

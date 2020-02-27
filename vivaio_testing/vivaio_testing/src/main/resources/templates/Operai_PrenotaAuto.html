@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-4-PrenotaAuto</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
+
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<div id="menu">
+			<ul>
+				<li>&nbsp;Prenotazioni</li>
+				<li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
+				<li><a onclick="myFunction()">&nbsp;Manutenzione</a></li>
+				<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
+				<li><a onclick="myFunction()">&nbsp;Dashboard</a></li>
+			</ul>
+		</div>
+
+
+
+		<button id="BottoneCambio">
+			<a href="/operai">Torna Indietro</a>
+		</button>
+
+		<div class="menuPrenotaAuto">
+			<ul>
+				<li>
+					<!--inserimento dei campi di data, e l'ora???--> <label for="start"
+					class="inserimentoDati">Data inizio:</label> <input type="date"
+					name="trip-start" value="2018-01-01" min="2018-01-30"
+					max="2020-12-31">
+				</li>
+				<li>&nbsp;</li>
+				<li>&nbsp;</li>
+				<li><label for="start" class="inserimentoDati">Data
+						fine:&nbsp;&nbsp;&nbsp;</label> <input type="date" id="start"
+					name="trip-start" value="2018-01-01" min="2018-01-30"
+					max="2020-12-31"></li>
+				<button class="visualizzaData">
+					<a href=""> Visualizza</a>
+				</button>
+			</ul>
+
+			<ul>
+				<li>Marca<input></li>
+				<li>Modello<input></li>
+				<li>Targa<input></li>
+			</ul>
+			<button class="visualizzaData">
+				<a href="">Prenota</a>
+			</button>
+		</div>
+
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

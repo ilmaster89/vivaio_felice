@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-3-Dip_PrimaPagina</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+
+<script src="..\Js\PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<div id="menu">
+			<ul>
+				<li><a onclick="myFunction()">&nbsp;Prenotazioni</a></li>
+				<!--Menu a tendina per inserimenti auto e dipendenti-->
+				<li id="about">&nbsp;Inserimenti
+					<ul class="subitems">
+						<li class="subli"><a href="/IMPinsauto">Auto</a></li>
+						<li class="subli"><a href="/IMPinsdip">Dipendenti</a></li>
+					</ul>
+				</li>
+
+				<!--Menu a tendina per inserimenti Manutenzione e Spese-->
+				<li id="about">&nbsp;Manutenzione
+					<ul class="subitems">
+						<li class="subli"><a href="/IMPmanu">Manutenzione</a></li>
+						<li class="subli"><a href="/IMPspese">Spese</a></li>
+					</ul>
+				</li>
+
+
+				<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
+
+				<li><a href="/IMPdash">&nbsp;Dashboard</a></li>
+			</ul>
+		</div>
+
+
+		<button id="BottoneCambio">
+			<a href="/">Cambia Utente</a>
+		</button>
+
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

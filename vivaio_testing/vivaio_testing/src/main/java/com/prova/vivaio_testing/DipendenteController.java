@@ -26,64 +26,7 @@ public class DipendenteController {
 
 	@GetMapping("/")
 	public String index(Dipendente dipendente) {
-
-		// questo risulterà familiare. Creo una connessione per prendere i dati dalla
-		// cartella dei dipendenti-
-		Connection conn = null;
-		try {
-			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"InfySQL899");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Statement st = null;
-
-		try {
-			st = (Statement) conn.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		String query = "select * from dipendenti";
-		ResultSet rs = null;
-		try {
-			rs = st.executeQuery(query);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// questa è la differenza fondamentale.
-		try {
-			while (rs.next()) {
-
-				// a differenza del codice precedente, qui non vado a stampare tutti contenuti
-				// delle colonne, ma li prendo e li assegno ad un costruttore. Ovviamente
-				// bisogna scrivere a mano le singole variabili ma questo non è un problema in
-				// quanto noi conosciamo il DB.
-				Integer id = (Integer) rs.getObject(1);
-				Integer id_livello = (Integer) rs.getObject(2);
-				String nome = (String) rs.getObject(3);
-				String cognome = (String) rs.getObject(4);
-				String user_name = (String) rs.getObject(5);
-				String password = (String) rs.getObject(6);
-
-				// ad ogni ciclo, in questo modo, vengono presi degli attributi (riferiti a
-				// diverse serie di dati) e vengono creati nuovi dipendenti, aggiunti subito
-				// alla ArrayList. Ogni ciclo li resetta, quindi non si pone il problema di
-				// inserire lo stesso dipendente più volte, anche senza cambiare nome.
-				Dipendente d = new Dipendente(id, id_livello, nome, cognome, user_name, password);
-				dipendenti.add(d);
-
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "home";
+		return "index";
 	}
 
 	@PostMapping("/logged")
@@ -96,23 +39,23 @@ public class DipendenteController {
 		// faccio su "d", ovvero l'argomento passato al metodo, mi crea problemi. Se
 		// invece lo faccio sul dipendente nell'ArrayList funziona perfettamente. Ci
 		// lavoreremo, ma l'importante è che funzioni.
-		for (Dipendente dip : dipendenti) {
+		for (Dipendente dip : VivaioTestingApplication.getDipendenti()) {
 			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
 					&& dip.getId_livello() == 1)
-				return "operai";
+				return "OperaiPrimaPagina";
 			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
 					&& dip.getId_livello() == 2)
-				return "impiegati";
+				return "Dipendenti_PrimaPagina";
 			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
 					&& dip.getId_livello() == 3)
-				return "responsabili";
+				return "Responsabile_PrimaPagina";
 			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
 					&& dip.getId_livello() == 4)
-				return "titolare";
+				return "Responsabile_Prima_Pagina";
 
 		}
 
-		return "home";
+		return "index";
 
 	}
 
@@ -122,9 +65,88 @@ public class DipendenteController {
 		ModelAndView mav = new ModelAndView();
 
 		mav.setViewName("lista");
-		mav.addObject("dipendenti", dipendenti);
+		mav.addObject("dipendenti", VivaioTestingApplication.getDipendenti());
 
 		return mav;
 	}
 
+	@GetMapping("/OPprenota")
+	public String OPprenota(Dipendente d) {
+		return "Operai_PrenotaAuto";
+	}
+
+	@GetMapping("/OPkm")
+	public String OPkm(Dipendente d) {
+		return "Operai_InserimentoKm";
+	}
+
+	@GetMapping("/operai")
+	public String operai(Dipendente d) {
+		return "OperaiPrimaPagina";
+	}
+
+	@GetMapping("/impiegati")
+	public String impiegati(Dipendente d) {
+		return "Dipendenti_PrimaPagina";
+	}
+
+	@GetMapping("/responsabili")
+	public String resp(Dipendente d) {
+		return "Responsabile_PrimaPagina";
+	}
+
+	@GetMapping("/IMPinsauto")
+	public String insauto(Dipendente d) {
+		return "Dipendenti_InserimentoAuto";
+	}
+
+	@GetMapping("/IMPinsdip")
+	public String insdip(Dipendente d) {
+		return "Dipendenti_InserimentoDip-";
+	}
+
+	@GetMapping("/IMPmanu")
+	public String manu(Dipendente d) {
+		return "Dipendenti_Manutenzione";
+	}
+
+	@GetMapping("/IMPspese")
+	public String spese(Dipendente d) {
+		return "Dipendenti_Spese";
+	}
+
+	@GetMapping("/IMPdash")
+	public String dash(Dipendente d) {
+		return "Dipendenti_DashBoard";
+	}
+
+	@GetMapping("/RESprenota")
+	public String RP(Dipendente d) {
+		return "Responsabile_Prenota";
+	}
+
+	@GetMapping("/RESkm")
+	public String RK(Dipendente d) {
+		return "Responsabile_InserimentoKm";
+	}
+
+	@GetMapping("/RESmanu")
+	public String RM(Dipendente d) {
+		return "Responsabile_Manutenzione";
+	}
+
+	@GetMapping("/RESspese")
+	public String RS(Dipendente d) {
+		return "Responsabile_Spese";
+	}
+
+	@GetMapping("/REStrans")
+	public String RT(Dipendente d) {
+		return "Responsabile_Trasferimenti";
+	}
+
+	@GetMapping("/RESdash")
+	public String RD(Dipendente d) {
+		return "Responsabile_Dashboard";
+	}
 }
