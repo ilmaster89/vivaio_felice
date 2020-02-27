@@ -1,0 +1,30 @@
+<html>
+<body>
+	<form th:action="@{/logged}" th:object="${dipendente}" method="post">
+		<table>
+			<th:block>
+				<tr>
+					<td>User:</td>
+				</tr>
+				<tr>
+					<td><input type="text" th:field="*{user_name}" /></td>
+
+				</tr>
+				<tr>
+					<td>Pass:</td>
+				</tr>
+				<tr>
+					<td><input type="text" th:field="*{password}" /></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="Log In"></td>
+				</tr>
+				<tr>
+					<td><a href="/lista">Vai alla lista dei dipendenti</a></td>
+				</tr>
+			</th:block>
+		</table>
+	</form>
+	<
+</body>
+</html>
