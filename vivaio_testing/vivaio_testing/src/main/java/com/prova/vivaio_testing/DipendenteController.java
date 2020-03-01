@@ -51,7 +51,7 @@ public class DipendenteController {
 
 		// query che prevede come filtri i due campi riempiti nel form della pagina
 		String query = "select id_livello from vivaio_felice.dipendenti where user_name = '" + d.getUser_name()
-				+ "' and pass = '" + d.getPassword() + "'";
+				+ "' and password = '" + d.getPassword() + "'";
 		;
 		ResultSet rs = null;
 		try {
