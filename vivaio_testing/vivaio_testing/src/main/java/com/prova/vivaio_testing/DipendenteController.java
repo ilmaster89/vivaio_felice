@@ -21,8 +21,8 @@ import com.mysql.jdbc.Statement;
 @Controller
 public class DipendenteController {
 
-	// dichiaro la ArrayList che servirà da contenitore per tutti i dipendenti.
-	ArrayList<Dipendente> dipendenti = new ArrayList();
+	// dichiaro la variabile lv come statica in modo da riprenderla ovunque
+	public static int lv = 0;
 
 	@GetMapping("/")
 	public String index(Dipendente dipendente) {
@@ -31,29 +31,63 @@ public class DipendenteController {
 
 	@PostMapping("/logged")
 	public String loggedIn(Dipendente d) {
-
-		// al controllo per il login, come avevo accennato, ho aggiunto il controllo per
-		// l'id livello, che naturalmente porta a diverse pagine, come potrete
-		// verificare da voi.
-		// Una cosa curiosa su cui dovremo lavorare: se il controllo sull'id livello lo
-		// faccio su "d", ovvero l'argomento passato al metodo, mi crea problemi. Se
-		// invece lo faccio sul dipendente nell'ArrayList funziona perfettamente. Ci
-		// lavoreremo, ma l'importante è che funzioni.
-		for (Dipendente dip : VivaioTestingApplication.getDipendenti()) {
-			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
-					&& dip.getId_livello() == 1)
-				return "OperaiPrimaPagina";
-			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
-					&& dip.getId_livello() == 2)
-				return "Dipendenti_PrimaPagina";
-			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
-					&& dip.getId_livello() == 3)
-				return "Responsabile_PrimaPagina";
-			if (d.getUser_name().equals(dip.getUser_name()) && d.getPassword().equals(dip.getPassword())
-					&& dip.getId_livello() == 4)
-				return "Responsabile_Prima_Pagina";
-
+		Connection conn = null;
+		try {
+			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
+					"InfySQL899");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		Statement st = null;
+
+		try {
+			st = (Statement) conn.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// query che prevede come filtri i due campi riempiti nel form della pagina
+		String query = "select id_livello from vivaio_felice.dipendenti where user_name = '" + d.getUser_name()
+				+ "' and pass = '" + d.getPassword() + "'";
+		;
+		ResultSet rs = null;
+		try {
+			rs = st.executeQuery(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// il resultset parte da una posizione "zero" ed è necessario usare il metodo
+		// next per spostare il "puntatore" nell'effettiva tabella che ci è stata
+		// restituita dalla query
+		try {
+			rs.next();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		// comodissimo il metodo getInt che ci rende superfluo ogni tipo di casting.
+		// Prendo l'int lv dall'unico campo che SQL ci ha restituito.
+		try {
+			lv = rs.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// semplicissimo controllo sul dato ricevuto, non abbiamo creato alcun oggetto
+		// dipendente e non abbiamo occupato memoria!
+		if (lv == 1)
+			return "OperaiPrimaPagina";
+		if (lv == 2)
+			return "Dipendenti_PrimaPagina";
+		if (lv == 3 || lv == 4)
+			return "Responsabile_PrimaPagina";
 
 		return "index";
 
