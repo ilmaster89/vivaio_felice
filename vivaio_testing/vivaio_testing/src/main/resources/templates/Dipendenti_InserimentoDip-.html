@@ -31,9 +31,50 @@
 		</div>
 
 
-		<input>inserisci un DIPENDENTE</input>
-		<p>campi di inserimento di un DIPENDENTE con relativo
-			ID,NOME,COGNOME, ecc.</p>
+		<form th:action="@{/insert}" th:object="${dipendente}" method="post">
+			<table>
+				<th:block>
+					<tr>
+						<td>Livello:</td>
+					</tr>
+					<tr>
+						<td><input type="number" th:min="1" th:max="4"
+							th:field="*{id_livello}" /></td>
+
+					</tr>
+					<tr>
+						<td>Nome:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{nome}" /></td>
+
+					</tr>
+					<tr>
+						<td>Cognome:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{cognome}" /></td>
+
+					</tr>
+					<tr>
+						<td>User:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{user_name}" /></td>
+
+					</tr>
+					<tr>
+						<td>Pass:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{password}" /></td>
+					</tr>
+					<tr>
+						<td><input type="submit" value="Inserisci Dipendente"></td>
+					</tr>
+				</th:block>
+			</table>
+		</form>
 		<button>
 			<a href="/impiegati">Torna Indietro</a>
 		</button>

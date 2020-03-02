@@ -82,13 +82,37 @@ public class DipendenteController {
 
 		// semplicissimo controllo sul dato ricevuto, non abbiamo creato alcun oggetto
 		// dipendente e non abbiamo occupato memoria!
-		if (lv == 1)
+		if (lv == 1) {
+			lv = 0;
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return "OperaiPrimaPagina";
-		if (lv == 2)
+		}
+		if (lv == 2) {
+			lv = 0;
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return "Dipendenti_PrimaPagina";
-		if (lv == 3 || lv == 4)
-			return "Responsabile_PrimaPagina";
+		}
 
+		if (lv == 3 || lv == 4) {
+			lv = 0;
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return "Responsabile_PrimaPagina";
+		}
 		return "index";
 
 	}
@@ -129,10 +153,7 @@ public class DipendenteController {
 		return "Responsabile_PrimaPagina";
 	}
 
-	@GetMapping("/IMPinsauto")
-	public String insauto(Dipendente d) {
-		return "Dipendenti_InserimentoAuto";
-	}
+
 
 	@GetMapping("/IMPinsdip")
 	public String insdip(Dipendente d) {
@@ -182,5 +203,46 @@ public class DipendenteController {
 	@GetMapping("/RESdash")
 	public String RD(Dipendente d) {
 		return "Responsabile_Dashboard";
+	}
+
+	@PostMapping("/insert")
+	public String insdipendente(Dipendente d) {
+
+		Connection conn = null;
+		try {
+			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
+					"InfySQL899");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Statement st = null;
+
+		try {
+			st = (Statement) conn.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// query che prevede come filtri i due campi riempiti nel form della pagina
+		String query = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
+				+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()
+				+ "', '" + d.getPassword() + "')";
+		try {
+			st.executeUpdate(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "redirect:/IMPinsdip";
 	}
 }

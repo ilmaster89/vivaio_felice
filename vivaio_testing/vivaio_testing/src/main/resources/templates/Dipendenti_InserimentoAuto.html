@@ -31,9 +31,67 @@
 		</div>
 
 
-		<input>inserisci un auto</input>
-		<p>campi di inserimento di un auto con relativa targa, modello,
-			patente posseduta, ecc.</p>
+		<form th:action="@{/insertAuto}" th:object="${auto}" method="post">
+			<table>
+				<th:block>
+					<tr>
+						<td>Marca:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:max="4" th:field="*{marca}" /></td>
+
+					</tr>
+					<tr>
+						<td>Modello:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{modello}" /></td>
+
+					</tr>
+					<tr>
+						<td>Targa:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{targa}" /></td>
+					</tr>
+					<tr>
+					<tr>
+						<td>Carburante:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{carburante}" /></td>
+					</tr>
+					<tr>
+						<td>Patente necessaria:</td>
+					</tr>
+					<tr>
+						<td><input type="number" th:min="1" th:max="2"
+							th:field="*{idPatente}" /></td>
+					</tr>
+					<td>Kw:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{kw}" /></td>
+
+					</tr>
+					<tr>
+						<td>Tara:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{tara}" /></td>
+					</tr>
+					<tr>
+						<td>Data ultima assicurazione:</td>
+					</tr>
+					<tr>
+						<td><input type="date" th:field="*{dataAssicurazione}" /></td>
+					</tr>
+					<tr>
+						<td><input type="submit" value="Inserisci Auto"></td>
+					</tr>
+				</th:block>
+			</table>
+		</form>
 		<button>
 			<a href="/impiegati">Torna Indietro</a>
 		</button>
