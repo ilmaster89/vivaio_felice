@@ -22,13 +22,34 @@
 	<section id="central">
 		<div id="menu">
 			<ul>
-				<li><a
-					href="..\Responsabile-Sede\Responsabile_PrimaPagina.html">&nbsp;Prenotazioni</a></li>
+				<!--Menu a tendina per Prenotazione Auto-->
+				<li id="about">&nbsp;Prenotazioni
+					<ul class="subitems">
+						<li class="subli"><a href="/RESprenota">Prenota</a></li>
+						<li class="subli"><a href="/RESkm">Inserisci Km</a></li>
+					</ul>
+				</li>
+
+
+				<!--Menu a tendina per inserimenti auto e dipendenti-->
 				<li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
-				<li>&nbsp;Manutenzione</li>
-				<li>&nbsp;Trasferimenti</li>
-				<li>&nbsp;Dashboard</li>
+
+
+				<!--Menu a tendina per inserimenti Manutenzione e Spese-->
+				<li id="about">&nbsp;Manutenzione
+					<ul class="subitems">
+						<li class="subli"><a href="/RESmanu">Manutenzione</a></li>
+						<li class="subli"><a href="/RESspese">Spese</a></li>
+					</ul>
+				</li>
+
+				<!--Menu a tendina per Trasferimenti-->
+				<li><a href="/REStrans">&nbsp;Trasferimenti</a></li>
+
+
+				<li><a href="/RESdash">&nbsp;Dashboard</a></li>
 			</ul>
+
 		</div>
 
 		<div id="secondoMenu">

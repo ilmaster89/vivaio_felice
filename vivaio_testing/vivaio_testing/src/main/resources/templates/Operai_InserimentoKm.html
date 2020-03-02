@@ -21,27 +21,33 @@
 
 	<section id="central">
 		<div id="menu">
-			<ul>
-				<li>&nbsp;Prenotazioni</li>
-				<li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
-				<li><a onclick="myFunction()">&nbsp;Manutenzione</a></li>
-				<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
-				<li><a onclick="myFunction()">&nbsp;Dashboard</a></li>
-			</ul>
-		</div>
+			<div id="menu">
+				<ul>
 
-		<div>
-			<ul>
-				<li>Km Effettuati:</li>
-				<li><input></li>
-				<button>Inserisci</button>
-			</ul>
-		</div>
+					<li id="about">&nbsp;Prenotazioni
+						<ul class="subitems">
+							<li class="subli"><a href="/OPprenota">Prenota</a></li>
+							<li class="subli"><a href="/OPkm">Inserisci Km</a></li>
+						</ul>
+					</li>
+					<li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
+					<li><a onclick="myFunction()">&nbsp;Manutenzione</a></li>
+					<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
+					<li><a onclick="myFunction()">&nbsp;Dashboard</a></li>
+				</ul>
+			</div>
 
-		<button>
-			<a href="/operai">Torna Indietro</a>
-		</button>
+			<div>
+				<ul>
+					<li>Km Effettuati:</li>
+					<li><input></li>
+					<button>Inserisci</button>
+				</ul>
+			</div>
 
+			<button>
+				<a href="/operai">Torna Indietro</a>
+			</button>
 	</section>
 
 	<footer>

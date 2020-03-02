@@ -23,13 +23,28 @@
 		<div id="menu">
 			<ul>
 				<li><a onclick="myFunction()">&nbsp;Prenotazioni</a></li>
-				<li><a href="">&nbsp;Inserimenti</a></li>
-				<li><a href="">&nbsp;Manutenzione</a></li>
+				<!--Menu a tendina per inserimenti auto e dipendenti-->
+				<li id="about">&nbsp;Inserimenti
+					<ul class="subitems">
+						<li class="subli"><a href="/IMPinsauto">Auto</a></li>
+						<li class="subli"><a href="/IMPinsdip">Dipendenti</a></li>
+					</ul>
+				</li>
+
+				<!--Menu a tendina per inserimenti Manutenzione e Spese-->
+				<li id="about">&nbsp;Manutenzione
+					<ul class="subitems">
+						<li class="subli"><a href="/IMPmanu">Manutenzione</a></li>
+						<li class="subli"><a href="/IMPspese">Spese</a></li>
+					</ul>
+				</li>
+
+
 				<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
-				<li><a href="">&nbsp;Dashboard</a></li>
+
+				<li><a href="/IMPdash">&nbsp;Dashboard</a></li>
 			</ul>
 		</div>
-
 
 		<form th:action="@{/insertAuto}" th:object="${auto}" method="post">
 			<table>
@@ -62,7 +77,7 @@
 						<td><input type="text" th:field="*{carburante}" /></td>
 					</tr>
 					<tr>
-						<td>Patente necessaria:</td>
+						<td>Patente necessaria: (1 per Patente B, 2 per Patente C)</td>
 					</tr>
 					<tr>
 						<td><input type="number" th:min="1" th:max="2"
