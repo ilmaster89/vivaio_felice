@@ -115,6 +115,7 @@ public class AutoController {
 		ModelAndView mavAuto = new ModelAndView();
 		mavAuto.setViewName("listaAuto");
 		mavAuto.addObject("auto", autoInSede);
+		autoInSede = new ArrayList();
 		return mavAuto;
 
 	}
