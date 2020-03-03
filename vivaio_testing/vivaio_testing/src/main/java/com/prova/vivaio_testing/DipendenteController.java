@@ -23,6 +23,7 @@ public class DipendenteController {
 
 	// dichiaro la variabile lv come statica in modo da riprenderla ovunque
 	public static int lv = 0;
+	public static int sede = 0;
 
 	@GetMapping("/")
 	public String index(Dipendente dipendente) {
@@ -47,6 +48,31 @@ public class DipendenteController {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+		String sededip = "select id_sede from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
+				+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
+
+		ResultSet rs0 = null;
+		try {
+			rs0 = st.executeQuery(sededip);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			rs0.next();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			sede = rs0.getInt(1);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		// query che prevede come filtri i due campi riempiti nel form della pagina
@@ -152,8 +178,6 @@ public class DipendenteController {
 	public String resp(Dipendente d) {
 		return "Responsabile_PrimaPagina";
 	}
-
-
 
 	@GetMapping("/IMPinsdip")
 	public String insdip(Dipendente d) {
