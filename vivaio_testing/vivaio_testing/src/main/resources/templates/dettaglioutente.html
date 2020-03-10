@@ -18,7 +18,12 @@
 			<td>Livello:</td>
 		</tr>
 		<tr>
-			<td th:text="${utente.id_livello}"></td>
+			<td th:switch="${utente.id_livello}">
+				<p th:case="1">Operaio</p>
+				<p th:case="2">Impiegato</p>
+				<p th:case="3">Responsabile di sede</p>
+				<p th:case="4">Titolare dell'azienda</p>
+			</td>
 		</tr>
 
 		<tr>
