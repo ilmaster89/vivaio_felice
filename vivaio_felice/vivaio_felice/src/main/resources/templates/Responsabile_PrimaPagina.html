@@ -1,0 +1,64 @@
+<!DOCTYPE html> 
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+  <head>
+    <title>Lvl-2-Resp_PrimaPagina</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="..\CSS\stylePagina.css">
+    <link rel="stylesheet" href="..\CSS\styleMenu.css">
+
+    <script src="..\Js\PopUp.js"></script>
+  </head>
+
+
+
+  <body>
+    <header>
+        <div><h1>Vivaio Felice</h1></div>
+        <img src="..\immagini\vivaio_felice_immagine.png">
+    </header>
+
+    <section id="central">
+      <div id="menu">
+        <ul>
+            <!--Menu a tendina per Prenotazione Auto-->
+          <li id="about">&nbsp;Prenotazioni
+            <ul class="subitems">  
+                <li class="subli"><a href="..\Responsabile-Sede\Responsabile_Prenota.html">Prenota</a></li>
+                <li class="subli"><a href="..\Responsabile-Sede\Responsabile_InserimentoKm.html">Inserisci Km</a></li>
+              </ul>
+          </li>
+
+
+          <!--Menu a tendina per inserimenti auto e dipendenti-->
+          <li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
+
+
+            <!--Menu a tendina per inserimenti Manutenzione e Spese-->
+          <li id="about">&nbsp;Manutenzione
+            <ul class="subitems">  
+                <li class="subli"><a href="..\Responsabile-Sede\Responsabile_Manutenzione.html">Manutenzione</a></li>
+                <li class="subli"><a href="..\Responsabile-Sede\Responsabile_Spese.html">Spese</a></li>
+              </ul>
+          </li>
+
+          <!--Menu a tendina per Trasferimenti-->
+          <li><a href="..\Responsabile-Sede\Responsabile_Trasferimenti.html">&nbsp;Trasferimenti</a></li>
+
+
+          <li><a href="..\Responsabile-Sede\Responsabile_Dashboard.html">&nbsp;Dashboard</a></li>
+        </ul>
+
+      </div>
+
+      <button id="BottoneCambio"><a href="..\Home.html">Cambia Utente</a></button>
+      <p>RESPONSABILE DI SEDE PRIMA PAGINA</p>
+    </section>
+
+    <footer>
+        <p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+    </footer>
+
+  </body>
+  </html>

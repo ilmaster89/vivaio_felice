@@ -8,7 +8,7 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.emit.project_work</groupId>
+	<groupId>com.emit</groupId>
 	<artifactId>vivaio_felice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>vivaio_felice</name>
