@@ -1,15 +1,18 @@
 <html>
 <body>
-	<tr th:each="a : ${auto}">
 
-		<td th:text="${a.marca}"></td>
+	<table th:each="a: *{auto}">
+		<tr>
+			<td th:text="${a.marca}"></td>
 
+			<td th:text="${a.modello}"></td>
 
-		<td th:text="${a.modello}"></td>
+			<td th:text="${a.targa}"></td>
 
+			<td><a th:href="@{'/dettaglioauto?id='+${a.getId()}}">Dettaglio
+					dell'auto</a></td>
+		</tr>
+	</table>
 
-		<td th:text="${a.targa}"></td>
-
-	</tr>
 </body>
 </html>

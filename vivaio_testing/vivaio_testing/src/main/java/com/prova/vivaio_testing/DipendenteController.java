@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mysql.jdbc.Connection;
@@ -21,17 +22,25 @@ import com.mysql.jdbc.Statement;
 @Controller
 public class DipendenteController {
 
-	// dichiaro la variabile lv come statica in modo da riprenderla ovunque
+	// preparo la lista dei dipendenti "ridotti" per richiamarla come modelandview.
+	ArrayList<Dipendente> dipendentiInSede = new ArrayList();
+
+	// dichiaro due variabili per poterle usare in tutta la app, sono le due
+	// variabili essenziali per contestualizzare le pagine.
 	public static int lv = 0;
 	public static int sede = 0;
 
+	// punto di partenza dell'applicazione.
 	@GetMapping("/")
 	public String index(Dipendente dipendente) {
 		return "index";
 	}
 
+	// post dopo l'inserimento username e password.
 	@PostMapping("/logged")
 	public String loggedIn(Dipendente d) {
+
+		// apro la connessione verso il DB.
 		Connection conn = null;
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
@@ -50,7 +59,9 @@ public class DipendenteController {
 			e.printStackTrace();
 		}
 
-		String sededip = "select id_sede from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
+		// valuto se esiste il dipendente inserito nel form di login e prendo l'id della
+		// sua sede e del suo livello.
+		String sededip = "select id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 				+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
 
 		ResultSet rs0 = null;
@@ -61,53 +72,21 @@ public class DipendenteController {
 			e.printStackTrace();
 		}
 
+		// la query fornisce due int come risultato, che vado ad associare alle
+		// variabili
+		// sede e lv, dichiarate all'inizio del Controller.
 		try {
 			rs0.next();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
 			sede = rs0.getInt(1);
+			lv = rs0.getInt(2);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-
-		// query che prevede come filtri i due campi riempiti nel form della pagina
-		String query = "select id_livello from vivaio_felice.dipendenti where user_name = '" + d.getUser_name()
-				+ "' and password = '" + d.getPassword() + "'";
-		;
-		ResultSet rs = null;
-		try {
-			rs = st.executeQuery(query);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// il resultset parte da una posizione "zero" ed è necessario usare il metodo
-		// next per spostare il "puntatore" nell'effettiva tabella che ci è stata
-		// restituita dalla query
-		try {
-			rs.next();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		// comodissimo il metodo getInt che ci rende superfluo ogni tipo di casting.
-		// Prendo l'int lv dall'unico campo che SQL ci ha restituito.
-		try {
-			lv = rs.getInt(1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		// semplicissimo controllo sul dato ricevuto, non abbiamo creato alcun oggetto
-		// dipendente e non abbiamo occupato memoria!
+		// dipendente e non abbiamo occupato memoria. A seconda del livello vengono
+		// restituite le pagine corrispondenti.
 		if (lv == 1) {
 			lv = 0;
 			try {
@@ -143,15 +122,85 @@ public class DipendenteController {
 
 	}
 
-	@GetMapping("/lista")
-	public ModelAndView lista() {
+	// rintraccia tutti i dipendenti presenti nella sede dell'impiegato che li
+	// richiede.
+	@GetMapping("/listaDIP")
+	public ModelAndView lista(Dipendente d) {
 
-		ModelAndView mav = new ModelAndView();
+		dipendentiInSede = new ArrayList();
+		Connection conn = null;
+		try {
+			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
+					"InfySQL899");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		mav.setViewName("lista");
-		mav.addObject("dipendenti", VivaioTestingApplication.getDipendenti());
+		Statement st = null;
+		try {
+			st = (Statement) conn.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		return mav;
+		// la query prevede un where sulla sede, che è la solita variabile ad inizio
+		// Controller.
+		String query = "select dipendenti.id, id_livello, nome, cognome, user_name, password from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where sede_dip.id_sede ="
+				+ sede;
+
+		ResultSet rs = null;
+		try {
+			rs = st.executeQuery(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// riempio la lista con i dipendenti costruiti con le variabili prese
+		// dal resultset.
+		try {
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				Integer id_livello = rs.getInt(2);
+				String nome = rs.getString(3);
+				String cognome = rs.getString(4);
+				String userName = rs.getString(5);
+				String pass = rs.getString(6);
+
+				Dipendente dip = new Dipendente(id, id_livello, nome, cognome, userName, pass);
+				dipendentiInSede.add(dip);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// semplicemente mostro la lista ottenuta.
+		ModelAndView mavDipendenti = new ModelAndView();
+
+		mavDipendenti.setViewName("lista");
+		mavDipendenti.addObject("dipendenti", dipendentiInSede);
+
+		return mavDipendenti;
+	}
+
+	@GetMapping("/dettaglioutente")
+	public ModelAndView dettaglioUtente(@RequestParam(name = "id") Integer id) {
+
+		ModelAndView dettUtente = new ModelAndView();
+		for (Dipendente d : dipendentiInSede) {
+			if (d.getId() == id) {
+				dettUtente.setViewName("dettaglioutente");
+				dettUtente.addObject("utente", d);
+				return dettUtente;
+			}
+
+		}
+
+		return null;
 	}
 
 	@GetMapping("/OPprenota")
@@ -250,11 +299,39 @@ public class DipendenteController {
 		}
 
 		// query che prevede come filtri i due campi riempiti nel form della pagina
-		String query = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
+		String update1 = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
 				+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()
 				+ "', '" + d.getPassword() + "')";
+		String idDip = "select id from dipendenti order by id desc limit 1";
+		int idNuovoDipendente = 0;
+
 		try {
-			st.executeUpdate(query);
+			st.executeUpdate(update1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		ResultSet rs = null;
+		try {
+			rs = st.executeQuery(idDip);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			rs.next();
+			idNuovoDipendente = rs.getInt(1);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		String update2 = "INSERT INTO `vivaio_felice`.`sede_dip` (`id_dipendente`, `id_sede`) VALUES ('"
+				+ idNuovoDipendente + "', '" + sede + "');";
+		try {
+			st.executeUpdate(update2);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

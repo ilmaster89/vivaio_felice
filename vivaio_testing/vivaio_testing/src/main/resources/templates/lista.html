@@ -1,11 +1,13 @@
 <html>
 <body>
-	<tr th:each="d : ${dipendenti}">
-		<td th:text="${d.nome}"></td>
-		<td th:text="${d.cognome}"></td>
-		<td th:text="${d.user_name}"></td>
-		<td th:text="${d.password}"></td>
-		<td th:text="${d.id_livello}"></td>
-	</tr>
+	<table th:each="d : *{dipendenti}">
+		<tr>
+			<td th:text="*{d.nome}"></td>
+			<td th:text="*{d.cognome}"></td>
+			<td th:text="*{d.user_name}"></td>
+			<td><a th:href="@{'/dettaglioutente?id='+${d.getId()}}">Dettaglio
+					dell'utente</a></td>
+		</tr>
+	</table>
 </body>
 </html>
