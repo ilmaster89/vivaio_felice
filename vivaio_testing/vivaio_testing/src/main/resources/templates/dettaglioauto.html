@@ -21,6 +21,16 @@
 			<td th:text="${auto.targa}"></td>
 		</tr>
 		<tr>
+			<td>Patente necessaria:</td>
+		</tr>
+		<tr>
+			<td th:switch="${auto.idPatente}">
+				<p th:case="1">Patente B</p>
+				<p th:case="2">Patente C</p>
+			</td>
+		</tr>
+
+		<tr>
 			<td>Carburante:</td>
 		</tr>
 		<tr>
