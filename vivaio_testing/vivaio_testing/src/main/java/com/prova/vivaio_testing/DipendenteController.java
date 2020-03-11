@@ -284,7 +284,7 @@ public class DipendenteController {
 		Connection conn = null;
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"InfySQL899");
+					"password");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,8 +1,5 @@
 package com.prova.vivaio_testing;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
