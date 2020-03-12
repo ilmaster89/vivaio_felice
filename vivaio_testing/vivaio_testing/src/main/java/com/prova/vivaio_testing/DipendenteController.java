@@ -1,14 +1,12 @@
 package com.prova.vivaio_testing;
 
+import java.util.Date;
 import java.sql.DriverManager;
-
 //FONDAMENTALE creare la path per il com.mysql.jdbc
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.validation.Valid;
+import java.util.Calendar;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +27,10 @@ public class DipendenteController {
 	// variabili essenziali per contestualizzare le pagine.
 	public static int lv = 0;
 	public static int sede = 0;
-	public static int patente = 0;
+	public static int patenteDip = 0;
 	boolean neoP = false;
+	Calendar cal = Calendar.getInstance();
+	Date now = cal.getTime();
 
 	// punto di partenza dell'applicazione.
 	@GetMapping("/")
@@ -50,10 +50,23 @@ public class DipendenteController {
 			Statement st = (Statement) conn.createStatement();
 			String sededip = "select id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
+			String patente = "select id_patente, data_possesso from dipendenti join possesso_patenti on dipendenti.id = possesso_patenti.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
+					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
 			ResultSet rs = st.executeQuery(sededip);
 			rs.next();
 			sede = rs.getInt(1);
 			lv = rs.getInt(2);
+			rs = st.executeQuery(patente);
+			rs.next();
+			patenteDip = rs.getInt(1);
+			Date dataPoss = rs.getDate(2);
+			cal.add(Calendar.YEAR, -1);
+			Date annoFa = cal.getTime();
+
+			if (dataPoss.after(annoFa))
+				neoP = true;
+
+			System.out.println(neoP);
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -88,35 +101,10 @@ public class DipendenteController {
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
 					"password");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Statement st = null;
-		try {
-			st = (Statement) conn.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// la query prevede un where sulla sede, che è la solita variabile ad inizio
-		// Controller.
-		String query = "select dipendenti.id, id_livello, nome, cognome, user_name, password from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where sede_dip.id_sede ="
-				+ sede;
-
-		ResultSet rs = null;
-		try {
-			rs = st.executeQuery(query);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// riempio la lista con i dipendenti costruiti con le variabili prese
-		// dal resultset.
-		try {
+			Statement st = (Statement) conn.createStatement();
+			String query = "select dipendenti.id, id_livello, nome, cognome, user_name, password from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where sede_dip.id_sede ="
+					+ sede;
+			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				Integer id = rs.getInt(1);
 				Integer id_livello = rs.getInt(2);
@@ -129,7 +117,11 @@ public class DipendenteController {
 				dipendentiInSede.add(dip);
 
 			}
-		} catch (SQLException e) {
+			conn.close();
+
+		} catch (
+
+		SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -237,64 +229,28 @@ public class DipendenteController {
 	@PostMapping("/insert")
 	public String insdipendente(Dipendente d) {
 
-		Connection conn = null;
 		try {
-			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"password");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Statement st = null;
+			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
+					"root", "password");
+			Statement st = (Statement) conn.createStatement();
+			String update1 = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
+					+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()
+					+ "', '" + d.getPassword() + "')";
+			String idDip = "select id from dipendenti order by id desc limit 1";
+			int idNuovoDipendente = 0;
 
-		try {
-			st = (Statement) conn.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// query che prevede come filtri i due campi riempiti nel form della pagina
-		String update1 = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
-				+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()
-				+ "', '" + d.getPassword() + "')";
-		String idDip = "select id from dipendenti order by id desc limit 1";
-		int idNuovoDipendente = 0;
-
-		try {
 			st.executeUpdate(update1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ResultSet rs = null;
-		try {
-			rs = st.executeQuery(idDip);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
+			ResultSet rs = st.executeQuery(idDip);
 			rs.next();
 			idNuovoDipendente = rs.getInt(1);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		String update2 = "INSERT INTO `vivaio_felice`.`sede_dip` (`id_dipendente`, `id_sede`) VALUES ('"
-				+ idNuovoDipendente + "', '" + sede + "');";
-		try {
+			String update2 = "INSERT INTO `vivaio_felice`.`sede_dip` (`id_dipendente`, `id_sede`) VALUES ('"
+					+ idNuovoDipendente + "', '" + sede + "');";
+			String update3 = "INSERT INTO `vivaio_felice`.`possesso_patenti` (`id_dipendente`, `id_patente`, `data_possesso`) VALUES ('"
+					+ idNuovoDipendente + "', '" + d.getIdPatente() + "', '" + d.getDataPossesso() + "');";
 			st.executeUpdate(update2);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
+			st.executeUpdate(update3);
 			conn.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

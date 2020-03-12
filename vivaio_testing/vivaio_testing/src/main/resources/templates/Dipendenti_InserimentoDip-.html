@@ -86,15 +86,30 @@
 						<td><input type="text" th:field="*{password}" /></td>
 					</tr>
 					<tr>
+						<td>Patente: (1-B 2-C)</td>
+					</tr>
+					<tr>
+						<td><input type="number" th:min="1" th:max="2"
+							th:field="*{idPatente}" /></td>
+					</tr>
+					<tr>
+						<td>Data Patente:</td>
+					</tr>
+					<tr>
+						<td><input type="date" th:field="*{dataPossesso}" /></td>
+					</tr>
+					<tr>
 						<td><input type="submit" value="Inserisci Dipendente"></td>
 					</tr>
 					<tr>
 						<td><a href="/listaDIP">Lista dei dipendenti della tua
 								sede</a></td>
 					</tr>
+
 				</th:block>
 			</table>
 		</form>
+
 		<button>
 			<a href="/impiegati">Torna Indietro</a>
 		</button>

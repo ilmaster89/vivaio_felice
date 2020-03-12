@@ -1,5 +1,8 @@
 package com.prova.vivaio_testing;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 //la classe Dipendente (e questo varrà per tutte le altre) riprende perfettamente i dati che ci sono nella tabella di MySQL. 
 //Ciò è essenziale per poter trasformare una tupla in oggetto.
 
@@ -16,6 +19,8 @@ public class Dipendente {
 	String cognome;
 	String user_name;
 	String password;
+	Integer idPatente;
+	Date dataPossesso;
 
 	public Dipendente(Integer id, Integer id_livello, String nome, String cognome, String user_name, String password) {
 		this.id = id;
@@ -78,6 +83,23 @@ public class Dipendente {
 	public String toString() {
 		return nome + ' ' + cognome;
 
+	}
+
+	public Integer getIdPatente() {
+		return idPatente;
+	}
+
+	public void setIdPatente(Integer idPatente) {
+		this.idPatente = idPatente;
+	}
+
+	public Date getDataPossesso() {
+		return dataPossesso;
+
+	}
+
+	public void setDataPossesso(Date dataPossesso) {
+		this.dataPossesso = dataPossesso;
 	}
 
 }
