@@ -29,6 +29,8 @@ public class DipendenteController {
 	// variabili essenziali per contestualizzare le pagine.
 	public static int lv = 0;
 	public static int sede = 0;
+	public static int patente = 0;
+	boolean neoP = false;
 
 	// punto di partenza dell'applicazione.
 	@GetMapping("/")
@@ -45,43 +47,17 @@ public class DipendenteController {
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
 					"password");
+			Statement st = (Statement) conn.createStatement();
+			String sededip = "select id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
+					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
+			ResultSet rs = st.executeQuery(sededip);
+			rs.next();
+			sede = rs.getInt(1);
+			lv = rs.getInt(2);
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		Statement st = null;
-
-		try {
-			st = (Statement) conn.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// valuto se esiste il dipendente inserito nel form di login e prendo l'id della
-		// sua sede e del suo livello.
-		String sededip = "select id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
-				+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
-
-		ResultSet rs0 = null;
-		try {
-			rs0 = st.executeQuery(sededip);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// la query fornisce due int come risultato, che vado ad associare alle
-		// variabili
-		// sede e lv, dichiarate all'inizio del Controller.
-		try {
-			rs0.next();
-			sede = rs0.getInt(1);
-			lv = rs0.getInt(2);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 
 		// semplicissimo controllo sul dato ricevuto, non abbiamo creato alcun oggetto
@@ -89,33 +65,13 @@ public class DipendenteController {
 		// restituite le pagine corrispondenti.
 		if (lv == 1) {
 			lv = 0;
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return "OperaiPrimaPagina";
 		}
 		if (lv == 2) {
-			lv = 0;
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return "Dipendenti_PrimaPagina";
 		}
 
 		if (lv == 3 || lv == 4) {
-			lv = 0;
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return "Responsabile_PrimaPagina";
 		}
 		return "index";
