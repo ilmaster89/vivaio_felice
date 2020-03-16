@@ -1,10 +1,12 @@
 package com.prova.vivaio_testing;
 
-import java.util.Date;
+import java.sql.Date;
 import java.sql.DriverManager;
 //FONDAMENTALE creare la path per il com.mysql.jdbc
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -28,14 +30,16 @@ public class DipendenteController {
 	public static int lv = 0;
 	public static int sede = 0;
 	public static int patenteDip = 0;
+	public static int idDip = 0;
 	boolean neoP = false;
 	Calendar cal = Calendar.getInstance();
-	Date now = cal.getTime();
+	java.util.Date now = cal.getTime();
 
 	// punto di partenza dell'applicazione.
 	@GetMapping("/")
 	public String index(Dipendente dipendente) {
 		return "index";
+
 	}
 
 	// post dopo l'inserimento username e password.
@@ -46,22 +50,27 @@ public class DipendenteController {
 		Connection conn = null;
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"password");
+					"InfySQL899");
 			Statement st = (Statement) conn.createStatement();
-			String sededip = "select id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
+			String sededip = "select id_dipendente, id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
 			String patente = "select id_patente, data_possesso from dipendenti join possesso_patenti on dipendenti.id = possesso_patenti.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
+			String prova = "select data_inizio from prenotazioni where id = 8";
+			ResultSet provars = st.executeQuery(prova);
+			provars.next();
+			System.out.println(provars.getTimestamp(1));
 			ResultSet rs = st.executeQuery(sededip);
 			rs.next();
-			sede = rs.getInt(1);
-			lv = rs.getInt(2);
+			idDip = rs.getInt(1);
+			sede = rs.getInt(2);
+			lv = rs.getInt(3);
 			rs = st.executeQuery(patente);
 			rs.next();
 			patenteDip = rs.getInt(1);
 			Date dataPoss = rs.getDate(2);
 			cal.add(Calendar.YEAR, -1);
-			Date annoFa = cal.getTime();
+			java.util.Date annoFa = cal.getTime();
 
 			if (dataPoss.after(annoFa))
 				neoP = true;
@@ -100,7 +109,7 @@ public class DipendenteController {
 		Connection conn = null;
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"password");
+					"InfySQL899");
 			Statement st = (Statement) conn.createStatement();
 			String query = "select dipendenti.id, id_livello, nome, cognome, user_name, password from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where sede_dip.id_sede ="
 					+ sede;
@@ -149,11 +158,6 @@ public class DipendenteController {
 		}
 
 		return null;
-	}
-
-	@GetMapping("/OPprenota")
-	public String OPprenota(Dipendente d) {
-		return "Operai_PrenotaAuto";
 	}
 
 	@GetMapping("/OPkm")
@@ -231,7 +235,7 @@ public class DipendenteController {
 
 		try {
 			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
-					"root", "password");
+					"root", "InfySQL899");
 			Statement st = (Statement) conn.createStatement();
 			String update1 = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
 					+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()

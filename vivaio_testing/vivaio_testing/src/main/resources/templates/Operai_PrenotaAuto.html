@@ -21,7 +21,7 @@
 	</header>
 
 	<section id="central">
-			<div id="menu">
+		<div id="menu">
 			<ul>
 
 				<li id="about">&nbsp;Prenotazioni
@@ -44,34 +44,33 @@
 		</button>
 
 		<div class="menuPrenotaAuto">
-			<ul>
-				<li>
-					<!--inserimento dei campi di data, e l'ora???--> <label for="start"
-					class="inserimentoDati">Data inizio:</label> <input type="date"
-					name="trip-start" value="2018-01-01" min="2018-01-30"
-					max="2020-12-31">
-				</li>
-				<li>&nbsp;</li>
-				<li>&nbsp;</li>
-				<li><label for="start" class="inserimentoDati">Data
-						fine:&nbsp;&nbsp;&nbsp;</label> <input type="date" id="start"
-					name="trip-start" value="2018-01-01" min="2018-01-30"
-					max="2020-12-31"></li>
-				<button class="visualizzaData">
-					<a href=""> Visualizza</a>
-				</button>
-			</ul>
+			<form th:action="@{/richiestadiprenotazione}"
+				th:object="${prenotazione}" method="post">
+				<table>
+					<th:block>
+						<tr>
+							<td>Data di Inizio:</td>
+						</tr>
+						<tr>
+							<td><input type="${timestamp.valueOf()datetime-local)}"
+								th:field="*{dataInizio}" /></td>
 
-			<ul>
-				<li>Marca<input></li>
-				<li>Modello<input></li>
-				<li>Targa<input></li>
-			</ul>
-			<button class="visualizzaData">
-				<a href="">Prenota</a>
-			</button>
+
+						</tr>
+						<tr>
+							<td>Data di Fine:</td>
+						</tr>
+						<tr>
+							<td><input type="datetime-local" th:field="*{dataFine}" /></td>
+
+						</tr>
+						<tr>
+							<td><input type="submit" value="Richiedi auto disponibili"></td>
+						</tr>
+					</th:block>
+				</table>
+			</form>
 		</div>
-
 	</section>
 
 	<footer>
