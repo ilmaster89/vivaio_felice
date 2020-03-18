@@ -1,6 +1,9 @@
 package com.prova.vivaio_testing;
 
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Prenotazione {
 
@@ -8,15 +11,15 @@ public class Prenotazione {
 	Integer idDip;
 	Integer idAuto;
 	Integer idCausale;
-	Timestamp dataInizio;
-	Timestamp dataFine;
+	String dataInizio;
+	String dataFine;
 	Integer km;
 	String marca;
 	String modello;
 	String targa;
 
-	public Prenotazione(Integer id, Integer idDip, Integer idAuto, Integer idCausale, Timestamp dataInizio,
-			Timestamp dataFine, Integer km, String marca, String modello, String targa) {
+	public Prenotazione(Integer id, Integer idDip, Integer idAuto, Integer idCausale, String dataInizio,
+			String dataFine, Integer km, String marca, String modello, String targa) {
 		this.id = id;
 		this.idDip = idDip;
 		this.idAuto = idAuto;
@@ -62,20 +65,12 @@ public class Prenotazione {
 		this.idCausale = idCausale;
 	}
 
-	public Timestamp getDataInizio() {
+	public String getDataInizio() {
 		return dataInizio;
 	}
 
-	public void setDataInizio(Timestamp dataInizio) {
+	public void setDataInizio(String dataInizio) {
 		this.dataInizio = dataInizio;
-	}
-
-	public Timestamp getDataFine() {
-		return dataFine;
-	}
-
-	public void setDataFine(Timestamp dataFine) {
-		this.dataFine = dataFine;
 	}
 
 	public Integer getKm() {
@@ -84,6 +79,12 @@ public class Prenotazione {
 
 	public void setKm(Integer km) {
 		this.km = km;
+	}
+
+	@Override
+	public String toString() {
+		return "Prenotazione [id=" + id + ", idDip=" + idDip + ", idAuto=" + idAuto + ", idCausale=" + idCausale
+				+ ", dataInizio=" + dataInizio + ", dataFine=" + dataFine + ", km=" + km + "]";
 	}
 
 	public String getMarca() {
@@ -108,6 +109,14 @@ public class Prenotazione {
 
 	public void setTarga(String targa) {
 		this.targa = targa;
+	}
+
+	public String getDataFine() {
+		return dataFine;
+	}
+
+	public void setDataFine(String dataFine) {
+		this.dataFine = dataFine;
 	}
 
 }

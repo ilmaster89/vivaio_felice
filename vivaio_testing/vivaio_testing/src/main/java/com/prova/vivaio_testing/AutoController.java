@@ -33,7 +33,7 @@ public class AutoController {
 
 		try {
 			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
-					"root", "InfySQL899");
+					"root", "password");
 			Statement st = (Statement) conn.createStatement();
 			String update1 = "INSERT INTO `vivaio_felice`.`auto` (`id_patente`, `carburante`, `marca`, `modello`, `targa`, `kw`, `tara`, `data_assicurazione`) "
 					+ "VALUES ('" + a.getIdPatente() + "', '" + a.getCarburante() + "', '" + a.getMarca() + "', '"
@@ -66,7 +66,7 @@ public class AutoController {
 		autoInSede = new ArrayList();
 		try {
 			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
-					"root", "InfySQL899");
+					"root", "password");
 			Statement st = (Statement) conn.createStatement();
 			String query = "select auto.id, id_patente,carburante, marca, modello, targa, kw, tara, data_assicurazione from parcheggio as p1 "
 					+ "left outer join parcheggio as p2 on p1.id_auto=p2.id_auto and p1.data_parch < p2.data_parch "

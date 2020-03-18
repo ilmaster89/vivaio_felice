@@ -49,19 +49,21 @@
 				<table>
 					<th:block>
 						<tr>
-							<td>Data di Inizio:</td>
+							<td>Data di inizio:</td>
 						</tr>
+
 						<tr>
-							<td><input type="${timestamp.valueOf()datetime-local)}"
+							<td><input type="datetime-local" name="dataInizio"
 								th:field="*{dataInizio}" /></td>
 
 
 						</tr>
 						<tr>
-							<td>Data di Fine:</td>
+							<td>Data di fine:</td>
 						</tr>
 						<tr>
-							<td><input type="datetime-local" th:field="*{dataFine}" /></td>
+							<td><input type="datetime-local" name="dataFine"
+								th:field="*{dataFine}" /></td>
 
 						</tr>
 						<tr>

@@ -1,10 +1,11 @@
 package com.prova.vivaio_testing;
 
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Controller;
@@ -18,24 +19,47 @@ import com.mysql.jdbc.Statement;
 @Controller
 public class PrenotazioneController {
 
-	DateTimeFormatter dtf = DateTimeFormatter.ISO_DATE_TIME;
-
+	SimpleDateFormat sdfsql = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm");
 	ArrayList<Prenotazione> prenotazioniPossibili = new ArrayList();
 	ArrayList<Prenotazione> autoInSedePrenotate = new ArrayList();
 
 	public boolean collides(Prenotazione sql, Prenotazione web) {
-		if (web.getDataInizio().before(sql.getDataInizio()) && web.getDataFine().before(sql.getDataFine()))
+
+		Date sqlInizio = null;
+		Date sqlFine = null;
+		Date webInizio = null;
+		Date webFine = null;
+		try {
+			sqlInizio = sdfsql.parse(sql.getDataInizio());
+			if (sql.getDataFine() == null)
+				sqlFine = null;
+			if (sql.getDataFine() != null)
+				sqlFine = sdfsql.parse(sql.getDataFine());
+			webInizio = sdf.parse(web.getDataInizio());
+			webFine = sdf.parse(web.getDataFine());
+
+			System.out.println("web inizio" + webInizio);
+			System.out.println("web fine" + webFine);
+			System.out.println(sqlInizio);
+			System.out.println(sqlFine);
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (webInizio.before(sqlInizio) && webFine.before(sqlFine))
 			return true;
-		if (web.getDataInizio().before(sql.getDataInizio()) && web.getDataFine().after(sql.getDataFine()))
+		if (webInizio.before(sqlInizio) && webFine.after(sqlFine))
 			return true;
-		if (web.getDataInizio().after(sql.getDataInizio()) && web.getDataFine().before(sql.getDataFine()))
+		if (webInizio.after(sqlInizio) && webFine.before(sqlFine))
 			return true;
-		if (web.getDataInizio().after(sql.getDataInizio()) && web.getDataFine().after(sql.getDataFine()))
+		if (webInizio.after(sqlInizio) && webFine.after(sqlFine))
 			return true;
-		if (web.getDataInizio().before(sql.getDataInizio()) && web.getDataFine().after(sql.getDataInizio())
-				&& sql.getDataFine() == null)
+		if (webInizio.before(sqlInizio) && webFine.after(sqlInizio) && sqlFine == null)
 			return true;
-		if (web.getDataInizio().after(sql.getDataInizio()) && sql.getDataFine() == null)
+		if (webInizio.after(sqlInizio) && sqlFine == null)
 			return true;
 
 		return false;
@@ -53,7 +77,7 @@ public class PrenotazioneController {
 		autoInSedePrenotate = new ArrayList();
 		try {
 			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
-					"root", "InfySQL899");
+					"root", "password");
 			Statement st = (Statement) conn.createStatement();
 			String query = "select prenotazioni.*, auto.marca, auto.modello, auto.targa from auto left join prenotazioni on auto.id = prenotazioni.id_auto where auto.id in (select auto.id from parcheggio as p1 "
 					+ "left outer join parcheggio as p2 on p1.id_auto=p2.id_auto and p1.data_parch < p2.data_parch "
@@ -67,8 +91,8 @@ public class PrenotazioneController {
 				Integer idDip = rs.getInt(2);
 				Integer idAuto = rs.getInt(3);
 				Integer idCausale = rs.getInt(4);
-				Timestamp dataInizio = rs.getTimestamp(5);
-				Timestamp dataFine = rs.getTimestamp(6);
+				String dataInizio = rs.getString(5);
+				String dataFine = rs.getString(6);
 				Integer km = rs.getInt(7);
 				String marca = rs.getString(8);
 				String modello = rs.getString(9);
@@ -79,11 +103,13 @@ public class PrenotazioneController {
 				autoInSedePrenotate.add(sql);
 			}
 
+//			autoInSedePrenotate.remove(autoInSedePrenotate.size() - 1);
 			conn.close();
 
 			for (Prenotazione sql : autoInSedePrenotate) {
+				System.out.println(sql.toString());
 				if (!collides(sql, web))
-					prenotazioniPossibili.add(web);
+					prenotazioniPossibili.add(sql);
 
 			}
 

@@ -50,16 +50,13 @@ public class DipendenteController {
 		Connection conn = null;
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"InfySQL899");
+					"password");
 			Statement st = (Statement) conn.createStatement();
 			String sededip = "select id_dipendente, id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
 			String patente = "select id_patente, data_possesso from dipendenti join possesso_patenti on dipendenti.id = possesso_patenti.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
-			String prova = "select data_inizio from prenotazioni where id = 8";
-			ResultSet provars = st.executeQuery(prova);
-			provars.next();
-			System.out.println(provars.getTimestamp(1));
+
 			ResultSet rs = st.executeQuery(sededip);
 			rs.next();
 			idDip = rs.getInt(1);
@@ -75,7 +72,6 @@ public class DipendenteController {
 			if (dataPoss.after(annoFa))
 				neoP = true;
 
-			System.out.println(neoP);
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -109,7 +105,7 @@ public class DipendenteController {
 		Connection conn = null;
 		try {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
-					"InfySQL899");
+					"password");
 			Statement st = (Statement) conn.createStatement();
 			String query = "select dipendenti.id, id_livello, nome, cognome, user_name, password from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where sede_dip.id_sede ="
 					+ sede;
@@ -235,7 +231,7 @@ public class DipendenteController {
 
 		try {
 			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
-					"root", "InfySQL899");
+					"root", "password");
 			Statement st = (Statement) conn.createStatement();
 			String update1 = "INSERT INTO `vivaio_felice`.`dipendenti` (`id_livello`, `nome`, `cognome`, `user_name`, `password`) VALUES ('"
 					+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()
