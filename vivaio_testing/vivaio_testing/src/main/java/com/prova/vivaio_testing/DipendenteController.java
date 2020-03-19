@@ -25,15 +25,7 @@ public class DipendenteController {
 	// preparo la lista dei dipendenti "ridotti" per richiamarla come modelandview.
 	ArrayList<Dipendente> dipendentiInSede = new ArrayList();
 
-	// dichiaro due variabili per poterle usare in tutta la app, sono le due
-	// variabili essenziali per contestualizzare le pagine.
-	public static int lv = 0;
-	public static int sede = 0;
-	public static int patenteDip = 0;
-	public static int idDip = 0;
-	boolean neoP = false;
-	Calendar cal = Calendar.getInstance();
-	java.util.Date now = cal.getTime();
+	public static Dipendente logged = null;
 
 	// punto di partenza dell'applicazione.
 	@GetMapping("/")
@@ -43,6 +35,7 @@ public class DipendenteController {
 	}
 
 	// post dopo l'inserimento username e password.
+	// momentaneo, da cambiare con Antonio.
 	@PostMapping("/logged")
 	public String loggedIn(Dipendente d) {
 
@@ -52,25 +45,25 @@ public class DipendenteController {
 			conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice", "root",
 					"password");
 			Statement st = (Statement) conn.createStatement();
-			String sededip = "select id_dipendente, id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
+			String sededip = "select nome, cognome, id_dipendente, id_sede, id_livello from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
 			String patente = "select id_patente, data_possesso from dipendenti join possesso_patenti on dipendenti.id = possesso_patenti.id_dipendente where dipendenti.id = (select id from dipendenti where user_name ='"
 					+ d.getUser_name() + "' and password = '" + d.getPassword() + "')";
 
 			ResultSet rs = st.executeQuery(sededip);
 			rs.next();
-			idDip = rs.getInt(1);
-			sede = rs.getInt(2);
-			lv = rs.getInt(3);
+			String nome = rs.getString(1);
+			String cognome = rs.getString(2);
+			Integer idDip = rs.getInt(3);
+			Integer idSede = rs.getInt(4);
+			Integer idLivello = rs.getInt(5);
 			rs = st.executeQuery(patente);
 			rs.next();
-			patenteDip = rs.getInt(1);
-			Date dataPoss = rs.getDate(2);
-			cal.add(Calendar.YEAR, -1);
-			java.util.Date annoFa = cal.getTime();
+			Integer idPatente = rs.getInt(1);
+			Date dataPossesso = rs.getDate(2);
 
-			if (dataPoss.after(annoFa))
-				neoP = true;
+			logged = new Dipendente(idDip, idLivello, nome, cognome, d.getUser_name(), d.getPassword(), idPatente,
+					idSede, dataPossesso);
 
 			conn.close();
 		} catch (SQLException e) {
@@ -81,15 +74,15 @@ public class DipendenteController {
 		// semplicissimo controllo sul dato ricevuto, non abbiamo creato alcun oggetto
 		// dipendente e non abbiamo occupato memoria. A seconda del livello vengono
 		// restituite le pagine corrispondenti.
-		if (lv == 1) {
-			lv = 0;
+
+		if (logged.getId_livello() == 1) {
 			return "OperaiPrimaPagina";
 		}
-		if (lv == 2) {
+		if (logged.getId_livello() == 2) {
 			return "Dipendenti_PrimaPagina";
 		}
 
-		if (lv == 3 || lv == 4) {
+		if (logged.getId_livello() == 3 || logged.getId_livello() == 4) {
 			return "Responsabile_PrimaPagina";
 		}
 		return "index";
@@ -108,7 +101,7 @@ public class DipendenteController {
 					"password");
 			Statement st = (Statement) conn.createStatement();
 			String query = "select dipendenti.id, id_livello, nome, cognome, user_name, password from dipendenti join sede_dip on dipendenti.id = sede_dip.id_dipendente where sede_dip.id_sede ="
-					+ sede;
+					+ logged.getIdSede();
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				Integer id = rs.getInt(1);
@@ -118,7 +111,7 @@ public class DipendenteController {
 				String userName = rs.getString(5);
 				String pass = rs.getString(6);
 
-				Dipendente dip = new Dipendente(id, id_livello, nome, cognome, userName, pass);
+				Dipendente dip = new Dipendente(id, id_livello, nome, cognome, userName, pass, null, null, null);
 				dipendentiInSede.add(dip);
 
 			}
@@ -237,14 +230,13 @@ public class DipendenteController {
 					+ d.getId_livello() + "', '" + d.getNome() + "', '" + d.getCognome() + "', '" + d.getUser_name()
 					+ "', '" + d.getPassword() + "')";
 			String idDip = "select id from dipendenti order by id desc limit 1";
-			int idNuovoDipendente = 0;
 
 			st.executeUpdate(update1);
 			ResultSet rs = st.executeQuery(idDip);
 			rs.next();
-			idNuovoDipendente = rs.getInt(1);
+			Integer idNuovoDipendente = rs.getInt(1);
 			String update2 = "INSERT INTO `vivaio_felice`.`sede_dip` (`id_dipendente`, `id_sede`) VALUES ('"
-					+ idNuovoDipendente + "', '" + sede + "');";
+					+ idNuovoDipendente + "', '" + logged.getIdSede() + "');";
 			String update3 = "INSERT INTO `vivaio_felice`.`possesso_patenti` (`id_dipendente`, `id_patente`, `data_possesso`) VALUES ('"
 					+ idNuovoDipendente + "', '" + d.getIdPatente() + "', '" + d.getDataPossesso() + "');";
 			st.executeUpdate(update2);

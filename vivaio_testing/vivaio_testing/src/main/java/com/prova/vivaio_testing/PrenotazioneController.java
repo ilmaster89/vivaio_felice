@@ -1,12 +1,12 @@
 package com.prova.vivaio_testing;
 
-import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,7 +82,7 @@ public class PrenotazioneController {
 			String query = "select prenotazioni.*, auto.marca, auto.modello, auto.targa from auto left join prenotazioni on auto.id = prenotazioni.id_auto where auto.id in (select auto.id from parcheggio as p1 "
 					+ "left outer join parcheggio as p2 on p1.id_auto=p2.id_auto and p1.data_parch < p2.data_parch "
 					+ "join auto on p1.id_auto = auto.id " + "join sede on sede.id = p1.id_sede "
-					+ "where p2.id is null and p1.id_sede = " + DipendenteController.sede + ") "
+					+ "where p2.id is null and p1.id_sede = " + DipendenteController.logged.getIdSede() + ") "
 					+ "group by prenotazioni.id";
 			ResultSet rs = st.executeQuery(query);
 
@@ -103,12 +103,12 @@ public class PrenotazioneController {
 				autoInSedePrenotate.add(sql);
 			}
 
-//			autoInSedePrenotate.remove(autoInSedePrenotate.size() - 1);
+			autoInSedePrenotate.remove(autoInSedePrenotate.size() - 1);
 			conn.close();
 
 			for (Prenotazione sql : autoInSedePrenotate) {
 				System.out.println(sql.toString());
-				if (!collides(sql, web))
+				if (collides(sql, web))
 					prenotazioniPossibili.add(sql);
 
 			}

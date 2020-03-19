@@ -2,6 +2,7 @@ package com.prova.vivaio_testing;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 //la classe Dipendente (e questo varrà per tutte le altre) riprende perfettamente i dati che ci sono nella tabella di MySQL. 
 //Ciò è essenziale per poter trasformare una tupla in oggetto.
@@ -19,16 +20,21 @@ public class Dipendente {
 	String cognome;
 	String user_name;
 	String password;
-	Integer idPatente;
+	Integer idPatente; // da sostituire una volta creati i MODEL con una variabile di tipo Patente
+	Integer idSede; // da sostituire una volta creati i MODEL con una variabile di tipo Sede
 	Date dataPossesso;
 
-	public Dipendente(Integer id, Integer id_livello, String nome, String cognome, String user_name, String password) {
+	public Dipendente(Integer id, Integer id_livello, String nome, String cognome, String user_name, String password,
+			Integer idPatente, Integer idSede, Date dataPossesso) {
 		this.id = id;
 		this.id_livello = id_livello;
 		this.nome = nome;
 		this.cognome = cognome;
 		this.user_name = user_name;
 		this.password = password;
+		this.idPatente = idPatente;
+		this.idSede = idSede;
+		this.dataPossesso = dataPossesso;
 	}
 
 	public Integer getId() {
@@ -102,4 +108,32 @@ public class Dipendente {
 		this.dataPossesso = dataPossesso;
 	}
 
+	public Integer getIdSede() {
+		return idSede;
+	}
+
+	public void setIdSede(Integer idSede) {
+		this.idSede = idSede;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public void setId_livello(Integer id_livello) {
+		this.id_livello = id_livello;
+	}
+
+	public boolean isNeoP() {
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+
+		java.util.Date annoFa = cal.getTime();
+		if (dataPossesso.after(annoFa))
+			return true;
+
+		return false;
+
+	}
 }

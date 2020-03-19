@@ -46,7 +46,7 @@ public class AutoController {
 			rs.next();
 			idNuovaAuto = rs.getInt(1);
 			String update2 = "INSERT INTO `vivaio_felice`.`parcheggio` (`id_auto`, `id_sede`, `data_parch`) VALUES ('"
-					+ idNuovaAuto + "', '" + DipendenteController.sede + "', '" + LocalDate.now() + "');";
+					+ idNuovaAuto + "', '" + DipendenteController.logged.getIdSede() + "', '" + LocalDate.now() + "');";
 			st.executeUpdate(update2);
 			conn.close();
 
@@ -71,7 +71,7 @@ public class AutoController {
 			String query = "select auto.id, id_patente,carburante, marca, modello, targa, kw, tara, data_assicurazione from parcheggio as p1 "
 					+ "left outer join parcheggio as p2 on p1.id_auto=p2.id_auto and p1.data_parch < p2.data_parch "
 					+ "join auto on p1.id_auto = auto.id " + "join sede on sede.id = p1.id_sede "
-					+ "where p2.id is null and p1.id_sede = " + DipendenteController.sede;
+					+ "where p2.id is null and p1.id_sede = " + DipendenteController.logged.getIdSede();
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				Integer id = rs.getInt(1);
