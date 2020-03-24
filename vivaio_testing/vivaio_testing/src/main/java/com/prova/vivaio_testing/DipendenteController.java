@@ -37,8 +37,9 @@ public class DipendenteController {
 	// post dopo l'inserimento username e password.
 	// momentaneo, da cambiare con Antonio.
 	@PostMapping("/logged")
-	public String loggedIn(Dipendente d) {
+	public ModelAndView loggedIn(Dipendente d) {
 
+		ModelAndView utenteLoggato = new ModelAndView();
 		// apro la connessione verso il DB.
 		Connection conn = null;
 		try {
@@ -75,17 +76,10 @@ public class DipendenteController {
 		// dipendente e non abbiamo occupato memoria. A seconda del livello vengono
 		// restituite le pagine corrispondenti.
 
-		if (logged.getId_livello() == 1) {
-			return "OperaiPrimaPagina";
-		}
-		if (logged.getId_livello() == 2) {
-			return "Dipendenti_PrimaPagina";
-		}
+		utenteLoggato.setViewName("primapaginatotale");
+		utenteLoggato.addObject("logged", logged);
 
-		if (logged.getId_livello() == 3 || logged.getId_livello() == 4) {
-			return "Responsabile_PrimaPagina";
-		}
-		return "index";
+		return utenteLoggato;
 
 	}
 
@@ -127,7 +121,7 @@ public class DipendenteController {
 		// semplicemente mostro la lista ottenuta.
 		ModelAndView mavDipendenti = new ModelAndView();
 
-		mavDipendenti.setViewName("lista");
+		mavDipendenti.setViewName("listaDipendenti");
 		mavDipendenti.addObject("dipendenti", dipendentiInSede);
 
 		return mavDipendenti;
@@ -149,74 +143,42 @@ public class DipendenteController {
 		return null;
 	}
 
-	@GetMapping("/OPkm")
+	@GetMapping("/km")
 	public String OPkm(Dipendente d) {
 		return "Operai_InserimentoKm";
 	}
 
-	@GetMapping("/operai")
-	public String operai(Dipendente d) {
-		return "OperaiPrimaPagina";
+	@GetMapping("/indietro")
+	public ModelAndView back(Dipendente d) {
+		ModelAndView back = new ModelAndView();
+		back.setViewName("primapaginatotale");
+		back.addObject("logged", logged);
+		return back;
 	}
 
-	@GetMapping("/impiegati")
-	public String impiegati(Dipendente d) {
-		return "Dipendenti_PrimaPagina";
-	}
-
-	@GetMapping("/responsabili")
-	public String resp(Dipendente d) {
-		return "Responsabile_PrimaPagina";
-	}
-
-	@GetMapping("/IMPinsdip")
+	@GetMapping("/insdip")
 	public String insdip(Dipendente d) {
 		return "Dipendenti_InserimentoDip-";
 	}
 
-	@GetMapping("/IMPmanu")
+	@GetMapping("/manu")
 	public String manu(Dipendente d) {
 		return "Dipendenti_Manutenzione";
 	}
 
-	@GetMapping("/IMPspese")
+	@GetMapping("/spese")
 	public String spese(Dipendente d) {
 		return "Dipendenti_Spese";
 	}
 
-	@GetMapping("/IMPdash")
+	@GetMapping("/dash")
 	public String dash(Dipendente d) {
 		return "Dipendenti_DashBoard";
 	}
 
-	@GetMapping("/RESprenota")
-	public String RP(Dipendente d) {
-		return "Responsabile_Prenota";
-	}
-
-	@GetMapping("/RESkm")
-	public String RK(Dipendente d) {
-		return "Responsabile_InserimentoKm";
-	}
-
-	@GetMapping("/RESmanu")
-	public String RM(Dipendente d) {
-		return "Responsabile_Manutenzione";
-	}
-
-	@GetMapping("/RESspese")
-	public String RS(Dipendente d) {
-		return "Responsabile_Spese";
-	}
-
-	@GetMapping("/REStrans")
+	@GetMapping("/trans")
 	public String RT(Dipendente d) {
 		return "Responsabile_Trasferimenti";
-	}
-
-	@GetMapping("/RESdash")
-	public String RD(Dipendente d) {
-		return "Responsabile_Dashboard";
 	}
 
 	@PostMapping("/insert")

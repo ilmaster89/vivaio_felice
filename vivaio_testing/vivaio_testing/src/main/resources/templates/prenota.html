@@ -26,21 +26,37 @@
 
 				<li id="about">&nbsp;Prenotazioni
 					<ul class="subitems">
-						<li class="subli"><a href="/OPprenota">Prenota</a></li>
-						<li class="subli"><a href="/OPkm">Inserisci Km</a></li>
+						<li class="subli"><a href="/prenota">Prenota</a></li>
+						<li class="subli"><a href="/km">Inserisci Km</a></li>
 					</ul>
 				</li>
-				<li><a onclick="myFunction()">&nbsp;Inserimenti</a></li>
-				<li><a onclick="myFunction()">&nbsp;Manutenzione</a></li>
-				<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
-				<li><a onclick="myFunction()">&nbsp;Dashboard</a></li>
+
+				<li id="about">&nbsp;Inserimenti
+					<ul th:if="${logged.moreThanTwo()}" class="subitems">
+						<li class="subli"><a href="/insauto">Auto</a></li>
+						<li class="subli"><a href="/insdip">Dipendenti</a></li>
+					</ul>
+				</li>
+				<!--  if lv >= 2 -->
+				<li id="about">&nbsp;Manutenzione
+					<ul th:if="${logged.moreThanTwo()}" class="subitems">
+						<li class="subli"><a href="/manu">Manutenzione</a></li>
+						<li class="subli"><a href="/spese">Spese</a></li>
+					</ul>
+				</li>
+				<!-- if lv >= 3 -->
+				<li th:if="${logged.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+				<li th:if="${!logged.moreThanThree()}">&nbsp;Trasferimenti</li>
+				<!-- if lv >= 2 -->
+				<li th:if="${logged.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
+				<li th:if="${!logged.moreThanTwo()}">&nbsp;Dashboard</li>
 			</ul>
 		</div>
 
 
 
 		<button id="BottoneCambio">
-			<a href="/operai">Torna Indietro</a>
+			<a href="/indietro">Torna Indietro</a>
 		</button>
 
 		<div class="menuPrenotaAuto">

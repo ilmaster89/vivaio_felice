@@ -136,4 +136,17 @@ public class Dipendente {
 		return false;
 
 	}
+
+	public boolean moreThanTwo() {
+		if (id_livello >= 2)
+			return true;
+		return false;
+	}
+
+	public boolean moreThanThree() {
+		if (id_livello >= 3)
+			return true;
+		return false;
+	}
+
 }

@@ -66,9 +66,12 @@ public class PrenotazioneController {
 
 	}
 
-	@GetMapping("/OPprenota")
-	public String OPprenota(Prenotazione p) {
-		return "Operai_PrenotaAuto";
+	@GetMapping("/prenota")
+	public ModelAndView prenota(Prenotazione p) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("prenota");
+		mav.addObject("logged", DipendenteController.logged);
+		return mav;
 	}
 
 	@PostMapping("/richiestadiprenotazione")
