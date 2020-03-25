@@ -144,8 +144,11 @@ public class DipendenteController {
 	}
 
 	@GetMapping("/km")
-	public String OPkm(Dipendente d) {
-		return "Operai_InserimentoKm";
+	public ModelAndView km(Dipendente d) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("inserimentoKm");
+		mav.addObject("logged", logged);
+		return mav;
 	}
 
 	@GetMapping("/indietro")
@@ -157,28 +160,43 @@ public class DipendenteController {
 	}
 
 	@GetMapping("/insdip")
-	public String insdip(Dipendente d) {
-		return "Dipendenti_InserimentoDip-";
+	public ModelAndView inse(Dipendente d) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("inserimentoDipendenti");
+		mav.addObject("logged", logged);
+		return mav;
 	}
 
 	@GetMapping("/manu")
-	public String manu(Dipendente d) {
-		return "Dipendenti_Manutenzione";
+	public ModelAndView manu(Dipendente d) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("manutenzione");
+		mav.addObject("logged", logged);
+		return mav;
 	}
 
 	@GetMapping("/spese")
-	public String spese(Dipendente d) {
-		return "Dipendenti_Spese";
+	public ModelAndView spese(Dipendente d) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("spese");
+		mav.addObject("logged", logged);
+		return mav;
 	}
 
 	@GetMapping("/dash")
-	public String dash(Dipendente d) {
-		return "Dipendenti_DashBoard";
+	public ModelAndView dash(Dipendente d) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("dashboard");
+		mav.addObject("logged", logged);
+		return mav;
 	}
 
 	@GetMapping("/trans")
-	public String RT(Dipendente d) {
-		return "Responsabile_Trasferimenti";
+	public ModelAndView trans(Dipendente d) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("trasferimenti");
+		mav.addObject("logged", logged);
+		return mav;
 	}
 
 	@PostMapping("/insert")
@@ -210,6 +228,6 @@ public class DipendenteController {
 			e.printStackTrace();
 		}
 
-		return "redirect:/IMPinsdip";
+		return "redirect:/insdip";
 	}
 }

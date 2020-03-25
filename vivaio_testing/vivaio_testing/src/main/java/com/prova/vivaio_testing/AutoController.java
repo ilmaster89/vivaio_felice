@@ -22,9 +22,12 @@ public class AutoController {
 	// come per il dipendente, preparo la lista per mostrare le auto nella sede.
 	ArrayList<Auto> autoInSede = new ArrayList();
 
-	@GetMapping("/IMPinsauto")
-	public String insauto(Auto a) {
-		return "Dipendenti_InserimentoAuto";
+	@GetMapping("/insauto")
+	public ModelAndView insAuto(Auto a) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("inserimentoAuto");
+		mav.addObject("logged", DipendenteController.logged);
+		return mav;
 	}
 
 	// inserimento auto.
@@ -55,7 +58,7 @@ public class AutoController {
 			e.printStackTrace();
 		}
 
-		return "redirect:/IMPinsauto";
+		return "redirect:/insauto";
 	}
 
 	// lista delle auto in sede. Funziona esattamente come la lista dei dipendenti,

@@ -22,27 +22,43 @@
 	<section id="central">
 		<div id="menu">
 			<ul>
-				<li><a onclick="myFunction()">&nbsp;Prenotazioni</a></li>
-				<!--Menu a tendina per inserimenti auto e dipendenti-->
-				<li id="about">&nbsp;Inserimenti
+
+				<li id="about">&nbsp;Prenotazioni
 					<ul class="subitems">
-						<li class="subli"><a href="/IMPinsauto">Auto</a></li>
-						<li class="subli"><a href="/IMPinsdip">Dipendenti</a></li>
+						<li class="subli"><a href="/prenota">Prenota</a></li>
+						<li class="subli"><a href="/km">Inserisci Km</a></li>
 					</ul>
 				</li>
 
-				<!--Menu a tendina per inserimenti Manutenzione e Spese-->
-				<li id="about">&nbsp;Manutenzione
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
+				</a>
+
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Inserimenti
 					<ul class="subitems">
-						<li class="subli"><a href="/IMPmanu">Manutenzione</a></li>
-						<li class="subli"><a href="/IMPspese">Spese</a></li>
+						<li class="subli"><a href="/insauto">Auto</a></li>
+						<li class="subli"><a href="/insdip">Dipendenti</a></li>
 					</ul>
 				</li>
-
-
-				<li><a onclick="myFunction()">&nbsp;Trasferimenti</a></li>
-
-				<li><a href="/IMPdash">&nbsp;Dashboard</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
+				</a>
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Manutenzione
+					<ul class="subitems">
+						<li class="subli"><a href="/manu">Manutenzione</a></li>
+						<li class="subli"><a href="/spese">Spese</a></li>
+					</ul>
+				</li>
+				<!-- if lv >= 3 -->
+				<li th:if="${logged.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
+				</a>
+				<!-- if lv >= 2 -->
+				<li th:if="${logged.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
+				</a>
 			</ul>
 		</div>
 
@@ -111,7 +127,7 @@
 		</form>
 
 		<button>
-			<a href="/impiegati">Torna Indietro</a>
+			<a href="/indietro">Torna Indietro</a>
 		</button>
 
 	</section>

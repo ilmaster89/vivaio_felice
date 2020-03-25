@@ -31,25 +31,35 @@
 					</ul>
 				</li>
 
-				<li id="about">&nbsp;Inserimenti
-					<ul th:if="${logged.moreThanTwo()}" class="subitems">
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
+				</a>
+
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Inserimenti
+					<ul class="subitems">
 						<li class="subli"><a href="/insauto">Auto</a></li>
 						<li class="subli"><a href="/insdip">Dipendenti</a></li>
 					</ul>
 				</li>
-				<!--  if lv >= 2 -->
-				<li id="about">&nbsp;Manutenzione
-					<ul th:if="${logged.moreThanTwo()}" class="subitems">
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
+				</a>
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Manutenzione
+					<ul class="subitems">
 						<li class="subli"><a href="/manu">Manutenzione</a></li>
 						<li class="subli"><a href="/spese">Spese</a></li>
 					</ul>
 				</li>
 				<!-- if lv >= 3 -->
 				<li th:if="${logged.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
-				<li th:if="${!logged.moreThanThree()}">&nbsp;Trasferimenti</li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
+				</a>
 				<!-- if lv >= 2 -->
 				<li th:if="${logged.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
-				<li th:if="${!logged.moreThanTwo()}">&nbsp;Dashboard</li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
+				</a>
 			</ul>
 		</div>
 
