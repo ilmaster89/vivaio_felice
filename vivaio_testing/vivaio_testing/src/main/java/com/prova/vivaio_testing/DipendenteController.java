@@ -143,13 +143,7 @@ public class DipendenteController {
 		return null;
 	}
 
-	@GetMapping("/km")
-	public ModelAndView km(Dipendente d) {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("inserimentoKm");
-		mav.addObject("logged", logged);
-		return mav;
-	}
+	
 
 	@GetMapping("/indietro")
 	public ModelAndView back(Dipendente d) {

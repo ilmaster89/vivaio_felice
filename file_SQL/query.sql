@@ -145,7 +145,7 @@ join sede on sede.id = sede_dip.id_sede
 where user_name = "arjmor95";
 /*dati fondamentali per il costruttore del dipendente*/
 
-select marca,modello,targa,data_inizio,data_fine,km
+select marca,modello,targa,data_inizio,data_fine
 from dipendenti join prenotazioni on dipendenti.id = prenotazioni.id_dipendente
 join auto on prenotazioni.id_auto = auto.id
 where km is null and id_dipendente = 1

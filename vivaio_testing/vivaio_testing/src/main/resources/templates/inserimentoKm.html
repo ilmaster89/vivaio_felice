@@ -21,59 +21,93 @@
 
 	<section id="central">
 		<div id="menu">
-			<div id="menu">
-				<ul>
 
-					<li id="about">&nbsp;Prenotazioni
-						<ul class="subitems">
-							<li class="subli"><a href="/prenota">Prenota</a></li>
-							<li class="subli"><a href="/km">Inserisci Km</a></li>
-						</ul>
-					</li>
+			<ul>
 
-					<a onclick="myFunction()">
-						<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
-					</a>
+				<li id="about">&nbsp;Prenotazioni
+					<ul class="subitems">
+						<li class="subli"><a href="/prenota">Prenota</a></li>
+						<li class="subli"><a href="/km">Inserisci Km</a></li>
+					</ul>
+				</li>
 
-					<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Inserimenti
-						<ul class="subitems">
-							<li class="subli"><a href="/insauto">Auto</a></li>
-							<li class="subli"><a href="/insdip">Dipendenti</a></li>
-						</ul>
-					</li>
-					<a onclick="myFunction()">
-						<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
-					</a>
-					<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Manutenzione
-						<ul class="subitems">
-							<li class="subli"><a href="/manu">Manutenzione</a></li>
-							<li class="subli"><a href="/spese">Spese</a></li>
-						</ul>
-					</li>
-					<!-- if lv >= 3 -->
-					<li th:if="${logged.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
-					<a onclick="myFunction()">
-						<li th:if="${!logged.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
-					</a>
-					<!-- if lv >= 2 -->
-					<li th:if="${logged.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
-					<a onclick="myFunction()">
-						<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
-					</a>
-				</ul>
-			</div>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
+				</a>
 
-			<div>
-				<ul>
-					<li>Km Effettuati:</li>
-					<li><input></li>
-					<button>Inserisci</button>
-				</ul>
-			</div>
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Inserimenti
+					<ul class="subitems">
+						<li class="subli"><a href="/insauto">Auto</a></li>
+						<li class="subli"><a href="/insdip">Dipendenti</a></li>
+					</ul>
+				</li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
+				</a>
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Manutenzione
+					<ul class="subitems">
+						<li class="subli"><a href="/manu">Manutenzione</a></li>
+						<li class="subli"><a href="/spese">Spese</a></li>
+					</ul>
+				</li>
+				<!-- if lv >= 3 -->
+				<li th:if="${logged.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
+				</a>
+				<!-- if lv >= 2 -->
+				<li th:if="${logged.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
+				</a>
+			</ul>
+		</div>
 
-			<button>
-				<a href="/indietro">Torna Indietro</a>
-			</button>
+		<div>
+			<table>
+
+				<tr>
+					<td>Devi ancora inserire i km per la seguente prenotazione:</td>
+				</tr>
+				<tr>
+					<td th:text="${preno.marca}"></td>
+				</tr>
+				<tr>
+					<td th:text="${preno.modello}"></td>
+				</tr>
+				<tr>
+					<td th:text="${preno.targa}"></td>
+				</tr>
+				<tr>
+					<td>Inizio prenotazione:</td>
+					<td th:text="${preno.dataInizio}"></td>
+				</tr>
+				<tr>
+					<td>Fine prenotazione:</td>
+					<td th:text="${preno.dataFine}"></td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<table>
+				<form th:action="@{/kminseriti}" th:object="${prenotazione}"
+					method="post">
+				<tr>
+					<td>Km attuali:</td>
+				</tr>
+				<tr>
+					<td><input type="text" th:field="*{km}"></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="Inserisci KM"></td>
+				</tr>
+
+			</table>
+		</div>
+
+		<button>
+			<a href="/indietro">Torna Indietro</a>
+		</button>
 	</section>
 
 	<footer>
