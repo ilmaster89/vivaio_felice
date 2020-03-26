@@ -63,7 +63,12 @@
 			</ul>
 		</div>
 
-		<div>
+		<div th:if="${preno == null}">
+			<tr>Non hai prenotazioni in sospeso!
+			</tr>
+		</div>
+
+		<div th:if="${preno != null}">
 			<table>
 
 				<tr>
@@ -86,24 +91,22 @@
 					<td>Fine prenotazione:</td>
 					<td th:text="${preno.dataFine}"></td>
 				</tr>
+				<table>
+					<form th:action="@{/kminseriti}" th:object="${prenotazione}"
+						method="post">
+						<tr>
+							<td>Km attuali:</td>
+						</tr>
+						<tr>
+							<td><input type="text" th:field="*{km}"></td>
+						</tr>
+						<tr>
+							<td><input type="submit" value="Inserisci KM"></td>
+						</tr>
+				</table>
 			</table>
 		</div>
-		<div>
-			<table>
-				<form th:action="@{/kminseriti}" th:object="${prenotazione}"
-					method="post">
-				<tr>
-					<td>Km attuali:</td>
-				</tr>
-				<tr>
-					<td><input type="text" th:field="*{km}"></td>
-				</tr>
-				<tr>
-					<td><input type="submit" value="Inserisci KM"></td>
-				</tr>
-
-			</table>
-		</div>
+		<div></div>
 
 		<button>
 			<a href="/indietro">Torna Indietro</a>
