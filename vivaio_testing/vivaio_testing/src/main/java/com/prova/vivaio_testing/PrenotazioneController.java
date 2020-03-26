@@ -161,20 +161,21 @@ public class PrenotazioneController {
 					+ DipendenteController.logged.getId() + " order by data_fine desc limit 1";
 			ResultSet rs = st.executeQuery(query);
 
-			rs.next();
-			Integer id = rs.getInt(1);
-			Integer idDip = rs.getInt(2);
-			Integer idAuto = rs.getInt(3);
-			Integer idCausale = rs.getInt(4);
-			String dataInizio = rs.getString(5);
-			String dataFine = rs.getString(6);
-			Integer km = rs.getInt(7);
-			String marca = rs.getString(8);
-			String modello = rs.getString(9);
-			String targa = rs.getString(10);
-			ultimaPrenotazione = new Prenotazione(id, idDip, idAuto, idCausale, dataInizio, dataFine, km, marca,
-					modello, targa);
-			conn.close();
+			if (rs.next()) {
+				Integer id = rs.getInt(1);
+				Integer idDip = rs.getInt(2);
+				Integer idAuto = rs.getInt(3);
+				Integer idCausale = rs.getInt(4);
+				String dataInizio = rs.getString(5);
+				String dataFine = rs.getString(6);
+				Integer km = rs.getInt(7);
+				String marca = rs.getString(8);
+				String modello = rs.getString(9);
+				String targa = rs.getString(10);
+				ultimaPrenotazione = new Prenotazione(id, idDip, idAuto, idCausale, dataInizio, dataFine, km, marca,
+						modello, targa);
+				conn.close();
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
