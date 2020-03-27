@@ -150,6 +150,8 @@ public class PrenotazioneController {
 	@GetMapping("/km")
 	public ModelAndView km(Prenotazione p) {
 
+		ultimaPrenotazione = null;
+
 		ModelAndView mav = new ModelAndView();
 		try {
 			Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/vivaio_felice",
@@ -203,7 +205,7 @@ public class PrenotazioneController {
 			e.printStackTrace();
 		}
 
-		mav.setViewName("primapaginatotale");
+		mav.setViewName("inserimentoKm");
 		mav.addObject("logged", DipendenteController.logged);
 		return mav;
 	}
