@@ -1,10 +1,15 @@
-package com.vivaio_felice.vivaio_hibernate;
+package com.vivaio_felice.vivaio_hibernate.dao;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
+import com.vivaio_felice.vivaio_hibernate.Dipendente;
+
+@Repository
 public interface DipendenteDao extends CrudRepository<Dipendente, Integer> {
 
 	List<Dipendente> findByLivello(Integer livello);
@@ -13,7 +18,7 @@ public interface DipendenteDao extends CrudRepository<Dipendente, Integer> {
 
 	List<Dipendente> findByCognome(String cognome);
 
-	List<Dipendente> findByUser_name(String user_name);
+	List<Dipendente> findByUser(String user);
 
 	List<Dipendente> findByPassword(String password);
 
