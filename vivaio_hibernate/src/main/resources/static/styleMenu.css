@@ -1,0 +1,84 @@
+/* Foglio CSS per menu standard tra i dipendti*/
+
+#menu{
+    border-bottom: 2px solid black;
+    height: 7.7%;
+    width: 100%;
+    background-color: green;
+}
+
+ul{
+    list-style: none;
+    display: inline;
+}
+
+#menu li{
+    float: left;
+    width: 200px;
+    padding-bottom: 10px;
+    padding-top: 12px;
+    outline: 1px solid black;
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+a:hover{
+    color:rgba(4, 212, 94, 0.932);;
+}
+
+.bottone{
+  background-color: white;
+  border: 3px black solid;
+  border-radius: 5px;
+  color: green;
+  padding: 10px 30px;
+}
+
+
+
+
+
+#menu .subitems {/*     CSS per scelta a tendina dal menu principale      */
+    background-color: green;
+    width: 100%;
+    padding-top: 15px;
+    padding-left: 0;
+    margin: 0;
+    display: none;
+    height: 75px;
+  }
+  
+  #menu .subitems li {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    float: none;
+    color: black;
+  }
+
+  .subli{
+    border-right: none;
+    font-size: 20px;
+    outline: none;
+  }
+  #menu #about:hover .subitems {
+    display: block;
+  }
+
+
+
+  /*CSS per pulsante di cambio UTENTE. Presente in tutte le nostre pagine */
+
+  #BottoneCambio{
+    float: right;
+    margin-top: 40px;
+    margin-right: 60px;
+    padding: 10px;
+    border-radius: 15px;
+    border-color:chartreuse;
+  }

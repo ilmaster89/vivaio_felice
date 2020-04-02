@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-3-Dip_InserimentoAuto</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<div id="menu">
+			<ul>
+
+				<li id="about">&nbsp;Prenotazioni
+					<ul class="subitems">
+						<li class="subli"><a href="/prenota">Prenota</a></li>
+						<li class="subli"><a href="/km">Inserisci Km</a></li>
+					</ul>
+				</li>
+
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
+				</a>
+
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Inserimenti
+					<ul class="subitems">
+						<li class="subli"><a href="/insauto">Auto</a></li>
+						<li class="subli"><a href="/insdip">Dipendenti</a></li>
+					</ul>
+				</li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
+				</a>
+				<li th:if="${logged.moreThanTwo()}" id="about">&nbsp;Manutenzione
+					<ul class="subitems">
+						<li class="subli"><a href="/manu">Manutenzione</a></li>
+						<li class="subli"><a href="/spese">Spese</a></li>
+					</ul>
+				</li>
+				<!-- if lv >= 3 -->
+				<li th:if="${logged.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
+				</a>
+				<!-- if lv >= 2 -->
+				<li th:if="${logged.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
+				<a onclick="myFunction()">
+					<li th:if="${!logged.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
+				</a>
+			</ul>
+		</div>
+
+		<form th:action="@{/insertAuto}" th:object="${auto}" method="post">
+			<table>
+				<th:block>
+					<tr>
+						<td>Marca:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{marca}" /></td>
+
+					</tr>
+					<tr>
+						<td>Modello:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{modello}" /></td>
+
+					</tr>
+					<tr>
+						<td>Targa:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{targa}" /></td>
+					</tr>
+					<tr>
+					<tr>
+						<td>Carburante:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{carburante}" /></td>
+					</tr>
+					<tr>
+						<td>Patente necessaria: (1 per Patente B, 2 per Patente C)</td>
+					</tr>
+					<tr>
+						<td><input type="number" th:min="1" th:max="2"
+							th:field="*{idPatente}" /></td>
+					</tr>
+					<td>Kw:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{kw}" /></td>
+
+					</tr>
+					<tr>
+						<td>Tara:</td>
+					</tr>
+					<tr>
+						<td><input type="text" th:field="*{tara}" /></td>
+					</tr>
+					<tr>
+						<td>Data ultima assicurazione:</td>
+					</tr>
+					<tr>
+						<td><input type="date" th:field="*{dataAssicurazione}" /></td>
+					</tr>
+					<tr>
+						<td><input type="submit" value="Inserisci Auto"></td>
+					</tr>
+					<tr>
+						<td><a href="/listaAUTO">Lista delle auto presenti nella
+								tua sede</a></td>
+					</tr>
+				</th:block>
+			</table>
+		</form>
+		<button>
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>
