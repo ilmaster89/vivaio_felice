@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-4-InserimentoKm</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<div th:replace="fragments/menu :: menu"></div>
+		<div th:if="${preno == null}">
+			<tr>Non hai prenotazioni in sospeso!
+			</tr>
+		</div>
+
+		<div th:if="${preno != null}">
+			<table>
+
+				<tr>
+					<td>Devi ancora inserire i km per la seguente prenotazione:</td>
+				</tr>
+				<tr>
+					<td th:text="${preno.marca}"></td>
+				</tr>
+				<tr>
+					<td th:text="${preno.modello}"></td>
+				</tr>
+				<tr>
+					<td th:text="${preno.targa}"></td>
+				</tr>
+				<tr>
+					<td>Inizio prenotazione:</td>
+					<td th:text="${preno.dataInizio}"></td>
+				</tr>
+				<tr>
+					<td>Fine prenotazione:</td>
+					<td th:text="${preno.dataFine}"></td>
+				</tr>
+				<table>
+					<form th:action="@{/kminseriti}" th:object="${prenotazione}"
+						method="post">
+						<tr>
+							<td>Km attuali:</td>
+						</tr>
+						<tr>
+							<td><input type="text" th:field="*{km}"></td>
+						</tr>
+						<tr>
+							<td><input type="submit" value="Inserisci KM"></td>
+						</tr>
+				</table>
+			</table>
+		</div>
+		<div></div>
+
+		<button>
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

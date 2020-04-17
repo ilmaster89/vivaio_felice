@@ -1,0 +1,18 @@
+<html>
+<body>
+
+	<table th:each="a: *{prenotazioni}">
+		<tr>
+			<td th:text="${a.marca}"></td>
+
+			<td th:text="${a.modello}"></td>
+
+			<td th:text="${a.targa}"></td>
+
+			<td><a th:href="@{'/dettaglioauto?id='+${a.getId()}}">Scegli
+					quest'auto</a></td>
+		</tr>
+	</table>
+
+</body>
+</html>

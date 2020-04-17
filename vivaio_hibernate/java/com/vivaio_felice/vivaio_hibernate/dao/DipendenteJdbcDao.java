@@ -22,7 +22,7 @@ public class DipendenteJdbcDao {
 				"select * from dipendenti join livelli on dipendenti.id_livello = livelli.id where user_name = ? and password = ?",
 				new Object[] { user_name, password },
 				(rs, rowNum) -> new Dipendente(rs.getInt("dipendenti.id"),
-						new Livello(rs.getInt("id_livello"), rs.getString("mansione")), rs.getString("nome"),
+						new Livello(rs.getInt("livelli.id"), rs.getString("mansione")), rs.getString("nome"),
 						rs.getString("cognome"), rs.getString("user_name"), rs.getString("password")));
 
 	}

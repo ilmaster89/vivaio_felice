@@ -31,8 +31,8 @@ public class DipendenteController {
 	}
 
 	@RequestMapping(value = "/logged", method = RequestMethod.POST)
-	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password,
-			Model model, HttpSession session) {
+	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password, Model model,
+			HttpSession session) {
 		List<Dipendente> dipList = dipendenteJdbcRepository.login(user_name, password);
 		System.out.println(dipList.get(0).toString());
 
@@ -40,6 +40,7 @@ public class DipendenteController {
 			return "redirect:/";
 		else {
 			session.setAttribute("loggedUser", dipList.get(0));
+			System.out.println(session.toString());
 			return "primapagina";
 		}
 	}

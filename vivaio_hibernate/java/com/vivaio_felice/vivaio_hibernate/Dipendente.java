@@ -63,8 +63,8 @@ public class Dipendente {
 		return livello;
 	}
 
-	public void setLivello(@NotNull Livello id_livello) {
-		this.livello = id_livello;
+	public void setLivello(@NotNull Livello livello) {
+		this.livello = livello;
 	}
 
 	public String getNome() {
@@ -113,8 +113,8 @@ public class Dipendente {
 
 	@Override
 	public String toString() {
-		return "Dipendente [id=" + id + ", id_livello=" + ", nome=" + nome + ", cognome=" + cognome + ", user_name="
-				+ user + ", password=" + password + "]";
+		return "Dipendente [id=" + id + ", id_livello=" + livello.getId() + "nome=" + nome + ", cognome=" + cognome
+				+ ", user_name=" + user + ", password=" + password + "]";
 	}
 
 }

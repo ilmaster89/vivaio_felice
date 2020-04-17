@@ -32,33 +32,33 @@
 				</li>
 
 				<a onclick="myFunction()">
-					<li th:if="${!loggedUser.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
+					<li th:if="${!session.moreThanTwo()}" id="about">&nbsp;Inserimenti</li>
 				</a>
 
-				<li th:if="${loggedUser.moreThanTwo()}" id="about">&nbsp;Inserimenti
+				<li th:if="${session.moreThanTwo()}" id="about">&nbsp;Inserimenti
 					<ul class="subitems">
 						<li class="subli"><a href="/insauto">Auto</a></li>
 						<li class="subli"><a href="/insdip">Dipendenti</a></li>
 					</ul>
 				</li>
 				<a onclick="myFunction()">
-					<li th:if="${!loggedUser.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
+					<li th:if="${!session.moreThanTwo()}" id="about">&nbsp;Manutenzione</li>
 				</a>
-				<li th:if="${loggedUser.moreThanTwo()}" id="about">&nbsp;Manutenzione
+				<li th:if="${session.moreThanTwo()}" id="about">&nbsp;Manutenzione
 					<ul class="subitems">
 						<li class="subli"><a href="/manu">Manutenzione</a></li>
 						<li class="subli"><a href="/spese">Spese</a></li>
 					</ul>
 				</li>
 				<!-- if lv >= 3 -->
-				<li th:if="${loggedUser.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+				<li th:if="${session.moreThanThree()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
 				<a onclick="myFunction()">
-					<li th:if="${!loggedUser.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
+					<li th:if="${!session.moreThanThree()}" id="about">&nbsp;Trasferimenti</li>
 				</a>
 				<!-- if lv >= 2 -->
-				<li th:if="${loggedUser.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
+				<li th:if="${session.moreThanTwo()}"><a href="/dash">&nbsp;Dashboard</a></li>
 				<a onclick="myFunction()">
-					<li th:if="${!loggedUser.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
+					<li th:if="${!session.moreThanTwo()}" id="about">&nbsp;Dashboard</li>
 				</a>
 			</ul>
 		</div>

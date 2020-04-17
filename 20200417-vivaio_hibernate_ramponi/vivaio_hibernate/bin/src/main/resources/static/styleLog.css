@@ -1,0 +1,36 @@
+#login{
+    height: 70%;
+    width: 27.5%;
+    margin-left: 10%;
+    margin-right: 25%;
+    margin-top: 7%;
+    background-color: cornsilk;
+    border-radius: 17%;
+    border: 1px solid black;
+}
+
+#lato{
+    margin-left: 100px;
+    padding-top: 37px;
+}
+
+#bottone{
+    margin-top: 30px;
+    background-color: white;
+    border: 3px black solid;
+    border-radius: 5px;
+    color: green;
+    padding: 10px 30px;
+}
+
+
+h2{
+    font-family:Georgia;
+    color: rgba(4, 212, 94, 0.932);
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+#lato p{
+    font-size: 25px;
+}
+

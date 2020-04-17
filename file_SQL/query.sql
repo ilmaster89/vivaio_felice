@@ -145,7 +145,7 @@ join sede on sede.id = sede_dip.id_sede
 where user_name = "arjmor95";
 /*dati fondamentali per il costruttore del dipendente*/
 
-select marca,modello,targa,data_inizio,data_fine
+select marca,modello,targa,data_inizio,data_fine,km
 from dipendenti join prenotazioni on dipendenti.id = prenotazioni.id_dipendente
 join auto on prenotazioni.id_auto = auto.id
 where km is null and id_dipendente = 1
@@ -158,14 +158,4 @@ left join causale on prenotazioni.id_causale = causale.id
 left join spesa_manutenzione on auto.id = spesa_manutenzione.id_auto
 where (id_causale = 1 and data_fine is null or id_causale = 2 and data_fine is null);
 /*inserimento dati di fine manutenzione (BOTTONE PER RECUPERARE DATA FINE)*/
-
-select id_auto from auto join prenotazioni where data_inizio not between "2020-07-03 10:00:00" and "2020-07-03 11:00:00"
-and data_fine not between "2020-07-03 10:00:00" and "2020-07-03 11:00:00";
-
-select targa, citta, p1.data_parch, p1.id_auto, modello, marca from parcheggio as p1 
-left outer join parcheggio as p2 on p1.id_auto=p2.id_auto and p1.data_parch < p2.data_parch 
-join auto on p1.id_auto = auto.id 
-join sede on sede.id = p1.id_sede 
-where p2.id is null and p1.id_auto = (select id_auto from auto join prenotazioni where data_inizio not between("2020-07-03 10:00:00", "2020-07-03 11:00:00")
-and data_fine not between ("2020-07-03 10:00:00", "2020-07-03 11:00:00"));
 

@@ -1,0 +1,41 @@
+<div id="menu" th:fragment="menu">
+	<ul>
+
+		<li id="about">&nbsp;Prenotazioni
+			<ul class="subitems">
+				<li class="subli"><a href="/prenota">Prenota</a></li>
+				<li class="subli"><a href="/km">Inserisci Km</a></li>
+			</ul>
+		</li>
+
+		<a onclick="myFunction()">
+			<li th:if="${!session.loggedUser.impiegato()}" id="about">&nbsp;Inserimenti</li>
+		</a>
+
+		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Inserimenti
+			<ul class="subitems">
+				<li class="subli"><a href="/insauto">Auto</a></li>
+				<li class="subli"><a href="/insdip">Dipendenti</a></li>
+			</ul>
+		</li>
+		<a onclick="myFunction()">
+			<li th:if="${!session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione</li>
+		</a>
+		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione
+			<ul class="subitems">
+				<li class="subli"><a href="/manu">Manutenzione</a></li>
+				<li class="subli"><a href="/spese">Spese</a></li>
+			</ul>
+		</li>
+		<!-- if lv >= 3 -->
+		<li th:if="${session.loggedUser.responsabile()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+		<a onclick="myFunction()">
+			<li th:if="${!session.loggedUser.responsabile()}" id="about">&nbsp;Trasferimenti</li>
+		</a>
+		<!-- if lv >= 2 -->
+		<li th:if="${session.loggedUser.impiegato()}"><a href="/dash">&nbsp;Dashboard</a></li>
+		<a onclick="myFunction()">
+			<li th:if="${!session.loggedUser.impiegato()}" id="about">&nbsp;Dashboard</li>
+		</a>
+	</ul>
+</div>
