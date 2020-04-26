@@ -76,7 +76,6 @@ public class DipendenteController {
 	public String insdip(HttpSession session, Model model, Dipendente dipendente) {
 
 		model.addAttribute("livello", livelloDao.findAll());
-		model.addAttribute("patente", patenteDao.findAll());
 
 		return "inserimentoDipendenti";
 	}
@@ -88,11 +87,35 @@ public class DipendenteController {
 		Optional<Sede> miaSede = sedeDao.findById(sede);
 		Sede questasede = miaSede.get();
 
-		dipendente.getPossAttuale().setDipendente(dipendente);
 		dipendente.getSedeDipendente().setSede(questasede);
 		dipendente.getSedeDipendente().setDipendente(dipendente);
 
 		dipendenteDao.save(dipendente);
+		return "primapagina";
+	}
+
+	@RequestMapping("/inspat")
+	public String inspat(HttpSession session, Model model, PossessoPatenti possessoPatenti) {
+
+		Integer sede = (Integer) session.getAttribute("sede");
+
+		model.addAttribute("dipendenti", sedeDipendenteDao.findBySedeId(sede));
+		model.addAttribute("patenti", patenteDao.findAll());
+
+		return "inserimentoPatente";
+
+	}
+
+	@RequestMapping(value = "/patenteInserita", method = RequestMethod.POST)
+	public String patenteInserita(HttpSession session, Model model, PossessoPatenti possessoPatenti) {
+
+		possPatDao.save(possessoPatenti);
+		return "primapagina";
+
+	}
+
+	@RequestMapping("/indietro")
+	public String indietro() {
 		return "primapagina";
 	}
 

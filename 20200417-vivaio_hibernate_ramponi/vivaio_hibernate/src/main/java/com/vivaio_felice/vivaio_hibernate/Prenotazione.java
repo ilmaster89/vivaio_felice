@@ -1,6 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -29,6 +31,7 @@ public class Prenotazione {
 	Causale causale;
 
 	@NotNull
+
 	@Column(name = "data_inizio")
 	Date dataInizio;
 

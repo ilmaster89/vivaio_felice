@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,12 +33,12 @@ public class Parcheggio {
 
 	@NotNull
 	@Column(name = "data_parch")
-	Date dataParch;
+	LocalDate dataParch;
 
 	public Parcheggio() {
 	}
 
-	public Parcheggio(Integer id, @NotNull Auto auto, @NotNull Sede sede, @NotNull Date dataParch) {
+	public Parcheggio(Integer id, @NotNull Auto auto, @NotNull Sede sede, @NotNull LocalDate dataParch) {
 		this.id = id;
 		this.auto = auto;
 		this.sede = sede;
@@ -68,11 +69,11 @@ public class Parcheggio {
 		this.sede = sede;
 	}
 
-	public Date getDataParch() {
+	public LocalDate getDataParch() {
 		return dataParch;
 	}
 
-	public void setDataParch(Date dataParch) {
+	public void setDataParch(LocalDate dataParch) {
 		this.dataParch = dataParch;
 	}
 

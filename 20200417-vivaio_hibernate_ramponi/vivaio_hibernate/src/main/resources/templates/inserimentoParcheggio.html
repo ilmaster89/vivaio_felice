@@ -3,11 +3,10 @@
     in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
 <html lang="en">
 <head>
-<title>Lvl-4-PrenotaAuto</title>
+<title>Lvl-3-Dip_InserimentoDip</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-<link rel="stylesheet" href="styleMenuPrenota.css">
 
 <script src="PopUp.js"></script>
 </head>
@@ -23,37 +22,33 @@
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
 
+		<form th:action="@{/parcheggioInserito}" th:object="${parcheggio}"
+			method="post">
+			<table>
+				<th:block>
+					<td><input type="hidden" th:field="*{id}"></td>
+					<tr>
+						<td>Auto:</td>
+					</tr>
 
-		<button id="BottoneCambio">
+					<tr>
+						<td><select th:field="*{auto}">
+								<option th:each="a : ${autoinsede}" th:value="${a.id}"
+									th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<td><input type="submit" value="Conferma il parcheggio"></td>
+					</tr>
+
+				</th:block>
+			</table>
+		</form>
+
+		<button>
 			<a href="/indietro">Torna Indietro</a>
 		</button>
 
-		<div class="menuPrenotaAuto">
-			<form th:action="@{/confermadiprenotazione}"
-				th:object="${prenotazione}" method="post">
-				<table>
-					<th:block>
-						<tr>
-							<td>Auto Disponibili in base alle date da te richieste:</td>
-
-						</tr>
-
-						<tr>
-
-							<td><select th:field="*{auto}">
-									<option th:each="a : ${autoDisponibili}" th:value="${a.id}"
-										th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
-							</select></td>
-
-
-						</tr>
-						<tr>
-							<td><input type="submit" value="Scegli quest'auto"></td>
-						</tr>
-					</th:block>
-				</table>
-			</form>
-		</div>
 	</section>
 
 	<footer>

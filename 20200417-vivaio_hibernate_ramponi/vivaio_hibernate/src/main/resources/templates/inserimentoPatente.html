@@ -22,56 +22,41 @@
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
 
-		<form th:action="@{/insert}" th:object="${dipendente}" method="post">
+		<form th:action="@{/patenteInserita}" th:object="${possessoPatenti}"
+			method="post">
 			<table>
 				<th:block>
 					<td><input type="hidden" th:field="*{id}"></td>
-					<td><input type="hidden" th:field="*{sedeDipendente.sede.id}"
-						th:value="${sede}"></td>
 					<tr>
-						<td>Livello:</td>
+						<td>Dipendente:</td>
 					</tr>
 
 					<tr>
-						<td><select th:field="*{livello}">
-								<option th:each="l : ${livello}" th:value="${l.id}"
-									th:text="${l.mansione}"></option>
+						<td><select th:field="*{dipendente}">
+								<option th:each="d : ${dipendenti}"
+									th:value="${d.dipendente.id}"
+									th:text="${d.dipendente.nome + '&nbsp;' + d.dipendente.cognome}"></option>
 						</select></td>
 					</tr>
 					<tr>
-						<td>Nome:</td>
+						<td>Patente:</td>
 					</tr>
 					<tr>
-						<td><input type="text" th:field="*{nome}" /></td>
+						<td><select th:field="*{patente}">
+								<option th:each="p: ${patenti}" th:value="${p.id}"
+									th:text="${p.tipologia}"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Data Ottenimento:</td>
+					</tr>
+					<tr>
+						<td><input type="date" th:field="*{dataPoss}" /></td>
 
 					</tr>
 					<tr>
-						<td>Cognome:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{cognome}" /></td>
-
-					</tr>
-					<tr>
-						<td>User:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{user}" /></td>
-
-					</tr>
-					<tr>
-						<td>Pass:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{password}" /></td>
-					</tr>
-					<tr>
-						<td><input type="submit" value="Inserisci Dipendente"></td>
+						<td><input type="submit" value="Accetta modifiche"></td>
 						<td><input type="reset" value="Resetta"></td>
-					</tr>
-					<tr>
-						<td><a href="/listaDIP">Lista dei dipendenti della tua
-								sede</a></td>
 					</tr>
 
 				</th:block>

@@ -7,15 +7,16 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
 import com.vivaio_felice.vivaio_hibernate.Auto;
+import com.vivaio_felice.vivaio_hibernate.Carburante;
 import com.vivaio_felice.vivaio_hibernate.Patente;
 
 public interface AutoDao extends CrudRepository<Auto, Integer> {
 
 	Optional<Auto> findById(Integer id);
 
-	List<Auto> findByPatente(Patente patente);
+	List<Auto> findByPatenteId(Integer id);
 
-	List<Auto> findByCarburante(String carburante);
+	List<Auto> findByCarburanteId(Integer id);
 
 	List<Auto> findByMarca(String marca);
 

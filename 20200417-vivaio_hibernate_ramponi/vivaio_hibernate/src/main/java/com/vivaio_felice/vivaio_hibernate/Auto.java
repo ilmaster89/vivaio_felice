@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -29,8 +30,12 @@ public class Auto {
 	Patente patente;
 
 	@NotNull
-	@Size(max = 45)
-	String carburante;
+	@OneToOne
+	Carburante carburante;
+//
+//	@NotNull
+//	@Size(max = 45)
+//	String carburante;
 
 	@NotNull
 	@Size(max = 45)
@@ -55,16 +60,17 @@ public class Auto {
 	@Column(name = "data_assicurazione")
 	Date dataAss;
 
+	@Transient
 	@OneToMany(mappedBy = "auto", cascade = CascadeType.ALL)
 	List<Parcheggio> parcheggio = new ArrayList<>();
 
 	public Auto() {
 	}
 
-	public Auto(Integer id, Patente patente, @NotNull @Size(max = 45) String carburante,
+	public Auto(Integer id, @NotNull Patente patente, @NotNull Carburante carburante,
 			@NotNull @Size(max = 45) String marca, @NotNull @Size(max = 45) String modello,
-			@NotNull @Size(max = 45) String targa, @NotNull Double kw, @NotNull Double tara,
-			@NotNull Date data_assicurazione) {
+			@NotNull @Size(max = 45) String targa, @NotNull Double kw, @NotNull Double tara, @NotNull Date dataAss) {
+		super();
 		this.id = id;
 		this.patente = patente;
 		this.carburante = carburante;
@@ -73,7 +79,7 @@ public class Auto {
 		this.targa = targa;
 		this.kw = kw;
 		this.tara = tara;
-		this.dataAss = data_assicurazione;
+		this.dataAss = dataAss;
 	}
 
 	public Integer getId() {
@@ -92,20 +98,28 @@ public class Auto {
 		this.patente = patente;
 	}
 
-	public String getCarburante() {
-		return carburante;
-	}
-
-	public void setCarburante(String carburante) {
-		this.carburante = carburante;
-	}
-
 	public String getMarca() {
 		return marca;
 	}
 
 	public void setMarca(String marca) {
 		this.marca = marca;
+	}
+
+	public Carburante getCarburante() {
+		return carburante;
+	}
+
+	public void setCarburante(Carburante carb) {
+		this.carburante = carb;
+	}
+
+	public List<Parcheggio> getParcheggio() {
+		return parcheggio;
+	}
+
+	public void setParcheggio(List<Parcheggio> parcheggio) {
+		this.parcheggio = parcheggio;
 	}
 
 	public String getModello() {
@@ -140,11 +154,11 @@ public class Auto {
 		this.tara = tara;
 	}
 
-	public Date getData_assicurazione() {
+	public Date getDataAss() {
 		return dataAss;
 	}
 
-	public void setData_assicurazione(Date data_assicurazione) {
+	public void setDataAss(Date data_assicurazione) {
 		this.dataAss = data_assicurazione;
 	}
 

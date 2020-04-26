@@ -25,6 +25,7 @@
 		<form th:action="@{/insertAuto}" th:object="${auto}" method="post">
 			<table>
 				<th:block>
+					<td><input type="hidden" th:field="*{id}"></td>
 					<tr>
 						<td>Marca:</td>
 					</tr>
@@ -50,14 +51,20 @@
 						<td>Carburante:</td>
 					</tr>
 					<tr>
-						<td><input type="text" th:field="*{carburante}" /></td>
+
+						<td><select th:field="*{carburante}">
+								<option th:each="c : ${carburanti}" th:value="${c.id}"
+									th:text="${c.tipologia}"></option>
+						</select></td>
 					</tr>
 					<tr>
-						<td>Patente necessaria: (1 per Patente B, 2 per Patente C)</td>
+						<td>Patente necessaria:</td>
 					</tr>
 					<tr>
-						<td><input type="number" th:min="1" th:max="2"
-							th:field="*{idPatente}" /></td>
+						<td><select th:field="*{patente}">
+								<option th:each="p : ${patenti}" th:value="${p.id}"
+									th:text="${p.tipologia}"></option>
+						</select></td>
 					</tr>
 					<td>Kw:</td>
 					</tr>
@@ -75,10 +82,11 @@
 						<td>Data ultima assicurazione:</td>
 					</tr>
 					<tr>
-						<td><input type="date" th:field="*{dataAssicurazione}" /></td>
+						<td><input type="date" th:field="*{dataAss}" /></td>
 					</tr>
 					<tr>
 						<td><input type="submit" value="Inserisci Auto"></td>
+						<td><input type="reset" value="Resetta"></td>
 					</tr>
 					<tr>
 						<td><a href="/listaAUTO">Lista delle auto presenti nella

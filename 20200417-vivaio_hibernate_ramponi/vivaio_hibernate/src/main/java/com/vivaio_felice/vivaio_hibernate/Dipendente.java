@@ -1,7 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -51,15 +51,15 @@ public class Dipendente {
 	@OneToOne(mappedBy = "dipendente", cascade = CascadeType.ALL)
 	SedeDipendente sedeDipendente;
 
-	String buttareData;
-
 	@NotNull
+	@Transient
 	@OneToMany(mappedBy = "dipendente", cascade = CascadeType.ALL)
 	List<PossessoPatenti> possessoPatenti = new ArrayList<>();
 
-	@NotNull
-	@OneToOne(mappedBy = "dipAttuale", cascade = CascadeType.ALL)
-	PossessoPatenti possAttuale;
+//	@NotNull
+//	@Transient
+//	@OneToOne(mappedBy = "dipAttuale", cascade = CascadeType.ALL)
+//	PossessoPatenti possAttuale;
 
 	public Dipendente() {
 
@@ -76,13 +76,13 @@ public class Dipendente {
 		this.password = password;
 	}
 
-	public PossessoPatenti getPossAttuale() {
-		return possAttuale;
-	}
-
-	public void setPossAttuale(PossessoPatenti possAttuale) {
-		this.possAttuale = possAttuale;
-	}
+//	public PossessoPatenti getPossAttuale() {
+//		return possAttuale;
+//	}
+//
+//	public void setPossAttuale(PossessoPatenti possAttuale) {
+//		this.possAttuale = possAttuale;
+//	}
 
 	public Integer getId() {
 		return id;
@@ -162,14 +162,6 @@ public class Dipendente {
 
 	public void setPossessoPatenti(PossessoPatenti possessoPatenti) {
 		this.possessoPatenti.add(possessoPatenti);
-	}
-
-	public String getButtareData() {
-		return buttareData;
-	}
-
-	public void setButtareData(String buttareData) {
-		this.buttareData = buttareData;
 	}
 
 	@Override
