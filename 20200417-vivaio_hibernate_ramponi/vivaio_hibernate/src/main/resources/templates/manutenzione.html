@@ -22,12 +22,64 @@
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
 
+		<form th:action="@{/confermamanutenzione}" th:object="${prenotazione}"
+			method="post">
+			<table>
+				<th:block>
 
-		<input>Manutenzione Straordinaria/Ordinaria</input>
+					<tr>
+						<td>Auto da riparare:</td>
+					</tr>
+
+					<tr>
+						<td><select th:field="*{auto}">
+								<option th:each="a : ${autoInSede}" th:value="${a.id}"
+									th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Causale:</td>
+					</tr>
+					<tr>
+						<td><select th:field="*{causale}">
+								<option th:each="c : ${causali}" th:value="${c.id}"
+									th:text="${c.descrizione}"></option>
+						</select></td>
+
+					</tr>
+					<tr>
+						<td>Motivazione:</td>
+					</tr>
+					<tr>
+						<td><input type="text"
+							th:value="${spesaManutenzione.descrizione}" name="descrizione" /></td>
+					</tr>
+					<tr>
+						<td>Data di inizio:</td>
+					</tr>
+
+					<tr>
+						<td><input type="datetime" name="dataInizio"
+							th:field="*{dataInizio}" /></td>
+					</tr>
+					<tr>
+						<td>Data di fine (se nota):</td>
+					</tr>
+					<tr>
+						<td><input type="datetime" name="dataFine"
+							th:field="*{dataFine}" /></td>
+					</tr>
+					<tr>
+						<td><input type="submit" value="Prenota manutenzione"></td>
+						<td><input type="reset" value="Resetta"></td>
+					</tr>
+				</th:block>
+			</table>
+		</form>	
+
 		<button>
 			<a href="/indietro">Torna Indietro</a>
 		</button>
-
 	</section>
 
 	<footer>

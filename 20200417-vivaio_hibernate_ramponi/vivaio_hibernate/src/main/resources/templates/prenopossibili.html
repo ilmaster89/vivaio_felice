@@ -33,12 +33,15 @@
 				th:object="${prenotazione}" method="post">
 				<table>
 					<th:block>
-						<tr>
+						<tr th:if="${autoDisponibili.isEmpty()}">
+							<td>Nelle date da te richieste non ci sono auto disponibili.</td>
+						</tr>
+						<tr th:if="${!autoDisponibili.isEmpty()}">
 							<td>Auto Disponibili in base alle date da te richieste:</td>
 
 						</tr>
 
-						<tr>
+						<tr th:if="${!autoDisponibili.isEmpty()}">
 
 							<td><select th:field="*{auto}">
 									<option th:each="a : ${autoDisponibili}" th:value="${a.id}"
@@ -47,7 +50,12 @@
 
 
 						</tr>
-						<tr>
+						<tr th:if="${autoDisponibili.isEmpty()}">
+							<button id="BottoneCambio">
+								<a href="/torna">Torna Indietro</a>
+							</button>
+						</tr>
+						<tr th:if="${!autoDisponibili.isEmpty()}">
 							<td><input type="submit" value="Scegli quest'auto"></td>
 						</tr>
 					</th:block>

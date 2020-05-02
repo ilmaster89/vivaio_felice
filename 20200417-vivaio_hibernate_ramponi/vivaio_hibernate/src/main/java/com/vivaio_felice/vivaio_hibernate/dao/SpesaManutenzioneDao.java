@@ -18,6 +18,4 @@ public interface SpesaManutenzioneDao extends CrudRepository<SpesaManutenzione, 
 
 	List<SpesaManutenzione> findByDataSpesa(Date dataSpesa);
 
-	List<SpesaManutenzione> findByDescrizione(String descrizione);
-
 }

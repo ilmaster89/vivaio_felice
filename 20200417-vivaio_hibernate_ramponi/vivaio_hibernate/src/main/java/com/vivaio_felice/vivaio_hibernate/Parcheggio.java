@@ -1,6 +1,5 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -12,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "parcheggio")
@@ -31,8 +32,8 @@ public class Parcheggio {
 	@JoinColumn
 	Sede sede;
 
-	@NotNull
 	@Column(name = "data_parch")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	LocalDate dataParch;
 
 	public Parcheggio() {
@@ -80,6 +81,12 @@ public class Parcheggio {
 	@Override
 	public String toString() {
 		return "Parcheggio [id=" + id + ", auto=" + auto + ", sede=" + sede + ", dataParch=" + dataParch + "]";
+	}
+
+	public LocalDate dataTrasferimento() {
+		if (this.getDataParch().isAfter(LocalDate.now()))
+			return this.getDataParch();
+		return null;
 	}
 
 }

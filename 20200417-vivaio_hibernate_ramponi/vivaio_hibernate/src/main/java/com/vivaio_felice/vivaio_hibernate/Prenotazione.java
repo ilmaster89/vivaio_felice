@@ -31,7 +31,6 @@ public class Prenotazione {
 	Causale causale;
 
 	@NotNull
-
 	@Column(name = "data_inizio")
 	Date dataInizio;
 
@@ -52,6 +51,19 @@ public class Prenotazione {
 		this.dataInizio = dataInizio;
 		this.dataFine = dataFine;
 		this.km = km;
+	}
+
+	public Prenotazione(Integer id, String marca, String modello, String targa, Date dataInizio, Date dataFine,
+			Integer km) {
+
+		this.id = id;
+		this.auto.marca = marca;
+		this.auto.modello = modello;
+		this.auto.targa = targa;
+		this.dataInizio = dataInizio;
+		this.dataFine = dataFine;
+		this.km = km;
+
 	}
 
 	public Integer getId() {

@@ -1,7 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -75,10 +75,10 @@ public class AutoController {
 		Optional<Sede> miaSede = sedeDao.findById(idSede);
 		Sede questasede = miaSede.get();
 		parcheggio.setSede(questasede);
-		parcheggio.setDataParch(LocalDate.now());
+		parcheggio.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
 		parcheggioDao.save(parcheggio);
 
-		return "primapagina";
+		return "inserimentoParcheggio";
 
 	}
 }

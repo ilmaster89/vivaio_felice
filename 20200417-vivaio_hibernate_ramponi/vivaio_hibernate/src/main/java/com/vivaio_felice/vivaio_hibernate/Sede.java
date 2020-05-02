@@ -26,7 +26,6 @@ public class Sede {
 	@NotNull
 	String citta;
 
-	@NotNull
 	@OneToMany(mappedBy = "sede", cascade = CascadeType.ALL)
 	List<SedeDipendente> sedeDipendente = new ArrayList<>();
 
@@ -37,7 +36,7 @@ public class Sede {
 	}
 
 	public Sede(Integer id, @NotNull String regione, @NotNull String citta) {
-		id = id;
+		this.id = id;
 		this.regione = regione;
 		this.citta = citta;
 	}

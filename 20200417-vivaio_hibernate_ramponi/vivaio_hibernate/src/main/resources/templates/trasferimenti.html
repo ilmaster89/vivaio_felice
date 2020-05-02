@@ -21,7 +21,42 @@
 
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
+		<form th:action="@{/trasferimento}" th:object="${parcheggio}"
+			method="post">
+			<table>
+				<th:block>
+					<tr>
+						<td>Auto da trasferire:</td>
+					</tr>
+					<tr>
+						<td><select th:field="*{auto}">
+								<option th:each="a : ${autoInSede}" th:value="${a.id}"
+									th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Sede che la riceverà:</td>
+					</tr>
+					<tr>
+						<td><select th:field="*{sede}">
+								<option th:each="s : ${sedipossibili}" th:value="${s.id}"
+									th:text="${s.regione + '&nbsp;' + s.citta}"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Data del trasferimento:</td>
+					</tr>
+					<tr>
+						<td><input type="date" name="dataParch"
+							th:field="*{dataParch}"></td>
+					</tr>
+					<tr>
+						<td><input type="submit" value="Conferma il Trasferimento"></td>
+					</tr>
 
+				</th:block>
+			</table>
+		</form>
 		<button>
 			<a href="/indietro">Torna Indietro</a>
 		</button>

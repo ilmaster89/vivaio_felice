@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "spesa_manutenzione")
@@ -26,17 +27,22 @@ public class SpesaManutenzione {
 	@Column(name = "data_spesa")
 	Date dataSpesa;
 
+	@NotNull
 	String descrizione;
+
+	String dettaglio;
 
 	public SpesaManutenzione() {
 	}
 
-	public SpesaManutenzione(Integer id, Auto auto, Double spesa, Date dataSpesa, String descrizione) {
+	public SpesaManutenzione(Integer id, Auto auto, Double spesa, Date dataSpesa, @NotNull String descrizione,
+			String dettaglio) {
 		this.id = id;
 		this.auto = auto;
 		this.spesa = spesa;
 		this.dataSpesa = dataSpesa;
 		this.descrizione = descrizione;
+		this.dettaglio = dettaglio;
 	}
 
 	public Integer getId() {
@@ -77,6 +83,14 @@ public class SpesaManutenzione {
 
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
+	}
+
+	public String getDettaglio() {
+		return dettaglio;
+	}
+
+	public void setDettaglio(String dettaglio) {
+		this.dettaglio = dettaglio;
 	}
 
 	@Override
