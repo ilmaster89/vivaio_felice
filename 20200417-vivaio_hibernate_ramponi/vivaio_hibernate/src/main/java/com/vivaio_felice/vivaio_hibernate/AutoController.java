@@ -2,6 +2,8 @@ package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -63,7 +65,24 @@ public class AutoController {
 	public String insParch(HttpSession session, Model model, Parcheggio parcheggio) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		model.addAttribute("autoinsede", autoJdbcDao.autoInSede(idSede));
+		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+		List<Auto> autoDaConfermare = new ArrayList<Auto>();
+		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
+
+		for (Auto a : autoInSede) {
+
+			boolean confirmed = false;
+			parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
+			for (Parcheggio p : parcheggiAuto) {
+				if (p.isConfirmed())
+					confirmed = true;
+			}
+
+			if (!confirmed)
+				autoDaConfermare.add(a);
+		}
+		model.addAttribute("autoinsede", autoDaConfermare);
+
 		return "inserimentoParcheggio";
 
 	}
@@ -77,8 +96,24 @@ public class AutoController {
 		parcheggio.setSede(questasede);
 		parcheggio.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
 		parcheggioDao.save(parcheggio);
-
-		return "inserimentoParcheggio";
+//		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+//		List<Auto> autoDaConfermare = new ArrayList<Auto>();
+//		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
+//		for (Auto a : autoInSede) {
+//
+//			boolean confirmed = false;
+//			parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
+//			for (Parcheggio p : parcheggiAuto) {
+//				if (p.isConfirmed())
+//					confirmed = true;
+//			}
+//
+//			if (!confirmed)
+//				autoDaConfermare.add(a);
+//		}
+//
+//		model.addAttribute("autoinsede", autoDaConfermare);
+		return "primapagina";
 
 	}
 }

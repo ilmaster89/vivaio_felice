@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -87,6 +88,12 @@ public class Parcheggio {
 		if (this.getDataParch().isAfter(LocalDate.now()))
 			return this.getDataParch();
 		return null;
+	}
+
+	public boolean isConfirmed() {
+		if (this.getDataParch().equals(LocalDate.now().plus(1, ChronoUnit.DAYS)))
+			return true;
+		return false;
 	}
 
 }
