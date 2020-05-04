@@ -1,12 +1,9 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteJdbcDao;
-import com.vivaio_felice.vivaio_hibernate.dao.LivelloDao;
+
+import com.vivaio_felice.vivaio_hibernate.dao.LivelloJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
@@ -35,8 +33,7 @@ public class DipendenteController {
 	private SedeDipendenteDao sedeDipendenteDao;
 
 	@Autowired
-	private LivelloDao livelloDao;
-
+	private LivelloJdbcDao livelloJdbcDao;
 	@Autowired
 	private PossessoPatentiDao possPatDao;
 	@Autowired
@@ -75,7 +72,7 @@ public class DipendenteController {
 	@RequestMapping("/insdip")
 	public String insdip(HttpSession session, Model model, Dipendente dipendente) {
 
-		model.addAttribute("livello", livelloDao.findAll());
+		model.addAttribute("livello", livelloJdbcDao.treLivelli());
 
 		return "inserimentoDipendenti";
 	}

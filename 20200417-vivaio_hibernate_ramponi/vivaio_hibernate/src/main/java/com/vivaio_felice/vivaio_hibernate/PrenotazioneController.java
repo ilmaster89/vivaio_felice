@@ -1,5 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -21,17 +23,17 @@ import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
+import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneJdbcDao;
 
 @Controller
 public class PrenotazioneController {
 
-	@SuppressWarnings("deprecation")
 	public static boolean datesMatch(Date d1, Date d2, Date d3, Date d4) {
 
-		if (d1.getYear() == d3.getYear() && d1.getMonth() == d3.getMonth() && d1.getDay() == d3.getDay()) {
-			if (d1.getHours() == d3.getHours() && d1.getMinutes() == d3.getMinutes())
+		if (d1.toInstant().compareTo(d3.toInstant()) == 0) {
+			if (d1.compareTo(d3) == 0)
 				return true;
-			if (d2.getHours() == d4.getHours() && d2.getMinutes() == d4.getMinutes())
+			if (d2.compareTo(d4) == 0)
 				return true;
 			if (d1.after(d3) && d2.before(d4))
 				return true;
@@ -47,7 +49,6 @@ public class PrenotazioneController {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean datesMatchWithTrans(Date d1, Date d2, Date d3, Date d4, LocalDate trans) {
 
 		ZoneId dzi = ZoneId.systemDefault();
@@ -56,15 +57,15 @@ public class PrenotazioneController {
 		Instant inFine = d2.toInstant();
 		LocalDate ldFine = inFine.atZone(dzi).toLocalDate();
 
-		if (ldInizio.isAfter(trans) || ldFine.isAfter(trans))
+		if (ldInizio.compareTo(trans) >= 0 || ldFine.compareTo(trans) >= 0)
 			return true;
 
 		else {
 
-			if (d1.getYear() == d3.getYear() && d1.getMonth() == d3.getMonth() && d1.getDay() == d3.getDay()) {
-				if (d1.getHours() == d3.getHours() && d1.getMinutes() == d3.getMinutes())
+			if (d1.toInstant().compareTo(d3.toInstant()) == 0) {
+				if (d1.compareTo(d3) == 0)
 					return true;
-				if (d2.getHours() == d4.getHours() && d2.getMinutes() == d4.getMinutes())
+				if (d2.compareTo(d4) == 0)
 					return true;
 				if (d1.after(d3) && d2.before(d4))
 					return true;
@@ -95,9 +96,25 @@ public class PrenotazioneController {
 	CausaleDao causaleDao;
 	@Autowired
 	ParcheggioDao parcheggioDao;
+	@Autowired
+	PrenotazioneJdbcDao prenoJdbcDao;
 
 	@RequestMapping("/prenota")
 	public String prenotazione(HttpSession session, Model model, Prenotazione prenotazione) {
+
+		// lavorare sul costruttore
+//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//		Date data;
+//		try {
+//			data = sdf.parse("05/05/2020 09:00");
+//			Date data2 = sdf.parse("05/05/2020 10:00");
+//			Prenotazione p = new Prenotazione(1, 1, 1, 1, data, data2, 50000);
+//			System.out.println(p.toString());
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
 		d1 = null;
 		d2 = null;
 		return "prenota";
@@ -132,7 +149,7 @@ public class PrenotazioneController {
 
 			boolean transfer = false;
 
-			trans = parcheggiAuto.get(parcheggiAuto.size() - 1).dataTrasferimento();
+			trans = parcheggiAuto.get(parcheggiAuto.size() - 1).dataTrasferimento(idSede);
 			if (trans != null)
 				transfer = true;
 

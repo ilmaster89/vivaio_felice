@@ -24,7 +24,11 @@
 
 		<form th:action="@{/parcheggioInserito}" th:object="${parcheggio}"
 			method="post">
-			<table>
+			<tr th:if="${autoinsede.isEmpty()}">
+				<td>Tutte le auto sono già state confermate per domani oppure
+					saranno trasferite!</td>
+			</tr>
+			<table th:if="${!autoinsede.isEmpty()}">
 				<th:block>
 					<td><input type="hidden" th:field="*{id}"></td>
 					<tr>

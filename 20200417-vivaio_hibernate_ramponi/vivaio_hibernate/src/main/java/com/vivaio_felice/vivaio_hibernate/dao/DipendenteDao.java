@@ -21,7 +21,6 @@ public interface DipendenteDao extends CrudRepository<Dipendente, Integer> {
 
 	List<Dipendente> findByPassword(String password);
 
-	// optional perché esiste una classe superiore?
 	Optional<Dipendente> findById(Integer id);
 
 }

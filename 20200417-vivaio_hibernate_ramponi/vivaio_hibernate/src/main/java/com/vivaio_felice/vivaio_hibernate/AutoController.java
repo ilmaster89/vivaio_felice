@@ -49,8 +49,7 @@ public class AutoController {
 	public String autoInserita(HttpSession session, Model model, Auto auto, Parcheggio parcheggio) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		Optional<Sede> miaSede = sedeDao.findById(idSede);
-		Sede questasede = miaSede.get();
+		Sede questasede = sedeDao.findById(idSede).get();
 		parcheggio.setSede(questasede);
 		parcheggio.setDataParch(LocalDate.now());
 		parcheggio.setAuto(auto);
@@ -91,29 +90,12 @@ public class AutoController {
 	public String parcheggioInserito(HttpSession session, Model model, Parcheggio parcheggio) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		Optional<Sede> miaSede = sedeDao.findById(idSede);
-		Sede questasede = miaSede.get();
+		Sede questasede = sedeDao.findById(idSede).get();
 		parcheggio.setSede(questasede);
 		parcheggio.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
 		parcheggioDao.save(parcheggio);
-//		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
-//		List<Auto> autoDaConfermare = new ArrayList<Auto>();
-//		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
-//		for (Auto a : autoInSede) {
-//
-//			boolean confirmed = false;
-//			parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
-//			for (Parcheggio p : parcheggiAuto) {
-//				if (p.isConfirmed())
-//					confirmed = true;
-//			}
-//
-//			if (!confirmed)
-//				autoDaConfermare.add(a);
-//		}
-//
-//		model.addAttribute("autoinsede", autoDaConfermare);
-		return "primapagina";
+
+		return "redirect:/insparch";
 
 	}
 }

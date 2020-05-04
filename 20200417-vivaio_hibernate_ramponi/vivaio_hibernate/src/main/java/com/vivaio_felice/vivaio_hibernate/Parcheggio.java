@@ -84,8 +84,8 @@ public class Parcheggio {
 		return "Parcheggio [id=" + id + ", auto=" + auto + ", sede=" + sede + ", dataParch=" + dataParch + "]";
 	}
 
-	public LocalDate dataTrasferimento() {
-		if (this.getDataParch().isAfter(LocalDate.now()))
+	public LocalDate dataTrasferimento(Integer idSede) {
+		if (this.getDataParch().isAfter(LocalDate.now()) && this.getSede().getId() != idSede)
 			return this.getDataParch();
 		return null;
 	}
