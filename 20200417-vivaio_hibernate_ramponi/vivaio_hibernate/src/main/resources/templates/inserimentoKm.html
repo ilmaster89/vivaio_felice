@@ -49,20 +49,24 @@
 					<td>Fine prenotazione:</td>
 					<td th:text="${ultima.dataFine}"></td>
 				</tr>
-				<table>
+				<tr>
 					<form th:action="@{/kminseriti}" th:object="${prenotazione}"
 						method="post">
-						<tr>
-							<td>Km attuali:</td>
-						</tr>
-						<tr>
-							<td><input type="text" th:field="*{km}"></td>
-						</tr>
-						<tr>
-							<td><input type="submit" value="Inserisci KM"></td>
-						</tr>
-				</table>
-			</table>
+						<table>
+
+							<tr>
+								<td>Km attuali:</td>
+							</tr>
+							<tr>
+								<td><input type="text" th:field="*{km}"></td>
+							</tr>
+							<tr>
+								<td><input type="submit" value="Inserisci KM"></td>
+							</tr>
+
+						</table>
+					</form>
+				</tr>
 		</div>
 		<div></div>
 

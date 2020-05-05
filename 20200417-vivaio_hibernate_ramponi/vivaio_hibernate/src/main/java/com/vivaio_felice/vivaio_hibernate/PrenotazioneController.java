@@ -84,8 +84,6 @@ public class PrenotazioneController {
 
 	public static Date d1 = null;
 	public static Date d2 = null;
-	public static List<Prenotazione> prenotazioniNulle = null;
-	public static Prenotazione ultima = null;
 	public static Prenotazione precedente = null;
 
 	@Autowired
@@ -221,21 +219,11 @@ public class PrenotazioneController {
 	@RequestMapping("/km")
 	public String insKm(HttpSession session, Model model, Prenotazione prenotazione) {
 
-		prenotazioniNulle = new ArrayList<Prenotazione>();
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = d.getId();
-		List<Prenotazione> prenotazioniDip = prenotazioneDao.findByDipendenteId(idDip);
-
-		for (Prenotazione p : prenotazioniDip) {
-			if (p.getKm() == null)
-				prenotazioniNulle.add(p);
-		}
-
-		if (!prenotazioniNulle.isEmpty())
-			ultima = prenotazioniNulle.get(prenotazioniNulle.size() - 1);
-
-		precedente = prenoJdbcDao.precedente(ultima.getAuto().getId()).get(0);
-		model.addAttribute("ultima", ultima);
+		Prenotazione ultimaDelDip = prenoJdbcDao.ultima(idDip).get(0);
+		precedente = prenoJdbcDao.precedente(ultimaDelDip.getAuto().getId()).get(0);
+		model.addAttribute("ultima", ultimaDelDip);
 
 		return "inserimentoKm";
 	}
@@ -243,6 +231,7 @@ public class PrenotazioneController {
 	@RequestMapping(value = "/kminseriti", method = RequestMethod.POST)
 	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione) {
 
+		Prenotazione ultima = (Prenotazione) model.getAttribute("ultima");
 		if (prenotazione.getKm() <= precedente.getKm() && ultima.getDataFine().after(precedente.getDataFine()))
 			return "erroreKm";
 
@@ -254,8 +243,6 @@ public class PrenotazioneController {
 		prenotazione.setDataFine(ultima.getDataFine());
 
 		prenotazioneDao.save(prenotazione);
-		prenotazioniNulle = new ArrayList<Prenotazione>();
-		ultima = null;
 		precedente = null;
 		return "primapagina";
 
