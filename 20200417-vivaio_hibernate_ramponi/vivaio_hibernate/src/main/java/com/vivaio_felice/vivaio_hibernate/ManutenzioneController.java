@@ -35,7 +35,7 @@ public class ManutenzioneController {
 	public String manu(HttpSession session, Model model, Prenotazione prenotazione,
 			SpesaManutenzione spesaManutenzione) {
 
-		List<Causale> manutenzioni = new ArrayList();
+		List<Causale> manutenzioni = new ArrayList<Causale>();
 
 		Causale c1 = causaleDao.findById(1).get();
 		Causale c2 = causaleDao.findById(2).get();

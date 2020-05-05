@@ -46,7 +46,7 @@ public class Sede {
 	}
 
 	public void setId(Integer id) {
-		id = id;
+		this.id = id;
 	}
 
 	public String getRegione() {

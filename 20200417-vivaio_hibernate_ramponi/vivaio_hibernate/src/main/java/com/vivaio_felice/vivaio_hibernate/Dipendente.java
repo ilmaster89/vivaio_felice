@@ -1,5 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,14 +77,6 @@ public class Dipendente {
 		this.user = user_name;
 		this.password = password;
 	}
-
-//	public PossessoPatenti getPossAttuale() {
-//		return possAttuale;
-//	}
-//
-//	public void setPossAttuale(PossessoPatenti possAttuale) {
-//		this.possAttuale = possAttuale;
-//	}
 
 	public Integer getId() {
 		return id;
@@ -160,8 +154,21 @@ public class Dipendente {
 		this.possessoPatenti = possessoPatenti;
 	}
 
-	public void setPossessoPatenti(PossessoPatenti possessoPatenti) {
-		this.possessoPatenti.add(possessoPatenti);
+	public boolean neoP(List<PossessoPatenti> posPat) {
+		for (PossessoPatenti pp : posPat) {
+			if (pp.getPatente().getId() == 1
+					&& pp.getDataPoss().toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.YEARS)))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean patenteC(List<PossessoPatenti> posPat) {
+		for (PossessoPatenti pp : posPat) {
+			if (pp.getPatente().getId() == 2)
+				return true;
+		}
+		return false;
 	}
 
 	@Override

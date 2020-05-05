@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
 import com.vivaio_felice.vivaio_hibernate.Auto;
-import com.vivaio_felice.vivaio_hibernate.Carburante;
-import com.vivaio_felice.vivaio_hibernate.Patente;
 
 public interface AutoDao extends CrudRepository<Auto, Integer> {
 

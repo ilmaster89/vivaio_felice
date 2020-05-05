@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.vivaio_felice.vivaio_hibernate.Dipendente;
 import com.vivaio_felice.vivaio_hibernate.SedeDipendente;
 
 public interface SedeDipendenteDao extends CrudRepository<SedeDipendente, Integer> {

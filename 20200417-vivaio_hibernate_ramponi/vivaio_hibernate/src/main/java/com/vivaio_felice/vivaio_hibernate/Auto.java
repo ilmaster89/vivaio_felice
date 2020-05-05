@@ -32,10 +32,6 @@ public class Auto {
 	@NotNull
 	@OneToOne
 	Carburante carburante;
-//
-//	@NotNull
-//	@Size(max = 45)
-//	String carburante;
 
 	@NotNull
 	@Size(max = 45)
@@ -160,6 +156,12 @@ public class Auto {
 
 	public void setDataAss(Date data_assicurazione) {
 		this.dataAss = data_assicurazione;
+	}
+
+	public boolean okForNeoP() {
+		if ((this.getKw() / ((this.getTara() + 75) / 1000) <= 55) && this.getKw() <= 70)
+			return true;
+		return false;
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
+import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneJdbcDao;
 
@@ -87,6 +86,7 @@ public class PrenotazioneController {
 	public static Date d2 = null;
 	public static List<Prenotazione> prenotazioniNulle = null;
 	public static Prenotazione ultima = null;
+	public static Prenotazione precedente = null;
 
 	@Autowired
 	AutoJdbcDao autoJdbcDao;
@@ -98,22 +98,11 @@ public class PrenotazioneController {
 	ParcheggioDao parcheggioDao;
 	@Autowired
 	PrenotazioneJdbcDao prenoJdbcDao;
+	@Autowired
+	PossessoPatentiDao posPatDao;
 
 	@RequestMapping("/prenota")
 	public String prenotazione(HttpSession session, Model model, Prenotazione prenotazione) {
-
-		// lavorare sul costruttore
-//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-//		Date data;
-//		try {
-//			data = sdf.parse("05/05/2020 09:00");
-//			Date data2 = sdf.parse("05/05/2020 10:00");
-//			Prenotazione p = new Prenotazione(1, 1, 1, 1, data, data2, 50000);
-//			System.out.println(p.toString());
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
 		d1 = null;
 		d2 = null;
@@ -123,6 +112,12 @@ public class PrenotazioneController {
 	@RequestMapping("/torna")
 	public String ritorno(HttpSession session, Model model, Prenotazione prenotazione) {
 		return "prenota";
+	}
+
+	@RequestMapping("/tornaKm")
+	public String ritornoKm(HttpSession session, Model model, Prenotazione prenotazione) {
+
+		return "redirect:/km";
 	}
 
 	@RequestMapping(value = "/richiestadiprenotazione", method = RequestMethod.POST)
@@ -137,6 +132,9 @@ public class PrenotazioneController {
 		d2 = dataFine;
 
 		Integer idSede = (Integer) session.getAttribute("sede");
+		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
+		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()));
+		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()));
 		List<Auto> autoNellaSede = autoJdbcDao.autoInSede(idSede);
 		List<Prenotazione> prenotazioniSingolaAuto = new ArrayList<Prenotazione>();
 		List<Auto> autoPrenotabili = new ArrayList<Auto>();
@@ -154,8 +152,10 @@ public class PrenotazioneController {
 				transfer = true;
 
 			if (transfer) {
-				if (prenotazioniSingolaAuto.isEmpty())
-					autoPrenotabili.add(a);
+				if (prenotazioniSingolaAuto.isEmpty()) {
+					if ((!patC && a.getPatente().getId() == 1) || patC)
+						autoPrenotabili.add(a);
+				}
 
 				else {
 					boolean matchTrans = false;
@@ -168,14 +168,19 @@ public class PrenotazioneController {
 
 					}
 
-					if (!matchTrans)
-						autoPrenotabili.add(a);
+					if (!matchTrans) {
+						if ((!patC && a.getPatente().getId() == 1) || patC)
+							autoPrenotabili.add(a);
+					}
+
 				}
 			}
 
 			if (!transfer) {
-				if (prenotazioniSingolaAuto.isEmpty())
-					autoPrenotabili.add(a);
+				if (prenotazioniSingolaAuto.isEmpty()) {
+					if ((!patC && a.getPatente().getId() == 1) || patC)
+						autoPrenotabili.add(a);
+				}
 
 				else {
 					boolean match = false;
@@ -187,8 +192,10 @@ public class PrenotazioneController {
 
 					}
 
-					if (!match)
-						autoPrenotabili.add(a);
+					if (!match) {
+						if ((!patC && a.getPatente().getId() == 1) || patC)
+							autoPrenotabili.add(a);
+					}
 				}
 			}
 		}
@@ -227,6 +234,7 @@ public class PrenotazioneController {
 		if (!prenotazioniNulle.isEmpty())
 			ultima = prenotazioniNulle.get(prenotazioniNulle.size() - 1);
 
+		precedente = prenoJdbcDao.precedente(ultima.getAuto().getId()).get(0);
 		model.addAttribute("ultima", ultima);
 
 		return "inserimentoKm";
@@ -234,6 +242,9 @@ public class PrenotazioneController {
 
 	@RequestMapping(value = "/kminseriti", method = RequestMethod.POST)
 	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione) {
+
+		if (prenotazione.getKm() <= precedente.getKm() && ultima.getDataFine().after(precedente.getDataFine()))
+			return "erroreKm";
 
 		prenotazione.setId(ultima.getId());
 		prenotazione.setDipendente(ultima.getDipendente());
@@ -245,6 +256,7 @@ public class PrenotazioneController {
 		prenotazioneDao.save(prenotazione);
 		prenotazioniNulle = new ArrayList<Prenotazione>();
 		ultima = null;
+		precedente = null;
 		return "primapagina";
 
 	}
