@@ -151,8 +151,10 @@ public class PrenotazioneController {
 
 			if (transfer) {
 				if (prenotazioniSingolaAuto.isEmpty()) {
-					if ((!patC && a.getPatente().getId() == 1) || patC)
-						autoPrenotabili.add(a);
+					if ((!patC && a.getPatente().getId() == 1) || patC) {
+						if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+							autoPrenotabili.add(a);
+					}
 				}
 
 				else {
@@ -167,8 +169,10 @@ public class PrenotazioneController {
 					}
 
 					if (!matchTrans) {
-						if ((!patC && a.getPatente().getId() == 1) || patC)
-							autoPrenotabili.add(a);
+						if ((!patC && a.getPatente().getId() == 1) || patC) {
+							if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+								autoPrenotabili.add(a);
+						}
 					}
 
 				}
@@ -176,8 +180,10 @@ public class PrenotazioneController {
 
 			if (!transfer) {
 				if (prenotazioniSingolaAuto.isEmpty()) {
-					if ((!patC && a.getPatente().getId() == 1) || patC)
-						autoPrenotabili.add(a);
+					if ((!patC && a.getPatente().getId() == 1) || patC) {
+						if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+							autoPrenotabili.add(a);
+					}
 				}
 
 				else {
@@ -191,8 +197,10 @@ public class PrenotazioneController {
 					}
 
 					if (!match) {
-						if ((!patC && a.getPatente().getId() == 1) || patC)
-							autoPrenotabili.add(a);
+						if ((!patC && a.getPatente().getId() == 1) || patC) {
+							if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+								autoPrenotabili.add(a);
+						}
 					}
 				}
 			}
