@@ -59,42 +59,4 @@ public class AutoController {
 
 	}
 
-	@RequestMapping("/insparch")
-	public String insParch(HttpSession session, Model model, Parcheggio parcheggio) {
-
-		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
-		List<Auto> autoDaConfermare = new ArrayList<Auto>();
-		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
-
-		for (Auto a : autoInSede) {
-
-			boolean confirmed = false;
-			parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
-			for (Parcheggio p : parcheggiAuto) {
-				if (p.isConfirmed())
-					confirmed = true;
-			}
-
-			if (!confirmed)
-				autoDaConfermare.add(a);
-		}
-		model.addAttribute("autoinsede", autoDaConfermare);
-
-		return "inserimentoParcheggio";
-
-	}
-
-	@RequestMapping(value = "parcheggioInserito", method = RequestMethod.POST)
-	public String parcheggioInserito(HttpSession session, Model model, Parcheggio parcheggio) {
-
-		Integer idSede = (Integer) session.getAttribute("sede");
-		Sede questasede = sedeDao.findById(idSede).get();
-		parcheggio.setSede(questasede);
-		parcheggio.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
-		parcheggioDao.save(parcheggio);
-
-		return "redirect:/insparch";
-
-	}
 }

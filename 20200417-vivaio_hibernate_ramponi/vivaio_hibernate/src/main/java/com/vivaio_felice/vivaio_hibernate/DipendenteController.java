@@ -1,5 +1,8 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteJdbcDao;
-
 import com.vivaio_felice.vivaio_hibernate.dao.LivelloJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
@@ -38,6 +42,10 @@ public class DipendenteController {
 	private PossessoPatentiDao possPatDao;
 	@Autowired
 	private PatenteDao patenteDao;
+	@Autowired
+	AutoJdbcDao autoJdbcDao;
+	@Autowired
+	ParcheggioDao parcheggioDao;
 
 	@Autowired
 	private SedeDao sedeDao;
@@ -59,6 +67,31 @@ public class DipendenteController {
 			Integer idSede = sedeDip.sede.getId();
 			session.setAttribute("sede", idSede);
 			session.setAttribute("loggedUser", dipList.get(0));
+			List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+			List<Auto> autoDaConfermare = new ArrayList<Auto>();
+			List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
+
+			for (Auto a : autoInSede) {
+				boolean confirmed = false;
+				parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
+				for (Parcheggio p : parcheggiAuto) {
+					if (p.isConfirmed())
+						confirmed = true;
+				}
+
+				if (!confirmed)
+					autoDaConfermare.add(a);
+			}
+
+			for (Auto a : autoDaConfermare) {
+				Parcheggio p = new Parcheggio();
+				Sede questasede = sedeDao.findById(idSede).get();
+				p.setAuto(a);
+				p.setSede(questasede);
+				p.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
+				parcheggioDao.save(p);
+
+			}
 
 			return "primapagina";
 		}
