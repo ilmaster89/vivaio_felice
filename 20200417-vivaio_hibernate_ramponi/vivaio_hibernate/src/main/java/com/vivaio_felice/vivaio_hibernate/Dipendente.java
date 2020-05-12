@@ -56,12 +56,10 @@ public class Dipendente {
 	@NotNull
 	@Transient
 	@OneToMany(mappedBy = "dipendente", cascade = CascadeType.ALL)
-	List<PossessoPatenti> possessoPatenti = new ArrayList<>();
+	List<PossessoPatenti> possessoPatenti;
 
-//	@NotNull
-//	@Transient
-//	@OneToOne(mappedBy = "dipAttuale", cascade = CascadeType.ALL)
-//	PossessoPatenti possAttuale;
+	@OneToMany(mappedBy = "dipendente", cascade = CascadeType.ALL)
+	List<Notifica> notifiche;
 
 	public Dipendente() {
 
@@ -152,6 +150,14 @@ public class Dipendente {
 
 	public void setPossessoPatenti(List<PossessoPatenti> possessoPatenti) {
 		this.possessoPatenti = possessoPatenti;
+	}
+
+	public List<Notifica> getNotifiche() {
+		return notifiche;
+	}
+
+	public void setNotifiche(List<Notifica> notifiche) {
+		this.notifiche = notifiche;
 	}
 
 	public boolean neoP(List<PossessoPatenti> posPat) {

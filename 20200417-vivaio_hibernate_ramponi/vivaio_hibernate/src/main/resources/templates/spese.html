@@ -21,10 +21,43 @@
 
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
+		<div>
+			<form th:action="@{/spesainserita}" th:object="${spesaManutenzione}"
+				method="post">
+				<table>
+					<th:block>
 
-		<button>Finisci Manutenzione</button>
-		<!--Pulsante che va a prendere automaticamente la data_fine della manutenzione come data odierna-->
-		<input>Spesa auto</input>
+						<tr>
+							<td>Spesa da confermare:</td>
+						</tr>
+
+						<tr>
+							<td><select th:field="*{id}">
+									<option th:each="s : ${speseDaConfermare}" th:value="${s.id}"
+										th:text="${s.auto.marca + '&nbsp;' + s.auto.modello + '&nbsp;' + s.auto.targa + '&nbsp;' + s.descrizione}"></option>
+							</select></td>
+						</tr>
+						<tr>
+							<td>Dettaglio:</td>
+						</tr>
+						<tr>
+							<td><input type="text" th:field="*{dettaglio}" />
+						</tr>
+						<tr>
+							<td>Spesa:</td>
+						</tr>
+						<tr>
+							<td><input type="text" th:field="*{spesa}" /></td>
+						</tr>
+
+						<tr>
+							<td><input type="submit" value="Conferma i dati inseriti"></td>
+							<td><input type="reset" value="Resetta"></td>
+						</tr>
+					</th:block>
+				</table>
+			</form>
+		</div>
 		<button>
 			<a href="/indietro">Torna Indietro</a>
 		</button>

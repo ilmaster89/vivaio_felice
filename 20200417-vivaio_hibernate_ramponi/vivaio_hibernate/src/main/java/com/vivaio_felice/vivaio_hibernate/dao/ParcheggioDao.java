@@ -1,5 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate.dao;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,6 @@ public interface ParcheggioDao extends CrudRepository<Parcheggio, Integer> {
 
 	List<Parcheggio> findBySedeId(Integer id);
 
-	List<Parcheggio> findByDataParch(Date dataParch);
+	List<Parcheggio> findByDataParch(LocalDate dataParch);
 
 }

@@ -23,11 +23,17 @@
 
 		<div th:replace="fragments/menu :: menu"></div>
 
+		<table th:each="n : ${notifiche}">
+			<tr>
+				<td th:value="${n.id}" th:text="${n.descrizione}"></td>
+				<td><a th:href="@{'notificaok/' + ${n.getId()}}">Conferma</a></td>
+			</tr>
+		</table>
+
 		<button id="BottoneCambio">
 			<a href="/">Cambia Utente</a>
 		</button>
 		<!--pulsante per tornare al log in-->
-
 	</section>
 
 

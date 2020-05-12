@@ -1,5 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,7 @@ import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
+import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneJdbcDao;
 
 @Controller
 public class ManutenzioneController {
@@ -30,6 +33,8 @@ public class ManutenzioneController {
 	AutoJdbcDao autoJdbcDao;
 	@Autowired
 	CausaleDao causaleDao;
+	@Autowired
+	SpesaManutenzioneJdbcDao spesaJdbcDao;
 
 	@RequestMapping("/manu")
 	public String manu(HttpSession session, Model model, Prenotazione prenotazione,
@@ -70,5 +75,39 @@ public class ManutenzioneController {
 		spesaManutenzioneDao.save(spesaManutenzione);
 
 		return "primapagina";
+	}
+
+	@RequestMapping("/spese")
+	public String spese(HttpSession session, Model model, SpesaManutenzione spesaManutenzione) {
+
+		Integer idSede = (Integer) session.getAttribute("sede");
+		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+		List<SpesaManutenzione> speseNonConfermate = new ArrayList<SpesaManutenzione>();
+
+		for (Auto a : autoInSede) {
+			List<SpesaManutenzione> speseAuto = spesaJdbcDao.manutenzioniSede(a.getId());
+
+			if (!speseAuto.isEmpty())
+				for (SpesaManutenzione s : speseAuto)
+					speseNonConfermate.add(s);
+		}
+
+		model.addAttribute("speseDaConfermare", speseNonConfermate);
+		return "spese";
+
+	}
+
+	@RequestMapping(value = "/spesainserita", method = RequestMethod.POST)
+	public String spesaInserita(HttpSession session, Model model, SpesaManutenzione spesaManutenzione) {
+
+		SpesaManutenzione spesaConfermata = spesaManutenzioneDao.findById(spesaManutenzione.getId()).get();
+		ZoneId dzi = ZoneId.systemDefault();
+		Date ora = Date.from(LocalDate.now().atStartOfDay(dzi).toInstant());
+		spesaConfermata.setDataSpesa(ora);
+		spesaConfermata.setSpesa(spesaManutenzione.getSpesa());
+		spesaManutenzioneDao.save(spesaConfermata);
+
+		return "redirect:/spese";
+
 	}
 }

@@ -90,10 +90,4 @@ public class Parcheggio {
 		return null;
 	}
 
-	public boolean isConfirmed() {
-		if (this.getDataParch().equals(LocalDate.now().plus(1, ChronoUnit.DAYS)))
-			return true;
-		return false;
-	}
-
 }
