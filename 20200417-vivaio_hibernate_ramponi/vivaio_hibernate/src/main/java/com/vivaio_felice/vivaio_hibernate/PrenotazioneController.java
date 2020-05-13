@@ -59,29 +59,12 @@ public class PrenotazioneController {
 		if (ldInizio.compareTo(trans) >= 0 || ldFine.compareTo(trans) >= 0)
 			return true;
 
-		else {
-
-			if (d1.toInstant().compareTo(d3.toInstant()) == 0) {
-				if (d1.compareTo(d3) == 0)
-					return true;
-				if (d2.compareTo(d4) == 0)
-					return true;
-				if (d1.after(d3) && d2.before(d4))
-					return true;
-				if (d1.before(d3) && d2.after(d4))
-					return true;
-				if ((d1.after(d3) && d1.before(d4)) && d2.after(d4))
-					return true;
-				if (d1.before(d3) && (d2.after(d3) && d2.before(d4)))
-					return true;
-
-			}
-		}
-
-		return false;
+		return datesMatch(d1, d2, d3, d4);
 
 	}
 
+	// controllare se funziona con utenti contemporanei
+	// altrimenti dichiarare nel metodo caricandole sul model
 	public static Date d1 = null;
 	public static Date d2 = null;
 	public static Prenotazione precedente = null;
@@ -178,6 +161,7 @@ public class PrenotazioneController {
 				}
 			}
 
+			// provare a modularizzare con un metodo
 			if (!transfer) {
 				if (prenotazioniSingolaAuto.isEmpty()) {
 					if ((!patC && a.getPatente().getId() == 1) || patC) {
@@ -232,7 +216,7 @@ public class PrenotazioneController {
 		Prenotazione ultimaDelDip = prenoJdbcDao.ultima(idDip).get(0);
 		precedente = prenoJdbcDao.precedente(ultimaDelDip.getAuto().getId()).get(0);
 		model.addAttribute("ultima", ultimaDelDip);
-
+		// caricare la precedente
 		return "inserimentoKm";
 	}
 

@@ -52,9 +52,13 @@ public class AutoController {
 		parcheggio.setSede(questasede);
 		parcheggio.setDataParch(LocalDate.now());
 		parcheggio.setAuto(auto);
-
+		Parcheggio parchDom = new Parcheggio();
+		parchDom.setAuto(auto);
+		parchDom.setSede(questasede);
+		parchDom.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
 		autoDao.save(auto);
 		parcheggioDao.save(parcheggio);
+		parcheggioDao.save(parchDom);
 		return "primapagina";
 
 	}

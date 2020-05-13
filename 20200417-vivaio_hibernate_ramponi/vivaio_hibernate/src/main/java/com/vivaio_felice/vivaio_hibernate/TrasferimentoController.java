@@ -1,8 +1,11 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeJdbcDao;
 
@@ -32,6 +37,25 @@ public class TrasferimentoController {
 	SedeJdbcDao sedeJdbcDao;
 	@Autowired
 	ParcheggioJdbcDao parchJdbcDao;
+	@Autowired
+	PrenotazioneDao prenotazioneDao;
+	@Autowired
+	NotificaDao notDao;
+
+	public static boolean prenoSuccessiva(Date d1, Date d2, LocalDate trans) {
+
+		ZoneId dzi = ZoneId.systemDefault();
+		Instant d1inst = d1.toInstant();
+		Instant d2inst = d2.toInstant();
+		LocalDate ld1 = d1inst.atZone(dzi).toLocalDate();
+		LocalDate ld2 = d2inst.atZone(dzi).toLocalDate();
+
+		if (ld1.compareTo(trans) >= 0 || ld2.compareTo(trans) >= 0)
+			return true;
+
+		return false;
+
+	}
 
 	@RequestMapping("/trans")
 	public String toTrans(HttpSession session, Model model, Parcheggio parcheggio) {
@@ -63,6 +87,22 @@ public class TrasferimentoController {
 
 		if (parcheggio.getDataParch().compareTo(LocalDate.now().plus(1, ChronoUnit.DAYS)) == 0)
 			parcheggioDao.delete(parchJdbcDao.parcheggioDomani(parcheggio.getAuto().getId()).get(0));
+
+		List<Prenotazione> prenoAuto = prenotazioneDao.findByAutoId(parcheggio.getAuto().getId());
+
+		for (Prenotazione p : prenoAuto) {
+
+			if (prenoSuccessiva(p.getDataInizio(), p.getDataFine(), parcheggio.getDataParch())) {
+				Notifica not = new Notifica();
+				not.setDipendente(p.getDipendente());
+				not.setConferma(0);
+				not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
+						+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
+						+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+				notDao.save(not);
+			}
+
+		}
 
 		parcheggioDao.save(parcheggio);
 		return "primapagina";

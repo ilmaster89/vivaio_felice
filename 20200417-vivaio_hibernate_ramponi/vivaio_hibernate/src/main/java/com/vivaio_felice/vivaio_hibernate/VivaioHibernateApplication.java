@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class VivaioHibernateApplication {
 
 	public static void main(String[] args) {
+		// caricare variabili tramite dao in una classe con tutte le costanti
 		SpringApplication.run(VivaioHibernateApplication.class, args);
 	}
 

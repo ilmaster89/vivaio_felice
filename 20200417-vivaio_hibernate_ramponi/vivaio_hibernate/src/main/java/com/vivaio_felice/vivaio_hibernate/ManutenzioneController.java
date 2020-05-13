@@ -105,6 +105,7 @@ public class ManutenzioneController {
 		Date ora = Date.from(LocalDate.now().atStartOfDay(dzi).toInstant());
 		spesaConfermata.setDataSpesa(ora);
 		spesaConfermata.setSpesa(spesaManutenzione.getSpesa());
+		spesaConfermata.setDettaglio(spesaManutenzione.getDettaglio());
 		spesaManutenzioneDao.save(spesaConfermata);
 
 		return "redirect:/spese";

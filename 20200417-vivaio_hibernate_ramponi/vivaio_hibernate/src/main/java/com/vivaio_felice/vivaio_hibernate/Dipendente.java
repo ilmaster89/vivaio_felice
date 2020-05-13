@@ -53,7 +53,6 @@ public class Dipendente {
 	@OneToOne(mappedBy = "dipendente", cascade = CascadeType.ALL)
 	SedeDipendente sedeDipendente;
 
-	@NotNull
 	@Transient
 	@OneToMany(mappedBy = "dipendente", cascade = CascadeType.ALL)
 	List<PossessoPatenti> possessoPatenti;
@@ -171,6 +170,7 @@ public class Dipendente {
 
 	public boolean patenteC(List<PossessoPatenti> posPat) {
 		for (PossessoPatenti pp : posPat) {
+			// cambiare costante con query annotation
 			if (pp.getPatente().getId() == 2)
 				return true;
 		}

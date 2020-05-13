@@ -159,6 +159,7 @@ public class Auto {
 	}
 
 	public boolean okForNeoP() {
+		// costanti dalla motorizzazione, da non modificare
 		if ((this.getKw() / ((this.getTara() + 75) / 1000) <= 55) && this.getKw() <= 70)
 			return true;
 		return false;
@@ -166,9 +167,7 @@ public class Auto {
 
 	@Override
 	public String toString() {
-		return "Auto [id=" + id + ", patente=" + patente + ", carburante=" + carburante + ", marca=" + marca
-				+ ", modello=" + modello + ", targa=" + targa + ", kw=" + kw + ", tara=" + tara
-				+ ", data_assicurazione=" + dataAss + "]";
+		return marca + " " + modello + " " + targa;
 	}
 
 }

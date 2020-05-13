@@ -34,9 +34,9 @@
 			<li th:if="${!session.loggedUser.responsabile()}" id="about">&nbsp;Trasferimenti</li>
 		</a>
 		<!-- if lv >= 2 -->
-		<li th:if="${session.loggedUser.impiegato()}"><a href="/dash">&nbsp;Dashboard</a></li>
+		<li th:if="${session.loggedUser.responsabile()}"><a href="/dash">&nbsp;Dashboard</a></li>
 		<a onclick="myFunction()">
-			<li th:if="${!session.loggedUser.impiegato()}" id="about">&nbsp;Dashboard</li>
+			<li th:if="${!session.loggedUser.responsabile()}" id="about">&nbsp;Dashboard</li>
 		</a>
 	</ul>
 </div>
