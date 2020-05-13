@@ -158,7 +158,13 @@ public class DipendenteController {
 	}
 
 	@RequestMapping("/indietro")
-	public String indietro() {
+	public String indietro(HttpSession session, Model model, Dipendente dipendente) {
+
+		dipendente = (Dipendente) session.getAttribute("loggedUser");
+		Integer idDip = dipendente.getId();
+		List<Notifica> notifiche = notJdbcDao.notificheDip(idDip);
+		model.addAttribute("notifiche", notifiche);
+
 		return "primapagina";
 	}
 
