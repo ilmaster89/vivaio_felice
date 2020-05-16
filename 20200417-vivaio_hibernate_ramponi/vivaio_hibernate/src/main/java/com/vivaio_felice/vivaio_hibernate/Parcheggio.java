@@ -47,6 +47,13 @@ public class Parcheggio {
 		this.dataParch = dataParch;
 	}
 
+	public Parcheggio(@NotNull Auto auto, @NotNull Sede sede, LocalDate dataParch) {
+		super();
+		this.auto = auto;
+		this.sede = sede;
+		this.dataParch = dataParch;
+	}
+
 	public Integer getId() {
 		return id;
 	}

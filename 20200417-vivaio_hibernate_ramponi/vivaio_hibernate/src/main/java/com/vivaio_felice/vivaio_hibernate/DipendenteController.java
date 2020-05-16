@@ -15,14 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteDao;
-import com.vivaio_felice.vivaio_hibernate.dao.DipendenteJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.LivelloJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
-import com.vivaio_felice.vivaio_hibernate.dao.NotificaJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
-import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
@@ -34,8 +32,6 @@ public class DipendenteController {
 
 	@Autowired
 	private DipendenteDao dipendenteDao;
-	@Autowired
-	private DipendenteJdbcDao dipendenteJdbcRepository;
 	@Autowired
 	private SedeDipendenteDao sedeDipendenteDao;
 	@Autowired
@@ -51,11 +47,9 @@ public class DipendenteController {
 	@Autowired
 	private SedeDao sedeDao;
 	@Autowired
-	ParcheggioJdbcDao parchJdbcDao;
-	@Autowired
-	NotificaJdbcDao notJdbcDao;
-	@Autowired
 	NotificaDao notificaDao;
+	@Autowired
+	AutoDao autoDao;
 
 	@RequestMapping("/")
 	public String index() {
@@ -65,32 +59,35 @@ public class DipendenteController {
 	@RequestMapping(value = "/logged", method = RequestMethod.POST)
 	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password, Model model,
 			HttpSession session) {
-		List<Dipendente> dipList = dipendenteJdbcRepository.login(user_name, password);
+//		List<Dipendente> dipList = dipendenteJdbcRepository.login(user_name, password);
+//		
+//		if (dipList.size() == 0)
+//			return "redirect:/";
 
-		if (dipList.size() == 0)
+		Dipendente logged = dipendenteDao.login(user_name, password);
+
+		if (logged == null)
 			return "redirect:/";
+
 		else {
-			SedeDipendente sedeDip = sedeDipendenteDao.findByDipendenteId(dipList.get(0).getId());
+			SedeDipendente sedeDip = sedeDipendenteDao.findByDipendenteId(logged.getId());
 			Integer idSede = sedeDip.sede.getId();
 			session.setAttribute("sede", idSede);
-			session.setAttribute("loggedUser", dipList.get(0));
+			session.setAttribute("loggedUser", logged);
 			Sede questasede = sedeDao.findById(idSede).get();
 			List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
 
 			for (Auto a : autoInSede) {
-				if (parchJdbcDao.parcheggioDomani(a.getId()).isEmpty()) {
-					Parcheggio p = new Parcheggio();
-					p.setAuto(a);
-					p.setSede(questasede);
-					p.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
-					parcheggioDao.save(p);
+
+				if (parcheggioDao.parchDomani(a.getId(), LocalDate.now().plus(1, ChronoUnit.DAYS)) == null) {
+					parcheggioDao.save(new Parcheggio(a, questasede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
 				}
 			}
 
 		}
 
-		Integer idDip = dipList.get(0).getId();
-		List<Notifica> notifiche = notJdbcDao.notificheDip(idDip);
+		Integer idDip = logged.getId();
+		List<Notifica> notifiche = notificaDao.notificheDip(idDip);
 		model.addAttribute("notifiche", notifiche);
 		return "primapagina";
 	}
@@ -109,7 +106,7 @@ public class DipendenteController {
 
 		dipendente = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = dipendente.getId();
-		List<Notifica> notifiche = notJdbcDao.notificheDip(idDip);
+		List<Notifica> notifiche = notificaDao.notificheDip(idDip);
 		model.addAttribute("notifiche", notifiche);
 
 		return "primapagina";

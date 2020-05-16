@@ -9,6 +9,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
 @Entity
 @Table(name = "notifiche")
 public class Notifica {

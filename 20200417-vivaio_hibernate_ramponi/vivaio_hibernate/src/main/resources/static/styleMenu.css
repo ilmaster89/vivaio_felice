@@ -51,6 +51,7 @@ a:hover{
     margin: 0;
     display: none;
     height: 75px;
+    position: fixed;
   }
   
   #menu .subitems li {

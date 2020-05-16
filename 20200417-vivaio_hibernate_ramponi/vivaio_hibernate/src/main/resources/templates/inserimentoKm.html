@@ -22,7 +22,8 @@
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
 		<tr>
-			<td th:if="${ultima == null}">Non hai prenotazioni in sospeso!</td>
+			<td th:if="${ultima == null}">Non hai prenotazioni in
+				sospeso!</td>
 		</tr>
 
 
@@ -53,7 +54,6 @@
 					<form th:action="@{/kminseriti}" th:object="${prenotazione}"
 						method="post">
 						<table>
-
 							<tr>
 								<td>Km attuali:</td>
 							</tr>
@@ -67,17 +67,16 @@
 						</table>
 					</form>
 				</tr>
-		</div>
-		<div></div>
+				</div>
+				<div></div>
 
-		<button>
-			<a href="/indietro">Torna Indietro</a>
-		</button>
-	</section>
+				<button>
+					<a href="/indietro">Torna Indietro</a>
+				</button>
+				</section>
 
-	<footer>
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
-	</footer>
-
+				<footer>
+					<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+				</footer>
 </body>
 </html>

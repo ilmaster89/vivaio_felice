@@ -20,7 +20,6 @@ import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
-import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneJdbcDao;
 
 @Controller
 public class ManutenzioneController {
@@ -33,8 +32,6 @@ public class ManutenzioneController {
 	AutoJdbcDao autoJdbcDao;
 	@Autowired
 	CausaleDao causaleDao;
-	@Autowired
-	SpesaManutenzioneJdbcDao spesaJdbcDao;
 
 	@RequestMapping("/manu")
 	public String manu(HttpSession session, Model model, Prenotazione prenotazione,
@@ -85,7 +82,7 @@ public class ManutenzioneController {
 		List<SpesaManutenzione> speseNonConfermate = new ArrayList<SpesaManutenzione>();
 
 		for (Auto a : autoInSede) {
-			List<SpesaManutenzione> speseAuto = spesaJdbcDao.manutenzioniSede(a.getId());
+			List<SpesaManutenzione> speseAuto = spesaManutenzioneDao.manutenzioniSede(a.getId());
 
 			if (!speseAuto.isEmpty())
 				for (SpesaManutenzione s : speseAuto)

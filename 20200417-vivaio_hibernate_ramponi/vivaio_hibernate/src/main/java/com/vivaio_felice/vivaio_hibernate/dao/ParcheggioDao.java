@@ -1,10 +1,10 @@
 package com.vivaio_felice.vivaio_hibernate.dao;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.vivaio_felice.vivaio_hibernate.Parcheggio;
@@ -18,5 +18,8 @@ public interface ParcheggioDao extends CrudRepository<Parcheggio, Integer> {
 	List<Parcheggio> findBySedeId(Integer id);
 
 	List<Parcheggio> findByDataParch(LocalDate dataParch);
+
+	@Query("select s from Parcheggio s where auto_id = :idAuto and data_parch = :data")
+	public Parcheggio parchDomani(Integer idAuto, LocalDate data);
 
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,6 +69,7 @@ public class PrenotazioneController {
 	public static Date d1 = null;
 	public static Date d2 = null;
 	public static Prenotazione precedente = null;
+	public static Prenotazione ultimaDelDip = null;
 
 	@Autowired
 	AutoJdbcDao autoJdbcDao;
@@ -209,30 +211,38 @@ public class PrenotazioneController {
 	}
 
 	@RequestMapping("/km")
-	public String insKm(HttpSession session, Model model, Prenotazione prenotazione) {
+	public String insKm(HttpSession session, Model model,  Prenotazione prenotazione) {
 
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = d.getId();
-		Prenotazione ultimaDelDip = prenoJdbcDao.ultima(idDip).get(0);
-		precedente = prenoJdbcDao.precedente(ultimaDelDip.getAuto().getId()).get(0);
-		model.addAttribute("ultima", ultimaDelDip);
+		List<Prenotazione> ultime = prenoJdbcDao.ultima(idDip);
+		ultimaDelDip = new Prenotazione();
+		precedente = new Prenotazione();
+
+		if (!ultime.isEmpty()) {
+			ultimaDelDip = ultime.get(0);
+			List<Prenotazione> precedenti = prenoJdbcDao.precedente(ultimaDelDip.getAuto().getId());
+			if (!precedenti.isEmpty())
+				precedente = precedenti.get(0);
+		}
+
 		// caricare la precedente
+		model.addAttribute("ultima", ultimaDelDip);
 		return "inserimentoKm";
 	}
 
 	@RequestMapping(value = "/kminseriti", method = RequestMethod.POST)
-	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione) {
+	public String inseriti(HttpSession session, Model model,  Prenotazione prenotazione) {
 
-		Prenotazione ultima = (Prenotazione) model.getAttribute("ultima");
-		if (prenotazione.getKm() <= precedente.getKm() && ultima.getDataFine().after(precedente.getDataFine()))
+		if (prenotazione.getKm() <= precedente.getKm() && ultimaDelDip.getDataFine().after(precedente.getDataFine()))
 			return "erroreKm";
 
-		prenotazione.setId(ultima.getId());
-		prenotazione.setDipendente(ultima.getDipendente());
-		prenotazione.setAuto(ultima.getAuto());
-		prenotazione.setCausale(ultima.getCausale());
-		prenotazione.setDataInizio(ultima.getDataInizio());
-		prenotazione.setDataFine(ultima.getDataFine());
+		prenotazione.setId(ultimaDelDip.getId());
+		prenotazione.setDipendente(ultimaDelDip.getDipendente());
+		prenotazione.setAuto(ultimaDelDip.getAuto());
+		prenotazione.setCausale(ultimaDelDip.getCausale());
+		prenotazione.setDataInizio(ultimaDelDip.getDataInizio());
+		prenotazione.setDataFine(ultimaDelDip.getDataFine());
 
 		prenotazioneDao.save(prenotazione);
 		precedente = null;

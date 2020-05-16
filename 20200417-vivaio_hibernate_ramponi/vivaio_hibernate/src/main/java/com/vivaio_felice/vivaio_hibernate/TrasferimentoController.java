@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
-import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
-import com.vivaio_felice.vivaio_hibernate.dao.SedeJdbcDao;
 
 @Controller
 public class TrasferimentoController {
@@ -33,10 +31,6 @@ public class TrasferimentoController {
 	AutoJdbcDao autoJdbcDao;
 	@Autowired
 	SedeDao sedeDao;
-	@Autowired
-	SedeJdbcDao sedeJdbcDao;
-	@Autowired
-	ParcheggioJdbcDao parchJdbcDao;
 	@Autowired
 	PrenotazioneDao prenotazioneDao;
 	@Autowired
@@ -75,7 +69,7 @@ public class TrasferimentoController {
 				autoTrasferibili.add(a);
 
 		}
-		List<Sede> sediTrasf = sedeJdbcDao.sediEccetto(idSede);
+		List<Sede> sediTrasf = sedeDao.sediEccetto(idSede);
 		model.addAttribute("autoInSede", autoTrasferibili);
 		model.addAttribute("sedipossibili", sediTrasf);
 
@@ -86,7 +80,8 @@ public class TrasferimentoController {
 	public String autoTrasferita(HttpSession session, Model model, Parcheggio parcheggio) {
 
 		if (parcheggio.getDataParch().compareTo(LocalDate.now().plus(1, ChronoUnit.DAYS)) == 0)
-			parcheggioDao.delete(parchJdbcDao.parcheggioDomani(parcheggio.getAuto().getId()).get(0));
+			parcheggioDao.delete(
+					parcheggioDao.parchDomani(parcheggio.getAuto().getId(), LocalDate.now().plus(1, ChronoUnit.DAYS)));
 
 		List<Prenotazione> prenoAuto = prenotazioneDao.findByAutoId(parcheggio.getAuto().getId());
 
