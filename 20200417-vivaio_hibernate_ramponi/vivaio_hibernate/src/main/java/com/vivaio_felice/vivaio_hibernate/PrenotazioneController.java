@@ -26,9 +26,23 @@ import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 @Controller
 public class PrenotazioneController {
 
+	@Autowired
+	AutoDao autoDao;
+	@Autowired
+	PrenotazioneDao prenotazioneDao;
+	@Autowired
+	CausaleDao causaleDao;
+	@Autowired
+	ParcheggioDao parcheggioDao;
+	@Autowired
+	PossessoPatentiDao posPatDao;
+
 	public static boolean datesMatch(Date d1, Date d2, Date d3, Date d4) {
 
+		// partendo dal presupposto che il controllo si fa solo se il giorno è lo stesso
 		if (d1.toInstant().compareTo(d3.toInstant()) == 0) {
+
+			// queste sono le varie possibilità in cui le date cozzano
 			if (d1.compareTo(d3) == 0)
 				return true;
 			if (d2.compareTo(d4) == 0)
@@ -62,29 +76,45 @@ public class PrenotazioneController {
 
 	}
 
-	// controllare se funziona con utenti contemporanei
-	// altrimenti dichiarare nel metodo caricandole sul model
-	public static Date d1 = null;
-	public static Date d2 = null;
-	public static Prenotazione precedente = null;
-	public static Prenotazione ultimaDelDip = null;
+	public List<Auto> autoPossibili(List<Auto> autoNellaSede, boolean patC, boolean neoP, Integer idSede,
+			Date dataInizio, Date dataFine) {
 
-	@Autowired
-	AutoDao autoDao;
-	@Autowired
-	PrenotazioneDao prenotazioneDao;
-	@Autowired
-	CausaleDao causaleDao;
-	@Autowired
-	ParcheggioDao parcheggioDao;
-	@Autowired
-	PossessoPatentiDao posPatDao;
+		LocalDate trans = null;
+		List<Auto> autoPrenotabili = new ArrayList<Auto>();
+		for (Auto a : autoNellaSede) {
+
+			List<Prenotazione> prenotazioniSingolaAuto = prenotazioneDao.prenoAuto(a.getId(), dataInizio);
+			boolean transfer = false;
+			boolean match = false;
+
+			trans = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
+			if (trans != null)
+				transfer = true;
+
+			if (!prenotazioniSingolaAuto.isEmpty()) {
+
+				for (Prenotazione p : prenotazioniSingolaAuto)
+					if ((transfer
+							&& datesMatchWithTrans(dataInizio, dataFine, p.getDataInizio(), p.getDataFine(), trans))
+							|| (!transfer && datesMatch(dataInizio, dataFine, p.getDataInizio(), p.getDataFine())))
+						match = true;
+
+			}
+
+			if ((!patC && a.getPatente().getId() == 1) || patC)
+				if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+					if (!match)
+						autoPrenotabili.add(a);
+
+		}
+
+		return autoPrenotabili;
+
+	}
 
 	@RequestMapping("/prenota")
 	public String prenotazione(HttpSession session, Model model, Prenotazione prenotazione) {
 
-		d1 = null;
-		d2 = null;
 		return "prenota";
 	}
 
@@ -104,91 +134,21 @@ public class PrenotazioneController {
 			@RequestParam("dataInizio") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") Date dataInizio,
 			@RequestParam("dataFine") @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") Date dataFine) {
 
-		if (dataFine.compareTo(dataInizio) <= 0)
+		// non si possono prenotare auto per una data precedente ad oggi!
+		if (dataFine.compareTo(dataInizio) <= 0
+				|| dataInizio.before(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())))
 			return "erroreData";
-
-		d1 = dataInizio;
-		d2 = dataFine;
 
 		Integer idSede = (Integer) session.getAttribute("sede");
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()));
 		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()));
 		List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
-		List<Prenotazione> prenotazioniSingolaAuto = new ArrayList<Prenotazione>();
-		List<Auto> autoPrenotabili = new ArrayList<Auto>();
-		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
-		LocalDate trans = null;
-
-		for (Auto a : autoNellaSede) {
-			prenotazioniSingolaAuto = prenotazioneDao.findByAutoId(a.getId());
-			parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
-
-			boolean transfer = false;
-
-			trans = parcheggiAuto.get(parcheggiAuto.size() - 1).dataTrasferimento(idSede);
-			if (trans != null)
-				transfer = true;
-
-			if (transfer) {
-				if (prenotazioniSingolaAuto.isEmpty()) {
-					if ((!patC && a.getPatente().getId() == 1) || patC) {
-						if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-							autoPrenotabili.add(a);
-					}
-				}
-
-				else {
-					boolean matchTrans = false;
-
-					for (Prenotazione preno : prenotazioniSingolaAuto) {
-
-						if (datesMatchWithTrans(dataInizio, dataFine, preno.getDataInizio(), preno.getDataFine(),
-								trans))
-							matchTrans = true;
-
-					}
-
-					if (!matchTrans) {
-						if ((!patC && a.getPatente().getId() == 1) || patC) {
-							if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-								autoPrenotabili.add(a);
-						}
-					}
-
-				}
-			}
-
-			// provare a modularizzare con un metodo
-			if (!transfer) {
-				if (prenotazioniSingolaAuto.isEmpty()) {
-					if ((!patC && a.getPatente().getId() == 1) || patC) {
-						if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-							autoPrenotabili.add(a);
-					}
-				}
-
-				else {
-					boolean match = false;
-
-					for (Prenotazione preno : prenotazioniSingolaAuto) {
-
-						if (datesMatch(dataInizio, dataFine, preno.getDataInizio(), preno.getDataFine()))
-							match = true;
-
-					}
-
-					if (!match) {
-						if ((!patC && a.getPatente().getId() == 1) || patC) {
-							if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-								autoPrenotabili.add(a);
-						}
-					}
-				}
-			}
-		}
-
+		List<Auto> autoPrenotabili = autoPossibili(autoNellaSede, patC, neoP, idSede, dataInizio, dataFine);
 		model.addAttribute("autoDisponibili", autoPrenotabili);
+		session.setAttribute("dataInizio", dataInizio);
+		session.setAttribute("dataFine", dataFine);
+
 		return "prenopossibili";
 
 	}
@@ -198,11 +158,14 @@ public class PrenotazioneController {
 
 		prenotazione.setDipendente((Dipendente) session.getAttribute("loggedUser"));
 		prenotazione.setCausale(causaleDao.findById(3).get());
+		Date d1 = (Date) session.getAttribute("dataInizio");
+		Date d2 = (Date) session.getAttribute("dataFine");
 		prenotazione.setDataInizio(d1);
 		prenotazione.setDataFine(d2);
 		prenotazioneDao.save(prenotazione);
-		d1 = null;
-		d2 = null;
+
+		session.removeAttribute("dataInizio");
+		session.removeAttribute("dataFine");
 		return "primapagina";
 	}
 
@@ -212,32 +175,33 @@ public class PrenotazioneController {
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = d.getId();
 
-		ultimaDelDip = prenotazioneDao.ultima(idDip);
+		Prenotazione precedente = null;
+		Prenotazione ultima = prenotazioneDao.ultima(idDip);
 
-		if (ultimaDelDip != null)
-			precedente = prenotazioneDao.precedente(ultimaDelDip.getAuto().getId());
+		if (ultima != null)
+			precedente = prenotazioneDao.precedente(ultima.getAuto().getId());
 
-		// caricare la precedente
-		model.addAttribute("ultima", ultimaDelDip);
+		session.setAttribute("ultima", ultima);
+		session.setAttribute("precedente", precedente);
 		return "inserimentoKm";
 	}
 
 	@RequestMapping(value = "/kminseriti", method = RequestMethod.POST)
 	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione) {
 
+		Prenotazione ultimaDelDip = (Prenotazione) session.getAttribute("ultima");
+		Prenotazione precedente = (Prenotazione) session.getAttribute("precedente");
+
 		if (precedente != null && prenotazione.getKm() <= precedente.getKm()
 				&& ultimaDelDip.getDataFine().after(precedente.getDataFine()))
 			return "erroreKm";
 
-		prenotazione.setId(ultimaDelDip.getId());
-		prenotazione.setDipendente(ultimaDelDip.getDipendente());
-		prenotazione.setAuto(ultimaDelDip.getAuto());
-		prenotazione.setCausale(ultimaDelDip.getCausale());
-		prenotazione.setDataInizio(ultimaDelDip.getDataInizio());
-		prenotazione.setDataFine(ultimaDelDip.getDataFine());
+		ultimaDelDip.setKm(prenotazione.getKm());
+		prenotazioneDao.save(ultimaDelDip);
 
-		prenotazioneDao.save(prenotazione);
-		precedente = null;
+		session.removeAttribute("ultima");
+		session.removeAttribute("precedente");
+
 		return "primapagina";
 
 	}

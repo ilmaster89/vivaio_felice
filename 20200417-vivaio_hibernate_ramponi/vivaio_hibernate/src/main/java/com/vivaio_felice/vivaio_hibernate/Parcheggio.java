@@ -90,7 +90,7 @@ public class Parcheggio {
 	}
 
 	public LocalDate dataTrasferimento(Integer idSede) {
-		if (this.getDataParch().isAfter(LocalDate.now()) && this.getSede().getId() != idSede)
+		if (this.getSede().getId() != idSede)
 			return this.getDataParch();
 		return null;
 	}

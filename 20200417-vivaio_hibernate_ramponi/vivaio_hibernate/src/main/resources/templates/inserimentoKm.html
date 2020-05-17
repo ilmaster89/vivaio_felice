@@ -22,33 +22,33 @@
 	<section id="central">
 		<div th:replace="fragments/menu :: menu"></div>
 		<tr>
-			<td th:if="${ultima == null}">Non hai prenotazioni in
+			<td th:if="${session.ultima == null}">Non hai prenotazioni in
 				sospeso!</td>
 		</tr>
 
 
 		<div>
-			<table th:if="${ultima !=null}">
+			<table th:if="${session.ultima !=null}">
 
 				<tr>
 					<td>Devi ancora inserire i km per la seguente prenotazione:</td>
 				</tr>
 				<tr>
-					<td th:text="${ultima.auto.marca}"></td>
+					<td th:text="${session.ultima.auto.marca}"></td>
 				</tr>
 				<tr>
-					<td th:text="${ultima.auto.modello}"></td>
+					<td th:text="${session.ultima.auto.modello}"></td>
 				</tr>
 				<tr>
-					<td th:text="${ultima.auto.targa}"></td>
+					<td th:text="${session.ultima.auto.targa}"></td>
 				</tr>
 				<tr>
 					<td>Inizio prenotazione:</td>
-					<td th:text="${ultima.dataInizio}"></td>
+					<td th:text="${session.ultima.dataInizio}"></td>
 				</tr>
 				<tr>
 					<td>Fine prenotazione:</td>
-					<td th:text="${ultima.dataFine}"></td>
+					<td th:text="${session.ultima.dataFine}"></td>
 				</tr>
 				<tr>
 					<form th:action="@{/kminseriti}" th:object="${prenotazione}"

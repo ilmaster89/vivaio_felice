@@ -1,6 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate.dao;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,5 +30,8 @@ public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 
 	@Query(value = "select * from prenotazioni where auto_id = :idAuto and km is not null order by id desc limit 1", nativeQuery = true)
 	public Prenotazione precedente(Integer idAuto);
+
+	@Query(value = "select * from prenotazioni where auto_id = :idAuto and data_inizio >= :dataInizio", nativeQuery = true)
+	public List<Prenotazione> prenoAuto(Integer idAuto, Date dataInizio);
 
 }

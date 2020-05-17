@@ -22,4 +22,7 @@ public interface ParcheggioDao extends CrudRepository<Parcheggio, Integer> {
 	@Query("select s from Parcheggio s where auto_id = :idAuto and data_parch = :data")
 	public Parcheggio parchDomani(Integer idAuto, LocalDate data);
 
+	@Query(value = "select * from parcheggio where auto_id = :idAuto order by id desc limit 1", nativeQuery = true)
+	public Parcheggio ultimoParch(Integer idAuto);
+
 }
