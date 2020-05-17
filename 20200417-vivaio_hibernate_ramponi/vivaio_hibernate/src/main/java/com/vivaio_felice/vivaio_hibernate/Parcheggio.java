@@ -1,8 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

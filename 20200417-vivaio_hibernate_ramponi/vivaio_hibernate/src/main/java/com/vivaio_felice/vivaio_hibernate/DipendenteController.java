@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
-import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteDao;
-import com.vivaio_felice.vivaio_hibernate.dao.LivelloJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.LivelloDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
@@ -35,13 +34,11 @@ public class DipendenteController {
 	@Autowired
 	private SedeDipendenteDao sedeDipendenteDao;
 	@Autowired
-	private LivelloJdbcDao livelloJdbcDao;
+	private LivelloDao livelloDao;
 	@Autowired
 	private PossessoPatentiDao possPatDao;
 	@Autowired
 	private PatenteDao patenteDao;
-	@Autowired
-	AutoJdbcDao autoJdbcDao;
 	@Autowired
 	ParcheggioDao parcheggioDao;
 	@Autowired
@@ -59,10 +56,6 @@ public class DipendenteController {
 	@RequestMapping(value = "/logged", method = RequestMethod.POST)
 	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password, Model model,
 			HttpSession session) {
-//		List<Dipendente> dipList = dipendenteJdbcRepository.login(user_name, password);
-//		
-//		if (dipList.size() == 0)
-//			return "redirect:/";
 
 		Dipendente logged = dipendenteDao.login(user_name, password);
 
@@ -75,7 +68,7 @@ public class DipendenteController {
 			session.setAttribute("sede", idSede);
 			session.setAttribute("loggedUser", logged);
 			Sede questasede = sedeDao.findById(idSede).get();
-			List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 
 			for (Auto a : autoInSede) {
 
@@ -115,7 +108,7 @@ public class DipendenteController {
 	@RequestMapping("/insdip")
 	public String insdip(HttpSession session, Model model, Dipendente dipendente) {
 
-		model.addAttribute("livello", livelloJdbcDao.treLivelli());
+		model.addAttribute("livello", livelloDao.treLivelli(4));
 
 		return "inserimentoDipendenti";
 	}

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
@@ -29,7 +29,7 @@ public class ManutenzioneController {
 	@Autowired
 	PrenotazioneDao prenotazioneDao;
 	@Autowired
-	AutoJdbcDao autoJdbcDao;
+	AutoDao autoDao;
 	@Autowired
 	CausaleDao causaleDao;
 
@@ -37,18 +37,12 @@ public class ManutenzioneController {
 	public String manu(HttpSession session, Model model, Prenotazione prenotazione,
 			SpesaManutenzione spesaManutenzione) {
 
-		List<Causale> manutenzioni = new ArrayList<Causale>();
-
-		Causale c1 = causaleDao.findById(1).get();
-		Causale c2 = causaleDao.findById(2).get();
-
-		manutenzioni.add(c1);
-		manutenzioni.add(c2);
+		List<Causale> causali = causaleDao.causaliEccetto(3);
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 
-		model.addAttribute("causali", manutenzioni);
+		model.addAttribute("causali", causali);
 		model.addAttribute("autoInSede", autoInSede);
 		SpesaManutenzione sm = new SpesaManutenzione();
 		model.addAttribute("spesaManutenzione", sm);
@@ -78,7 +72,7 @@ public class ManutenzioneController {
 	public String spese(HttpSession session, Model model, SpesaManutenzione spesaManutenzione) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 		List<SpesaManutenzione> speseNonConfermate = new ArrayList<SpesaManutenzione>();
 
 		for (Auto a : autoInSede) {

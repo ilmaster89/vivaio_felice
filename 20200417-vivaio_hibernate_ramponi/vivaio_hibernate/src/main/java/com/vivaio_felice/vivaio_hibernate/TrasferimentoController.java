@@ -16,7 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
@@ -28,7 +28,7 @@ public class TrasferimentoController {
 	@Autowired
 	ParcheggioDao parcheggioDao;
 	@Autowired
-	AutoJdbcDao autoJdbcDao;
+	AutoDao autoDao;
 	@Autowired
 	SedeDao sedeDao;
 	@Autowired
@@ -55,7 +55,7 @@ public class TrasferimentoController {
 	public String toTrans(HttpSession session, Model model, Parcheggio parcheggio) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoJdbcDao.autoInSede(idSede);
+		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 		List<Auto> autoTrasferibili = new ArrayList<Auto>();
 		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
 		LocalDate trasf = null;

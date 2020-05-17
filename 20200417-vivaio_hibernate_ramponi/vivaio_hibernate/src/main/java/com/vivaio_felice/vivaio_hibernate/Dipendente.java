@@ -2,7 +2,6 @@ package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;

@@ -13,17 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
+import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
-import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneJdbcDao;
 
 @Controller
 public class PrenotazioneController {
@@ -72,15 +70,13 @@ public class PrenotazioneController {
 	public static Prenotazione ultimaDelDip = null;
 
 	@Autowired
-	AutoJdbcDao autoJdbcDao;
+	AutoDao autoDao;
 	@Autowired
 	PrenotazioneDao prenotazioneDao;
 	@Autowired
 	CausaleDao causaleDao;
 	@Autowired
 	ParcheggioDao parcheggioDao;
-	@Autowired
-	PrenotazioneJdbcDao prenoJdbcDao;
 	@Autowired
 	PossessoPatentiDao posPatDao;
 
@@ -118,7 +114,7 @@ public class PrenotazioneController {
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()));
 		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()));
-		List<Auto> autoNellaSede = autoJdbcDao.autoInSede(idSede);
+		List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
 		List<Prenotazione> prenotazioniSingolaAuto = new ArrayList<Prenotazione>();
 		List<Auto> autoPrenotabili = new ArrayList<Auto>();
 		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
@@ -211,20 +207,15 @@ public class PrenotazioneController {
 	}
 
 	@RequestMapping("/km")
-	public String insKm(HttpSession session, Model model,  Prenotazione prenotazione) {
+	public String insKm(HttpSession session, Model model, Prenotazione prenotazione) {
 
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = d.getId();
-		List<Prenotazione> ultime = prenoJdbcDao.ultima(idDip);
-		ultimaDelDip = new Prenotazione();
-		precedente = new Prenotazione();
 
-		if (!ultime.isEmpty()) {
-			ultimaDelDip = ultime.get(0);
-			List<Prenotazione> precedenti = prenoJdbcDao.precedente(ultimaDelDip.getAuto().getId());
-			if (!precedenti.isEmpty())
-				precedente = precedenti.get(0);
-		}
+		ultimaDelDip = prenotazioneDao.ultima(idDip);
+
+		if (ultimaDelDip != null)
+			precedente = prenotazioneDao.precedente(ultimaDelDip.getAuto().getId());
 
 		// caricare la precedente
 		model.addAttribute("ultima", ultimaDelDip);
@@ -232,9 +223,10 @@ public class PrenotazioneController {
 	}
 
 	@RequestMapping(value = "/kminseriti", method = RequestMethod.POST)
-	public String inseriti(HttpSession session, Model model,  Prenotazione prenotazione) {
+	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione) {
 
-		if (prenotazione.getKm() <= precedente.getKm() && ultimaDelDip.getDataFine().after(precedente.getDataFine()))
+		if (precedente != null && prenotazione.getKm() <= precedente.getKm()
+				&& ultimaDelDip.getDataFine().after(precedente.getDataFine()))
 			return "erroreKm";
 
 		prenotazione.setId(ultimaDelDip.getId());

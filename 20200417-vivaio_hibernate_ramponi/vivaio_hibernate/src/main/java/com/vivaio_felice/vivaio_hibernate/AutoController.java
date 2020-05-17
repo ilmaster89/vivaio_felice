@@ -2,8 +2,6 @@ package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
-import com.vivaio_felice.vivaio_hibernate.dao.AutoJdbcDao;
+
 import com.vivaio_felice.vivaio_hibernate.dao.CarburanteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
@@ -31,8 +29,7 @@ public class AutoController {
 	PatenteDao patenteDao;
 	@Autowired
 	CarburanteDao carburanteDao;
-	@Autowired
-	AutoJdbcDao autoJdbcDao;
+
 	@Autowired
 	SedeDao sedeDao;
 
