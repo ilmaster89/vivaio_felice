@@ -1,18 +1,78 @@
+/*Pagina CSS per visualizzazione div della sezione centrale della pagina
+dove saranno presenti tutti i dati */
 .menuPrenotaAuto {
-	height : 400px;
-	width: 800px;
-	margin: 75px 0 0 50px;
+	height: 470px;
+	width: 1430px;
+	margin: 40px 0 0 40px;
 	background-color: cornsilk;
-	border-radius: 17%;
 	border: 2px solid black;
-	height: 400px;
 }
 
-.inserimentoDati {
-	font-size: large;
-	margin-left: 70px;
+/*titolo di descrizione pagina*/
+.titleHdue {
+	text-align: center;
+	text-decoration: underline;
 }
 
-.visualizzaData {
-	margin: 50px 0 0 200px;
+/*commento per aiuto decisionale al di sotto del titolo della pagina*/
+#comment {
+	margin-left: 22%;
+}
+
+/*prima tabella superiore dove si visualizzaranno i dati*/
+.firstTable {
+	height: 300px;
+	width: 800px;
+	border: 2px #0080ff inset;
+	margin-left: 22%;
+}
+
+/*classi per posizionamento campi descrittivi td nella table centrale*/
+.closeShort {
+	width: 100px;
+	padding-left: 20px;
+}
+
+.closeLong {
+	width: 150px;
+	padding-left: 20px;
+}
+
+.closeLx2 {
+	width: 350px;
+	padding-left: 20px;
+}
+
+/*CSS per pulsante di INPUT. RESET e SUBMIT*/
+input[type=reset] {
+	background-color: #0080ff;
+	color: white;
+	padding: 8px 0;
+	border: 1.5px black solid;
+	border-radius: 4px;
+	cursor: pointer;
+	width: 100px;
+	text-align: center;
+}
+
+input[type=submit] {
+	background-color: #4CAF50;
+	color: white;
+	margin-left: 585px;
+	margin-bottom: 50px;
+	margin-top: 12px;
+	padding: 12px 0;
+	border: 1.5px black solid;
+	border-radius: 4px;
+	cursor: pointer;
+	width: 200px;
+	text-align: center;
+}
+
+input[type=date] {
+	cursor: pointer;
+}
+
+select {
+	cursor: pointer;
 }

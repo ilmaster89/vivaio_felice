@@ -8,8 +8,6 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
-
-<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -21,45 +19,51 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-
+		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/indietro">Torna Indietro</a>
+			<a href="/prenota">Torna Indietro</a>
 		</button>
 
 		<div class="menuPrenotaAuto">
 			<form th:action="@{/confermadiprenotazione}"
 				th:object="${prenotazione}" method="post">
-				<table>
+				<table class="firstTable">
 					<th:block>
-						<tr th:if="${autoDisponibili.isEmpty()}">
-							<td>Nelle date da te richieste non ci sono auto disponibili.</td>
-						</tr>
+
+						<h2 class="titleHdue">Prenotazione Auto</h2>
+
+						<p id="comment" th:if="${!autoDisponibili.isEmpty()}">Scegli
+							un auto in linea con i tuoi bisogni lavorativi:</p>
+
+						<p id="comment" th:if="${autoDisponibili.isEmpty()}">Nelle date da te richieste non ci sono
+								auto disponibili:</p>
+							
+						<!-- se ci sono auto disponibili verrà visualizzata una scelta tra le possibili auto da prenotare -->
 						<tr th:if="${!autoDisponibili.isEmpty()}">
-							<td>Auto Disponibili in base alle date da te richieste:</td>
-
-						</tr>
-
-						<tr th:if="${!autoDisponibili.isEmpty()}">
-
+							<td class="closeLx2">Auto disponibili in base alle date da
+								te richieste:</td>
 							<td><select th:field="*{auto}">
 									<option th:each="a : ${autoDisponibili}" th:value="${a.id}"
 										th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
 							</select></td>
-
-
 						</tr>
+
+						<!-- se non ci sono auto disponibili verrà visualizzato un messaggio di non disponibilità-->
 						<tr th:if="${autoDisponibili.isEmpty()}">
-							<button id="BottoneCambio">
-								<a href="/torna">Torna Indietro</a>
-							</button>
-						</tr>
-						<tr th:if="${!autoDisponibili.isEmpty()}">
-							<td><input type="submit" value="Scegli quest'auto"></td>
+							<td class="closeLx2">Prova a cambiare l'orario di prenotazione, altrimenti 
+							rivolgiti ad un superiore.</td>
 						</tr>
 					</th:block>
 				</table>
+				<section>
+					<tr th:if="${!autoDisponibili.isEmpty()}">
+						<!-- Pulsante per il POST, CSS incorporato in ogni pagina -->
+						<td><input type="submit" value="Scegli quest'auto"></td>
+					</tr>
+				</section>
 			</form>
 		</div>
 	</section>

@@ -7,8 +7,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-
-<script src="PopUp.js"></script>
+<link rel="stylesheet" href="styleMenuPrenota.css">
 </head>
 
 <body>
@@ -20,63 +19,72 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
-		<tr>
-			<td th:if="${session.ultima == null}">Non hai prenotazioni in
-				sospeso!</td>
-		</tr>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+		<!-- parte centrale della pagina dove verranno visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/kminseriti}" th:object="${prenotazione}"
+				method="post">
+				<th:block>
 
 
-		<div>
-			<table th:if="${session.ultima !=null}">
+					<table class="firstTable">
 
-				<tr>
-					<td>Devi ancora inserire i km per la seguente prenotazione:</td>
-				</tr>
-				<tr>
-					<td th:text="${session.ultima.auto.marca}"></td>
-				</tr>
-				<tr>
-					<td th:text="${session.ultima.auto.modello}"></td>
-				</tr>
-				<tr>
-					<td th:text="${session.ultima.auto.targa}"></td>
-				</tr>
-				<tr>
-					<td>Inizio prenotazione:</td>
-					<td th:text="${session.ultima.dataInizio}"></td>
-				</tr>
-				<tr>
-					<td>Fine prenotazione:</td>
-					<td th:text="${session.ultima.dataFine}"></td>
-				</tr>
-				<tr>
-					<form th:action="@{/kminseriti}" th:object="${prenotazione}"
-						method="post">
-						<table>
+						<h2 class="titleHdue">Inserimento Km</h2>
+
+
+						<p id="comment" th:if="${ultima == null}">Non hai prenotazioni
+							in sospeso!</p>
+						<tr th:if="${ultima == null}">
+							<td class="closeShort">Non devi inserire il kilometraggio
+								per nessuna prenotazione!</td>
+						</tr>  
+						<table th:if="${ultima != null}">
+							<p id="comment">Devi ancora inserire i km per la seguente
+								prenotazione:</p>
+
+
 							<tr>
-								<td>Km attuali:</td>
+								<td class="closeLong">Marca:</td>
+								<td th:text="${ultima.auto.marca}"></td>
 							</tr>
 							<tr>
+								<td class="closeLong">Modello:</td>
+								<td th:text="${ultima.auto.modello}"></td>
+							</tr>
+							<tr>
+								<td class="closeLong">Targa:</td>
+								<td th:text="${ultima.auto.targa}"></td>
+							</tr>
+							<tr>
+								<td class="closeLong">Inizio prenotazione:</td>
+								<td th:text="${ultima.dataInizio}"></td>
+							</tr>
+							<tr>
+								<td class="closeLong">Fine prenotazione:</td>
+								<td th:text="${ultima.dataFine}"></td>
+							</tr>
+							<tr>
+								<td class="closeLong">Km attuali:</td>
 								<td><input type="text" th:field="*{km}"></td>
 							</tr>
-							<tr>
-								<td><input type="submit" value="Inserisci KM"></td>
-							</tr>
-
+							</th:block>
 						</table>
-					</form>
-				</tr>
-				</div>
-				<div></div>
+					</table>
+					<section>
+						<!-- Pulsante per il POST, CSS incorporato in ogni pagina -->
+						<input type="submit" value="Inserisci KM">
+					</section>
+			</form>
+		</div>
+	</section>
 
-				<button>
-					<a href="/indietro">Torna Indietro</a>
-				</button>
-				</section>
-
-				<footer>
-					<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
-				</footer>
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
 </body>
 </html>

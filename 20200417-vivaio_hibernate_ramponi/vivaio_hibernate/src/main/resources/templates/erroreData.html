@@ -5,7 +5,8 @@
 <title>Home</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
-<link rel="stylesheet" href="styleLog.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
 </head>
 
 <body>
@@ -18,18 +19,28 @@
 
 	<section id="central">
 
-		<div id="login">
-			<div id="lato">
-				<tr>
-					<td>Attenzione, la data di fine non può essere precedente a
-						quella di inizio.</td>
-				</tr>
-	</section>
-	<tr>
+		<!-- frammento per replicare la barra dei menu -->
+		<div th:replace="fragments/menu :: menu"></div>
+
+		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/torna">Torna Indietro</a>
+			<a href="/prenota">Torna Indietro</a>
 		</button>
-	</tr>
+
+		<div class="menuPrenotaAuto">
+			<table class="firstTable">
+				<th:block>
+					<h2 class="titleHdue">Errore Data</h2>
+					<p id="comment">Errore durante la prenotazione:</p>
+					<tr>
+						<td class="closeShort">Attenzione, probabilmente hai inserito
+							la data di fine prenotazione maggiore della data di inizio. Torna
+							alla pagina di prenotazione e riprova a prenotare</td>
+					</tr>
+			</table>
+		</div>
+	</section>
+
 	<footer>
 		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
 	</footer>

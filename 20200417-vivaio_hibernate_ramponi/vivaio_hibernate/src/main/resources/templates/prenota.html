@@ -8,9 +8,8 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
-
-<script src="PopUp.js"></script>
 </head>
+
 
 <body>
 	<header>
@@ -21,9 +20,10 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-
+		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
 		</button>
@@ -31,31 +31,28 @@
 		<div class="menuPrenotaAuto">
 			<form th:action="@{/richiestadiprenotazione}"
 				th:object="${prenotazione}" method="post">
-				<table>
+				<table class="firstTable">
 					<th:block>
-						<tr>
-							<td>Data di inizio:</td>
-						</tr>
+						<h2 class="titleHdue">Prenotazione Auto</h2>
+						<p id="comment">Scegli la data di inizio e la data di fine
+							della tua prenotazione</p>
 
 						<tr>
+							<td class="closeShort">Data di inizio:</td>
 							<td><input type="datetime" name="dataInizio"
 								th:field="*{dataInizio}" /></td>
-
-
-						</tr>
-						<tr>
-							<td>Data di fine:</td>
-						</tr>
-						<tr>
+						<!-- per visualizzazione inserimento date una sotto l'altra
+						suddividere i 2 TD in 2 diversi TR -->
+							<td class="closeShort">Data di fine:</td>
 							<td><input type="datetime" name="dataFine"
 								th:field="*{dataFine}" /></td>
-
-						</tr>
-						<tr>
-							<td><input type="submit" value="Richiedi auto disponibili"></td>
 						</tr>
 					</th:block>
 				</table>
+				<section>
+					<!-- Pulsante per il POST, CSS incorporato in ogni pagina -->
+					<input type="submit" value="Richiedi auto disponibili">
+				</section>
 			</form>
 		</div>
 	</section>

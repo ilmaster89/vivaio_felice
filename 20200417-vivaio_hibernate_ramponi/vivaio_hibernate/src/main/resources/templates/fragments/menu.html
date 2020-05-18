@@ -8,9 +8,6 @@
 			</ul>
 		</li>
 
-		<a onclick="myFunction()">
-			<li th:if="${!session.loggedUser.impiegato()}" id="about">&nbsp;Inserimenti</li>
-		</a>
 
 		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Inserimenti
 			<ul class="subitems">
@@ -19,9 +16,8 @@
 				<li class="subli"><a href="/inspat">Patente</a>
 			</ul>
 		</li>
-		<a onclick="myFunction()">
-			<li th:if="${!session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione</li>
-		</a>
+		
+		
 		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione
 			<ul class="subitems">
 				<li class="subli"><a href="/manu">Manutenzione</a></li>
@@ -30,13 +26,10 @@
 		</li>
 		<!-- if lv >= 3 -->
 		<li th:if="${session.loggedUser.responsabile()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
-		<a onclick="myFunction()">
-			<li th:if="${!session.loggedUser.responsabile()}" id="about">&nbsp;Trasferimenti</li>
-		</a>
+		
+			
 		<!-- if lv >= 2 -->
 		<li th:if="${session.loggedUser.responsabile()}"><a href="/dash">&nbsp;Dashboard</a></li>
-		<a onclick="myFunction()">
-			<li th:if="${!session.loggedUser.responsabile()}" id="about">&nbsp;Dashboard</li>
-		</a>
+		
 	</ul>
 </div>

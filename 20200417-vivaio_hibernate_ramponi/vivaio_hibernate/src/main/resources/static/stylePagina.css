@@ -7,8 +7,19 @@ body{
     background-color: greenyellow;
 }
 
+/*stile per titolo "VIVAIO FELICE"*/
 header{
     height: 150px;
+}
+h1{
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    float: left;
+    margin-top: 20px;
+    margin-bottom: 0;
+    margin-left: 7px;
+    font-size: 100px;
+    font-family:Georgia;
+    color: rgba(4, 212, 94, 0.932);
 }
 
 footer{
@@ -22,11 +33,14 @@ footer p{
     font-style: oblique;
 }
 
+/*classe per la parte centrale, sotto il menu, dove si visualizzano i dati.*/
 #central{
     height: 600px;
     border-top: 3px solid green;
 }
 
+
+/*immagine logo del sito*/
 img{
     float: left;
     height: 140px;
@@ -36,15 +50,4 @@ img{
     margin-top: 80px;
     margin-left: 37%;
     position: absolute;
-}
-
-h1{
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    float: left;
-    margin-top: 20px;
-    margin-bottom: 0;
-    margin-left: 7px;
-    font-size: 100px;
-    font-family:Georgia;
-    color: rgba(4, 212, 94, 0.932);
 }

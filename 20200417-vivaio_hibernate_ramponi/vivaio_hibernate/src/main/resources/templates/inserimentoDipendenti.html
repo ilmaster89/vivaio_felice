@@ -7,8 +7,8 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
 
-<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -20,68 +20,72 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-		<form th:action="@{/insert}" th:object="${dipendente}" method="post">
-			<table>
-				<th:block>
-					<td><input type="hidden" th:field="*{id}"></td>
-					<td><input type="hidden" th:field="*{sedeDipendente.sede.id}"
-						th:value="${sede}"></td>
-					<tr>
-						<td>Livello:</td>
-					</tr>
-
-					<tr>
-						<td><select th:field="*{livello}">
-								<option th:each="l : ${livello}" th:value="${l.id}"
-									th:text="${l.mansione}"></option>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Nome:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{nome}" /></td>
-
-					</tr>
-					<tr>
-						<td>Cognome:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{cognome}" /></td>
-
-					</tr>
-					<tr>
-						<td>User:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{user}" /></td>
-
-					</tr>
-					<tr>
-						<td>Pass:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{password}" /></td>
-					</tr>
-					<tr>
-						<td><input type="submit" value="Inserisci Dipendente"></td>
-						<td><input type="reset" value="Resetta"></td>
-					</tr>
-					<tr>
-						<td><a href="/listaDIP">Lista dei dipendenti della tua
-								sede</a></td>
-					</tr>
-
-				</th:block>
-			</table>
-		</form>
-
-		<button>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
 		</button>
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/insert}" th:object="${dipendente}" method="post">
+				<table class="firstTable">
+					<th:block>
 
+						<h2 class="titleHdue">Inserimento Dipendente</h2>
+						<p id="comment">Inserisci i relativi campi per creare una
+							nuovo dipendente:</p>
+
+						<td><input type="hidden" th:field="*{id}"></td>
+						<td><input type="hidden" th:field="*{sedeDipendente.sede.id}"
+							th:value="${sede}"></td>
+
+						<tr>
+							<td class="closeShort">Livello:</td>
+							<td class="closeShort"><select th:field="*{livello}">
+									<option th:each="l : ${livello}" th:value="${l.id}"
+										th:text="${l.mansione}"></option>
+							</select></td>
+						</tr>
+
+						<tr>
+							<td class="closeShort">Nome:</td>
+							<td class="closeShort"><input type="text" th:field="*{nome}" /></td>
+
+							<td class="closeShort">Cognome:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{cognome}" /></td>
+						</tr>
+
+						<tr>
+							<td class="closeShort">User:</td>
+							<td class="closeShort"><input type="text" th:field="*{user}" /></td>
+
+							<td class="closeShort">Password:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{password}" /></td>
+						</tr>
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+						<tr>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a href="/listaDIP">Lista dei dipendenti della tua
+									sede</a></td>
+						</tr>
+
+					</th:block>
+				</table>
+				<section>
+					<input type="submit" value="Inserisci Dipendente">
+				</section>
+			</form>
+		</div>
 	</section>
 
 	<footer>

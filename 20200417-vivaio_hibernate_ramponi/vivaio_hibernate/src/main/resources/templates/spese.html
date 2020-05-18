@@ -7,8 +7,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-
-<script src="PopUp.js"></script>
+<link rel="stylesheet" href="styleMenuPrenota.css">
 </head>
 
 <body>
@@ -20,48 +19,54 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
-		<div>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
 			<form th:action="@{/spesainserita}" th:object="${spesaManutenzione}"
 				method="post">
-				<table>
+				<table class="firstTable">
 					<th:block>
 
-						<tr>
-							<td>Spesa da confermare:</td>
-						</tr>
+						<h2 class="titleHdue">Inserimento Spese</h2>
+						<p id="comment">Seleziona l'auto a cui assegnare la spesa ed
+							una descrizione:</p>
 
 						<tr>
-							<td><select th:field="*{id}">
+							<td class="closeShort">Spesa da confermare:</td>
+							<td class="closeShort"><select th:field="*{id}">
 									<option th:each="s : ${speseDaConfermare}" th:value="${s.id}"
 										th:text="${s.auto.marca + '&nbsp;' + s.auto.modello + '&nbsp;' + s.auto.targa + '&nbsp;' + s.descrizione}"></option>
 							</select></td>
 						</tr>
 						<tr>
-							<td>Dettaglio:</td>
+							<td class="closeShort">Dettaglio:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{dettaglio}" />
 						</tr>
 						<tr>
-							<td><input type="text" th:field="*{dettaglio}" />
-						</tr>
-						<tr>
-							<td>Spesa:</td>
-						</tr>
-						<tr>
-							<td><input type="text" th:field="*{spesa}" /></td>
+							<td class="closeShort">Spesa:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{spesa}" /></td>
 						</tr>
 
+						<!-- Pulsante per resettare i campi di inserimento -->
 						<tr>
-							<td><input type="submit" value="Conferma i dati inseriti"></td>
-							<td><input type="reset" value="Resetta"></td>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
 						</tr>
 					</th:block>
 				</table>
+				<section>
+					<input type="submit" value="Conferma i dati inseriti">
+				</section>
 			</form>
 		</div>
-		<button>
-			<a href="/indietro">Torna Indietro</a>
-		</button>
-
 	</section>
 
 	<footer>

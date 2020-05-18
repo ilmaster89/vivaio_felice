@@ -7,8 +7,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-
-<script src="PopUp.js"></script>
+<link rel="stylesheet" href="styleMenuPrenota.css">
 </head>
 
 <body>
@@ -20,85 +19,84 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-		<form th:action="@{/insertAuto}" th:object="${auto}" method="post">
-			<table>
-				<th:block>
-					<td><input type="hidden" th:field="*{id}"></td>
-					<tr>
-						<td>Marca:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{marca}" /></td>
-
-					</tr>
-					<tr>
-						<td>Modello:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{modello}" /></td>
-
-					</tr>
-					<tr>
-						<td>Targa:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{targa}" /></td>
-					</tr>
-					<tr>
-					<tr>
-						<td>Carburante:</td>
-					</tr>
-					<tr>
-
-						<td><select th:field="*{carburante}">
-								<option th:each="c : ${carburanti}" th:value="${c.id}"
-									th:text="${c.tipologia}"></option>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Patente necessaria:</td>
-					</tr>
-					<tr>
-						<td><select th:field="*{patente}">
-								<option th:each="p : ${patenti}" th:value="${p.id}"
-									th:text="${p.tipologia}"></option>
-						</select></td>
-					</tr>
-					<td>Kw:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{kw}" /></td>
-
-					</tr>
-					<tr>
-						<td>Tara:</td>
-					</tr>
-					<tr>
-						<td><input type="text" th:field="*{tara}" /></td>
-					</tr>
-					<tr>
-						<td>Data ultima assicurazione:</td>
-					</tr>
-					<tr>
-						<td><input type="date" th:field="*{dataAss}" /></td>
-					</tr>
-					<tr>
-						<td><input type="submit" value="Inserisci Auto"></td>
-						<td><input type="reset" value="Resetta"></td>
-					</tr>
-					<tr>
-						<td><a href="/listaAUTO">Lista delle auto presenti nella
-								tua sede</a></td>
-					</tr>
-				</th:block>
-			</table>
-		</form>
-		<button>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
 		</button>
 
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/insertAuto}" th:object="${auto}" method="post">
+				<th:block>
+					<table class="firstTable">
+
+						<h2 class="titleHdue">Inserimento Auto</h2>
+						<p id="comment">Inserisci i relativi campi per creare una
+							nuova auto:</p>
+
+						<td><input type="hidden" th:field="*{id}"></td>
+						<tr>
+							<td class="closeShort">Marca:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{marca}" /></td>
+
+							<td class="closeShort">Modello:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{modello}" /></td>
+
+							<td class="closeShort">Targa:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{targa}" /></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Carburante:</td>
+							<td class="closeShort"><select th:field="*{carburante}">
+									<option th:each="c : ${carburanti}" th:value="${c.id}"
+										th:text="${c.tipologia}"></option>
+							</select></td>
+
+							<td class="closeShort">Patente necessaria:</td>
+							<td class="closeShort"><select th:field="*{patente}">
+									<option th:each="p : ${patenti}" th:value="${p.id}"
+										th:text="${p.tipologia}"></option>
+							</select></td>
+						</tr>
+
+						<tr>
+							<td class="closeShort">Kw:</td>
+							<td class="closeShort"><input type="text" th:field="*{kw}" /></td>
+							<td class="closeShort">Tara:</td>
+							<td class="closeShort"><input type="text" th:field="*{tara}" /></td>
+						</tr>
+
+						<tr>
+							<td class="closeLong">Data ultima assicurazione:</td>
+							<td class="closeShort"><input type="date"
+								th:field="*{dataAss}" /></td>
+						</tr>
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+						<tr>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="closeLx2"><a href="/listaAUTO">Lista delle
+									auto presenti nella tua sede</a></td>
+						</tr>
+
+						</th:block>
+					</table>
+					<section>
+						<input type="submit" value="Inserisci Auto">
+					</section>
+			</form>
+		</div>
 	</section>
 
 	<footer>

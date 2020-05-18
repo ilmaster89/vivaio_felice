@@ -7,8 +7,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-
-<script src="PopUp.js"></script>
+<link rel="stylesheet" href="styleMenuPrenota.css">
 </head>
 
 <body>
@@ -20,66 +19,68 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-		<form th:action="@{/confermamanutenzione}" th:object="${prenotazione}"
-			method="post">
-			<table>
-				<th:block>
-
-					<tr>
-						<td>Auto da riparare:</td>
-					</tr>
-
-					<tr>
-						<td><select th:field="*{auto}">
-								<option th:each="a : ${autoInSede}" th:value="${a.id}"
-									th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Causale:</td>
-					</tr>
-					<tr>
-						<td><select th:field="*{causale}">
-								<option th:each="c : ${causali}" th:value="${c.id}"
-									th:text="${c.descrizione}"></option>
-						</select></td>
-
-					</tr>
-					<tr>
-						<td>Motivazione:</td>
-					</tr>
-					<tr>
-						<td><input type="text"
-							th:value="${spesaManutenzione.descrizione}" name="descrizione" /></td>
-					</tr>
-					<tr>
-						<td>Data di inizio:</td>
-					</tr>
-
-					<tr>
-						<td><input type="datetime" name="dataInizio"
-							th:field="*{dataInizio}" /></td>
-					</tr>
-					<tr>
-						<td>Data di fine (se nota):</td>
-					</tr>
-					<tr>
-						<td><input type="datetime" name="dataFine"
-							th:field="*{dataFine}" /></td>
-					</tr>
-					<tr>
-						<td><input type="submit" value="Prenota manutenzione"></td>
-						<td><input type="reset" value="Resetta"></td>
-					</tr>
-				</th:block>
-			</table>
-		</form>	
-
-		<button>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
 		</button>
+
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/confermamanutenzione}"
+				th:object="${prenotazione}" method="post">
+				<table class="firstTable">
+					<th:block>
+
+						<h2 class="titleHdue">Prenotazione Manutenzione</h2>
+						<p id="comment">Selezione l'auto da riparare, inserisci la
+							motivazione e le date in cui non sarà disponibile utilizzarla:</p>
+
+						<tr>
+							<td class="closeShort">Auto da riparare:</td>
+							<td class="closeShort"><select th:field="*{auto}">
+									<option th:each="a : ${autoInSede}" th:value="${a.id}"
+										th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Causale:</td>
+							<td class="closeShort"><select th:field="*{causale}">
+									<option th:each="c : ${causali}" th:value="${c.id}"
+										th:text="${c.descrizione}"></option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Motivazione:</td>
+							<td class="closeShort"><input type="text"
+								th:value="${spesaManutenzione.descrizione}" name="descrizione" /></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Data di inizio:</td>
+							<td class="closeShort"><input type="datetime"
+								name="dataInizio" th:field="*{dataInizio}" /></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Data di fine (se nota):</td>
+							<td class="closeShort"><input type="datetime"
+								name="dataFine" th:field="*{dataFine}" /></td>
+						</tr>
+						
+						<!-- Pulsante per resettare i campi di inserimento -->
+						<tr>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
+						</tr>
+					</th:block>
+				</table>
+				<section>
+					<input class="pulsantePost" type="submit"
+						value="Prenota manutenzione">
+				</section>
+			</form>
+		</div>
 	</section>
 
 	<footer>

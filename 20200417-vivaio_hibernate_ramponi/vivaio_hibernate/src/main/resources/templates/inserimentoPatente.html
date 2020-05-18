@@ -7,8 +7,8 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
 
-<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -20,53 +20,61 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-		<form th:action="@{/patenteInserita}" th:object="${possessoPatenti}"
-			method="post">
-			<table>
-				<th:block>
-					<td><input type="hidden" th:field="*{id}"></td>
-					<tr>
-						<td>Dipendente:</td>
-					</tr>
 
-					<tr>
-						<td><select th:field="*{dipendente}">
-								<option th:each="d : ${dipendenti}"
-									th:value="${d.dipendente.id}"
-									th:text="${d.dipendente.nome + '&nbsp;' + d.dipendente.cognome}"></option>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Patente:</td>
-					</tr>
-					<tr>
-						<td><select th:field="*{patente}">
-								<option th:each="p: ${patenti}" th:value="${p.id}"
-									th:text="${p.tipologia}"></option>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Data Ottenimento:</td>
-					</tr>
-					<tr>
-						<td><input type="date" th:field="*{dataPoss}" /></td>
-
-					</tr>
-					<tr>
-						<td><input type="submit" value="Accetta modifiche"></td>
-						<td><input type="reset" value="Resetta"></td>
-					</tr>
-
-				</th:block>
-			</table>
-		</form>
-
-		<button>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
 		</button>
 
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/patenteInserita}" th:object="${possessoPatenti}"
+				method="post">
+				<th:block>
+					<table class="firstTable">
+
+						<h2 class="titleHdue">Inserimento Patente</h2>
+						<p id="comment">Seleziona il dipendente desiderato ed
+							inserisci la tipologia di patente con relativa data di
+							ottenimento:</p>
+
+						<td><input type="hidden" th:field="*{id}"></td>
+						<tr>
+							<td class="closeShort">Dipendente:</td>
+							<td class="closeShort"><select th:field="*{dipendente}">
+									<option th:each="d : ${dipendenti}"
+										th:value="${d.dipendente.id}"
+										th:text="${d.dipendente.nome + '&nbsp;' + d.dipendente.cognome}"></option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Patente:</td>
+							<td class="closeShort"><select th:field="*{patente}">
+									<option th:each="p: ${patenti}" th:value="${p.id}"
+										th:text="${p.tipologia}"></option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Data Ottenimento:</td>
+							<td class="closeShort"><input type="date"
+								th:field="*{dataPoss}" /></td>
+						</tr>
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+						<tr>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
+						</tr>
+						</th:block>
+					</table>
+					<section>
+						<input type="submit" value="Accetta modifiche">
+					</section>
+			</form>
+		</div>
 	</section>
 
 	<footer>
