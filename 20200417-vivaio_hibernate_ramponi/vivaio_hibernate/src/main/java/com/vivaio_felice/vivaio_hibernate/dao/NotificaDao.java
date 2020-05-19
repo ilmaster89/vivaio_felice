@@ -19,4 +19,7 @@ public interface NotificaDao extends CrudRepository<Notifica, Integer> {
 	@Query("select s from Notifica s where dipendente_id = :idDip and conferma = 0")
 	public List<Notifica> notificheDip(Integer idDip);
 
+	@Query("select s from Notifica s where id = :id")
+	public Notifica notDaId(Integer id);
+
 }

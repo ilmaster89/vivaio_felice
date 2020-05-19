@@ -57,13 +57,11 @@ public class TrasferimentoController {
 		Integer idSede = (Integer) session.getAttribute("sede");
 		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 		List<Auto> autoTrasferibili = new ArrayList<Auto>();
-		List<Parcheggio> parcheggiAuto = new ArrayList<Parcheggio>();
 		LocalDate trasf = null;
 
 		for (Auto a : autoInSede) {
-			parcheggiAuto = parcheggioDao.findByAutoId(a.getId());
 
-			trasf = parcheggiAuto.get(parcheggiAuto.size() - 1).dataTrasferimento(idSede);
+			trasf = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
 
 			if (trasf == null)
 				autoTrasferibili.add(a);

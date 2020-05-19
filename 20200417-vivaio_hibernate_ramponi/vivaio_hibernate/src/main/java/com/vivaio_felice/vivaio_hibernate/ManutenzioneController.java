@@ -37,13 +37,9 @@ public class ManutenzioneController {
 	public String manu(HttpSession session, Model model, Prenotazione prenotazione,
 			SpesaManutenzione spesaManutenzione) {
 
-		List<Causale> causali = causaleDao.causaliEccetto(3);
+		model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
+		model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
 
-		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
-
-		model.addAttribute("causali", causali);
-		model.addAttribute("autoInSede", autoInSede);
 		SpesaManutenzione sm = new SpesaManutenzione();
 		model.addAttribute("spesaManutenzione", sm);
 
@@ -91,10 +87,8 @@ public class ManutenzioneController {
 	@RequestMapping(value = "/spesainserita", method = RequestMethod.POST)
 	public String spesaInserita(HttpSession session, Model model, SpesaManutenzione spesaManutenzione) {
 
-		SpesaManutenzione spesaConfermata = spesaManutenzioneDao.findById(spesaManutenzione.getId()).get();
-		ZoneId dzi = ZoneId.systemDefault();
-		Date ora = Date.from(LocalDate.now().atStartOfDay(dzi).toInstant());
-		spesaConfermata.setDataSpesa(ora);
+		SpesaManutenzione spesaConfermata = spesaManutenzioneDao.spesaDaId(spesaManutenzione.getId());
+		spesaConfermata.setDataSpesa(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		spesaConfermata.setSpesa(spesaManutenzione.getSpesa());
 		spesaConfermata.setDettaglio(spesaManutenzione.getDettaglio());
 		spesaManutenzioneDao.save(spesaConfermata);

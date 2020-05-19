@@ -28,10 +28,12 @@ public class Auto {
 
 	@NotNull
 	@OneToOne
+	@JoinColumn(name = "patente_id")
 	Patente patente;
 
 	@NotNull
 	@OneToOne
+	@JoinColumn(name = "carburante_id")
 	Carburante carburante;
 
 	@NotNull

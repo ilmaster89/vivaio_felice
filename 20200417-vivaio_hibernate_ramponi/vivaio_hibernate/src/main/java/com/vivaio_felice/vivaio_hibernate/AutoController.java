@@ -44,18 +44,10 @@ public class AutoController {
 	@RequestMapping(value = "/insertAuto", method = RequestMethod.POST)
 	public String autoInserita(HttpSession session, Model model, Auto auto, Parcheggio parcheggio) {
 
-		Integer idSede = (Integer) session.getAttribute("sede");
-		Sede questasede = sedeDao.findById(idSede).get();
-		parcheggio.setSede(questasede);
-		parcheggio.setDataParch(LocalDate.now());
-		parcheggio.setAuto(auto);
-		Parcheggio parchDom = new Parcheggio();
-		parchDom.setAuto(auto);
-		parchDom.setSede(questasede);
-		parchDom.setDataParch(LocalDate.now().plus(1, ChronoUnit.DAYS));
+		Sede questasede = sedeDao.sedeSingola((Integer) session.getAttribute("sede"));
 		autoDao.save(auto);
-		parcheggioDao.save(parcheggio);
-		parcheggioDao.save(parchDom);
+		parcheggioDao.save(new Parcheggio(auto, questasede, LocalDate.now()));
+		parcheggioDao.save(new Parcheggio(auto, questasede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
 		return "primapagina";
 
 	}

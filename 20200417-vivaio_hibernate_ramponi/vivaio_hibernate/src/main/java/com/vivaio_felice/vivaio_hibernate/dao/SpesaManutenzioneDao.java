@@ -11,7 +11,8 @@ import com.vivaio_felice.vivaio_hibernate.SpesaManutenzione;
 
 public interface SpesaManutenzioneDao extends CrudRepository<SpesaManutenzione, Integer> {
 
-	Optional<SpesaManutenzione> findById(Integer id);
+	@Query("select s from SpesaManutenzione s where id = :id")
+	SpesaManutenzione spesaDaId(Integer id);
 
 	List<SpesaManutenzione> findByAutoId(Integer id);
 

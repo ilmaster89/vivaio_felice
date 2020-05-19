@@ -17,4 +17,7 @@ public interface LivelloDao extends CrudRepository<Livello, Integer> {
 	@Query("select s from Livello s where id != :capo")
 	List<Livello> treLivelli(Integer capo);
 
+	@Query(value = "select id from livelli where mansione like '%titolare%'", nativeQuery = true)
+	public Integer capo();
+
 }

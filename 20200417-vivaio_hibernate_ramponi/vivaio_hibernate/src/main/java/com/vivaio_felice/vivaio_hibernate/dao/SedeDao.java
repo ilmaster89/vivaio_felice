@@ -19,4 +19,7 @@ public interface SedeDao extends CrudRepository<Sede, Integer> {
 	@Query("select s from Sede s where id != :idSede")
 	public List<Sede> sediEccetto(Integer idSede);
 
+	@Query("select s from Sede s where id = :idSede")
+	public Sede sedeSingola(Integer idSede);
+
 }

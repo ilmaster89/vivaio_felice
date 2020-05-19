@@ -36,44 +36,42 @@
 
 						<h2 class="titleHdue">Inserimento Km</h2>
 
-
-						<p id="comment" th:if="${ultima == null}">Non hai prenotazioni
-							in sospeso!</p>
-						<tr th:if="${ultima == null}">
+						<p id="comment" th:if="${session.ultima == null}">Non hai
+							prenotazioni in sospeso!</p>
+						<tr th:if="${session.ultima == null}">
 							<td class="closeShort">Non devi inserire il kilometraggio
 								per nessuna prenotazione!</td>
-						</tr>  
-						<table th:if="${ultima != null}">
+						</tr>
+						<div th:if="${session.ultima != null}">
 							<p id="comment">Devi ancora inserire i km per la seguente
 								prenotazione:</p>
 
-
 							<tr>
 								<td class="closeLong">Marca:</td>
-								<td th:text="${ultima.auto.marca}"></td>
+								<td th:text="${session.ultima.auto.marca}"></td>
 							</tr>
 							<tr>
 								<td class="closeLong">Modello:</td>
-								<td th:text="${ultima.auto.modello}"></td>
+								<td th:text="${session.ultima.auto.modello}"></td>
 							</tr>
 							<tr>
 								<td class="closeLong">Targa:</td>
-								<td th:text="${ultima.auto.targa}"></td>
+								<td th:text="${session.ultima.auto.targa}"></td>
 							</tr>
 							<tr>
 								<td class="closeLong">Inizio prenotazione:</td>
-								<td th:text="${ultima.dataInizio}"></td>
+								<td th:text="${session.ultima.dataInizio}"></td>
 							</tr>
 							<tr>
 								<td class="closeLong">Fine prenotazione:</td>
-								<td th:text="${ultima.dataFine}"></td>
+								<td th:text="${session.ultima.dataFine}"></td>
 							</tr>
 							<tr>
 								<td class="closeLong">Km attuali:</td>
 								<td><input type="text" th:field="*{km}"></td>
 							</tr>
 							</th:block>
-						</table>
+						</div>
 					</table>
 					<section>
 						<!-- Pulsante per il POST, CSS incorporato in ogni pagina -->

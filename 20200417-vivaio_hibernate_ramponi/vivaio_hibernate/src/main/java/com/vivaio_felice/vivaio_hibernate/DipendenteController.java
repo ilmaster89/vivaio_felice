@@ -63,11 +63,10 @@ public class DipendenteController {
 			return "redirect:/";
 
 		else {
-			SedeDipendente sedeDip = sedeDipendenteDao.findByDipendenteId(logged.getId());
-			Integer idSede = sedeDip.sede.getId();
+			Integer idSede = sedeDipendenteDao.findByDipendenteId(logged.getId()).sede.getId();
 			session.setAttribute("sede", idSede);
 			session.setAttribute("loggedUser", logged);
-			Sede questasede = sedeDao.findById(idSede).get();
+			Sede questasede = sedeDao.sedeSingola(idSede);
 			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 
 			for (Auto a : autoInSede) {
@@ -79,16 +78,14 @@ public class DipendenteController {
 
 		}
 
-		Integer idDip = logged.getId();
-		List<Notifica> notifiche = notificaDao.notificheDip(idDip);
-		model.addAttribute("notifiche", notifiche);
+		model.addAttribute("notifiche", notificaDao.notificheDip(logged.getId()));
 		return "primapagina";
 	}
 
 	@RequestMapping("/notificaok/{id}")
 	public String notOk(HttpSession session, Model model, Notifica notifica, @PathVariable("id") Integer id) {
 
-		Notifica notDaCambiare = notificaDao.findById(id).get();
+		Notifica notDaCambiare = notificaDao.notDaId(id);
 		notDaCambiare.setConferma(1);
 		notificaDao.save(notDaCambiare);
 		return "redirect:/primapagina";
@@ -99,8 +96,7 @@ public class DipendenteController {
 
 		dipendente = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = dipendente.getId();
-		List<Notifica> notifiche = notificaDao.notificheDip(idDip);
-		model.addAttribute("notifiche", notifiche);
+		model.addAttribute("notifiche", notificaDao.notificheDip(idDip));
 
 		return "primapagina";
 	}
@@ -108,19 +104,15 @@ public class DipendenteController {
 	@RequestMapping("/insdip")
 	public String insdip(HttpSession session, Model model, Dipendente dipendente) {
 
-		model.addAttribute("livello", livelloDao.treLivelli(4));
+		model.addAttribute("livello", livelloDao.treLivelli(livelloDao.capo()));
 
 		return "inserimentoDipendenti";
 	}
 
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	public String inserimento(Dipendente dipendente, Model model, HttpSession session) {
-		Integer sede = (Integer) session.getAttribute("sede");
 
-		Optional<Sede> miaSede = sedeDao.findById(sede);
-		Sede questasede = miaSede.get();
-
-		dipendente.getSedeDipendente().setSede(questasede);
+		dipendente.getSedeDipendente().setSede(sedeDao.sedeSingola((Integer) session.getAttribute("sede")));
 		dipendente.getSedeDipendente().setDipendente(dipendente);
 
 		dipendenteDao.save(dipendente);

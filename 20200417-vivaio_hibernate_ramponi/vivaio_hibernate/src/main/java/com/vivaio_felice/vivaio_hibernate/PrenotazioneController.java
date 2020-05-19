@@ -3,6 +3,7 @@ package com.vivaio_felice.vivaio_hibernate;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
+import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 
@@ -36,6 +38,8 @@ public class PrenotazioneController {
 	ParcheggioDao parcheggioDao;
 	@Autowired
 	PossessoPatentiDao posPatDao;
+	@Autowired
+	PatenteDao patDao;
 
 	public static boolean datesMatch(Date d1, Date d2, Date d3, Date d4) {
 
@@ -83,7 +87,7 @@ public class PrenotazioneController {
 		List<Auto> autoPrenotabili = new ArrayList<Auto>();
 		for (Auto a : autoNellaSede) {
 
-			List<Prenotazione> prenotazioniSingolaAuto = prenotazioneDao.prenoAuto(a.getId(), dataInizio);
+			List<Prenotazione> prenotazioniSingolaAuto = prenotazioneDao.prenoAuto(a.getId());
 			boolean transfer = false;
 			boolean match = false;
 
@@ -92,7 +96,6 @@ public class PrenotazioneController {
 				transfer = true;
 
 			if (!prenotazioniSingolaAuto.isEmpty()) {
-
 				for (Prenotazione p : prenotazioniSingolaAuto)
 					if ((transfer
 							&& datesMatchWithTrans(dataInizio, dataFine, p.getDataInizio(), p.getDataFine(), trans))
@@ -101,7 +104,7 @@ public class PrenotazioneController {
 
 			}
 
-			if ((!patC && a.getPatente().getId() == 1) || patC)
+			if ((!patC && a.getPatente().getId() == patDao.idB()) || patC)
 				if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
 					if (!match)
 						autoPrenotabili.add(a);
@@ -141,8 +144,8 @@ public class PrenotazioneController {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
-		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()));
-		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()));
+		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()), patDao.idC());
+		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patDao.idC());
 		List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
 		List<Auto> autoPrenotabili = autoPossibili(autoNellaSede, patC, neoP, idSede, dataInizio, dataFine);
 		model.addAttribute("autoDisponibili", autoPrenotabili);
@@ -157,11 +160,9 @@ public class PrenotazioneController {
 	public String autoPrenotata(HttpSession session, Model model, Prenotazione prenotazione) {
 
 		prenotazione.setDipendente((Dipendente) session.getAttribute("loggedUser"));
-		prenotazione.setCausale(causaleDao.findById(3).get());
-		Date d1 = (Date) session.getAttribute("dataInizio");
-		Date d2 = (Date) session.getAttribute("dataFine");
-		prenotazione.setDataInizio(d1);
-		prenotazione.setDataFine(d2);
+		prenotazione.setCausale(causaleDao.causaleDaId(causaleDao.idLavoro()));
+		prenotazione.setDataInizio((Date) session.getAttribute("dataInizio"));
+		prenotazione.setDataFine((Date) session.getAttribute("dataFine"));
 		prenotazioneDao.save(prenotazione);
 
 		session.removeAttribute("dataInizio");
@@ -176,7 +177,7 @@ public class PrenotazioneController {
 		Integer idDip = d.getId();
 
 		Prenotazione precedente = null;
-		Prenotazione ultima = prenotazioneDao.ultima(idDip);
+		Prenotazione ultima = prenotazioneDao.ultima(idDip, LocalDate.now().plus(1, ChronoUnit.DAYS));
 
 		if (ultima != null)
 			precedente = prenotazioneDao.precedente(ultima.getAuto().getId());

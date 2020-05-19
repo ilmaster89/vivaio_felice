@@ -17,6 +17,10 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
+
 @Entity
 @Table(name = "dipendenti")
 public class Dipendente {
@@ -158,19 +162,19 @@ public class Dipendente {
 		this.notifiche = notifiche;
 	}
 
-	public boolean neoP(List<PossessoPatenti> posPat) {
+	public boolean neoP(List<PossessoPatenti> posPat, Integer idPat) {
 		for (PossessoPatenti pp : posPat) {
-			if (pp.getPatente().getId() == 1
+			if (pp.getPatente().getId() == idPat
 					&& pp.getDataPoss().toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.YEARS)))
 				return true;
 		}
 		return false;
 	}
 
-	public boolean patenteC(List<PossessoPatenti> posPat) {
+	public boolean patenteC(List<PossessoPatenti> posPat, Integer idPat) {
 		for (PossessoPatenti pp : posPat) {
 			// cambiare costante con query annotation
-			if (pp.getPatente().getId() == 2)
+			if (pp.getPatente().getId() == idPat)
 				return true;
 		}
 		return false;

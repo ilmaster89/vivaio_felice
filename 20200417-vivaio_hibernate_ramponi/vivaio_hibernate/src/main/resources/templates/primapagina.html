@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-<script src="PopUp.js"></script>
+<link rel="stylesheet" href="styleMenuPrenota.css">
 
 </head>
 
@@ -20,21 +20,31 @@
 	</header>
 
 	<section id="central">
-
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-		<table th:each="n : ${notifiche}">
-			<tr>
-				<td th:value="${n.id}" th:text="${n.descrizione}"></td>
-				<td><a th:href="@{'notificaok/' + ${n.getId()}}">Conferma</a></td>
-				
-			</tr>
-		</table>
-
+		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
 			<a href="/">Cambia Utente</a>
 		</button>
-		<!--pulsante per tornare al log in-->
+		<div class="menuPrenotaAuto">
+			<table class="firstTable">
+
+				<h2 class="titleHdue">Pagina Principale</h2>
+				<p id="comment">le seguenti notifiche hanno bisogno di una
+					conferma, controlla ogni notifica e premi "conferma":</p>
+
+				<div th:each="n : ${notifiche}">
+					<tr>
+						<td th:value="${n.id}" th:text="${n.descrizione}"></td>
+						<td class="closeShort"><a
+							th:href="@{'notificaok/' + ${n.getId()}}">Conferma</a></td>
+					</tr>
+				</div>
+			</table>
+
+		</div>
+
 	</section>
 
 
