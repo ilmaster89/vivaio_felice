@@ -36,6 +36,8 @@ public class TrasferimentoController {
 	@Autowired
 	NotificaDao notDao;
 
+	// valuto se esiste una prenotazione precedente successiva alla data di
+	// trasferimento, per poi creare la notifica
 	public static boolean prenoSuccessiva(Date d1, Date d2, LocalDate trans) {
 
 		ZoneId dzi = ZoneId.systemDefault();
@@ -61,12 +63,15 @@ public class TrasferimentoController {
 
 		for (Auto a : autoInSede) {
 
+			// se un'auto è già prenotata per un trasferimento non si può farne un secondo
+			// finché non arriva in sede
 			trasf = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
 
 			if (trasf == null)
 				autoTrasferibili.add(a);
 
 		}
+		// scelta della sede tra tutte tranne la corrente
 		List<Sede> sediTrasf = sedeDao.sediEccetto(idSede);
 		model.addAttribute("autoInSede", autoTrasferibili);
 		model.addAttribute("sedipossibili", sediTrasf);
@@ -77,6 +82,8 @@ public class TrasferimentoController {
 	@RequestMapping(value = "/trasferimento", method = RequestMethod.POST)
 	public String autoTrasferita(HttpSession session, Model model, Parcheggio parcheggio) {
 
+		// se per caso la data di trasferimento è il giorno di domani, si sostituisce il
+		// record del parcheggio già inserito in automatico al login
 		if (parcheggio.getDataParch().compareTo(LocalDate.now().plus(1, ChronoUnit.DAYS)) == 0)
 			parcheggioDao.delete(
 					parcheggioDao.parchDomani(parcheggio.getAuto().getId(), LocalDate.now().plus(1, ChronoUnit.DAYS)));
@@ -85,9 +92,12 @@ public class TrasferimentoController {
 
 		for (Prenotazione p : prenoAuto) {
 
+			// si generano le notifiche relative ai dipendenti che hanno prenotato per date
+			// successive al trasferimento
 			if (prenoSuccessiva(p.getDataInizio(), p.getDataFine(), parcheggio.getDataParch())) {
 				Notifica not = new Notifica();
 				not.setDipendente(p.getDipendente());
+				not.setPrenotazione(p);
 				not.setConferma(0);
 				not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
 						+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()

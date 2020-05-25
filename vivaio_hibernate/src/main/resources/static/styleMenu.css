@@ -1,84 +1,78 @@
-/* Foglio CSS per menu standard tra i dipendti*/
+/* Foglio CSS per menu standard tra i dipendenti*/
 
-#menu{
-    border-bottom: 2px solid black;
-    height: 7.7%;
-    width: 100%;
-    background-color: green;
+/*barra del menu*/
+#menu {
+	border-bottom: 2px solid black;
+	height: 7.7%;
+	width: 100%;
+	background-color: green;
 }
 
-ul{
-    list-style: none;
-    display: inline;
+/*sezione per ogni possibilità:
+prenotazione, inserimento, manutenzione, ecc.*/
+#menu li {
+	float: left;
+	width: 200px;
+	padding-bottom: 10px;
+	padding-top: 12px;
+	outline: 1px solid black;
+	font-weight: bolder;
+	font-size: 1.2em;
 }
 
-#menu li{
-    float: left;
-    width: 200px;
-    padding-bottom: 10px;
-    padding-top: 12px;
-    outline: 1px solid black;
-    font-weight: bolder;
-    font-size: 1.2em;
+ul {
+	list-style: none;
+	display: inline;
 }
 
-a{
-    text-decoration: none;
-    color: black;
+a {
+	text-decoration: none;
+	color: black;
 }
 
-a:hover{
-    color:rgba(4, 212, 94, 0.932);;
+a:hover {
+	color: rgba(4, 212, 94, 0.932);
 }
 
-.bottone{
-  background-color: white;
-  border: 3px black solid;
-  border-radius: 5px;
-  color: green;
-  padding: 10px 30px;
+/*     CSS per scelta a tendina dal menu principale      */
+#menu .subitems {
+	background-color: green;
+	width: 200px;
+	/* modificare la larghezza in base alla larghezza del menu */
+	padding-left: 0;
+	margin-top: 7px;
+	display: none;
+	height: auto;
+	/* serve per bloccare il menu li  e non far spostare il testo inferiore */
+	position: absolute;
 }
 
+#menu .subitems li {
+	width: 200px;
+	margin: 0px;
+	padding: 0px;
+	float: none;
+	color: black;
+	cursor: pointer; /*cambia l'icona del cursore*/
+}
 
+.subli {
+	border-right: none;
+	font-size: 20px;
+	outline: none;
+	cursor: pointer;
+}
 
+#menu #about:hover .subitems {
+	display: block;
+}
 
-
-#menu .subitems {/*     CSS per scelta a tendina dal menu principale      */
-    background-color: green;
-    width: 100%;
-    padding-top: 15px;
-    padding-left: 0;
-    margin: 0;
-    display: none;
-    height: 75px;
-  }
-  
-  #menu .subitems li {
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
-    float: none;
-    color: black;
-  }
-
-  .subli{
-    border-right: none;
-    font-size: 20px;
-    outline: none;
-  }
-  #menu #about:hover .subitems {
-    display: block;
-  }
-
-
-
-  /*CSS per pulsante di cambio UTENTE. Presente in tutte le nostre pagine */
-
-  #BottoneCambio{
-    float: right;
-    margin-top: 40px;
-    margin-right: 60px;
-    padding: 10px;
-    border-radius: 15px;
-    border-color:chartreuse;
-  }
+/*CSS per pulsante di cambio UTENTE. Presente in tutte le nostre pagine */
+#BottoneCambio {
+	float: right;
+	margin-top: 40px;
+	margin-right: 60px;
+	padding: 10px;
+	border-radius: 15px;
+	border-color: chartreuse;
+}

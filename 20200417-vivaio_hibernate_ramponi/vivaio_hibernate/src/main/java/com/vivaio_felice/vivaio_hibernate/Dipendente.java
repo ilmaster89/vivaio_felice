@@ -17,10 +17,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
-
 @Entity
 @Table(name = "dipendenti")
 public class Dipendente {

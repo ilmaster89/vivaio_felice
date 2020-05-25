@@ -3,12 +3,11 @@
     in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
 <html lang="en">
 <head>
-<title>Pagina iniziale</title>
+<title>Errore</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
-
 </head>
 
 <body>
@@ -25,28 +24,29 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/">Cambia Utente</a>
+			<a href="#"
+				onclick="javascript:window.history.back(-1);return false;">Torna
+				Indietro</a>
 		</button>
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<table class="firstTable">
+			<form th:action="@{/insert}" th:object="${dipendente}" method="post">
+				<table class="firstTable">
+					<th:block>
 
-				<h2 class="titleHdue">Pagina Principale</h2>
-				<p id="comment">Le seguenti notifiche hanno bisogno di una
-					conferma, controlla ogni notifica e premi "conferma":</p>
+						<h2 class="titleHdue">Qualcosa è andato storto..</h2>
+						<p id="comment">Segui le istruzioni:</p>
 
-				<div th:each="n : ${notifiche}">
-					<tr>
-						<td th:value="${n.id}" name="id" th:text="${n.descrizione}"></td>
-						<td class="closeShort"><a
-							th:href="@{'/notificaok?id='+${n.getId()}}">Conferma</a></td>
-					</tr>
-				</div>
-			</table>
+						<tr>
+							<td th:text="${errore}"></td>
+						</tr>
+					</th:block>
+				</table>
 
+			</form>
 		</div>
-
 	</section>
-
 
 	<footer>
 		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>

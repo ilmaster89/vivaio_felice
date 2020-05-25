@@ -1,36 +1,44 @@
-#login{
-    height: 70%;
-    width: 27.5%;
-    margin-left: 10%;
-    margin-right: 25%;
-    margin-top: 7%;
-    background-color: cornsilk;
-    border-radius: 17%;
-    border: 1px solid black;
+/*Pagina di stile per il Login del sito, la testata con titolo e logo rimattà
+uguale*/
+
+/* ID login e lato servono per il DIV inserimento campi */
+#login {
+	height: 70%;
+	width: 27.5%;
+	margin-left: 10%;
+	margin-right: 25%;
+	margin-top: 7%;
+	background-color: cornsilk;
+	border-radius: 17%;
+	border: 1px solid black;
+	text-align: center;
 }
 
-#lato{
-    margin-left: 100px;
-    padding-top: 37px;
+#lato {
+	margin-left: 100px;
+	padding-top: 37px;
 }
 
-#bottone{
-    margin-top: 30px;
-    background-color: white;
-    border: 3px black solid;
-    border-radius: 5px;
-    color: green;
-    padding: 10px 30px;
+/*pulsante di accesso per il Login*/
+#bottone {
+	margin-top: 30px;
+	background-color: white;
+	border: 3px black solid;
+	border-radius: 5px;
+	color: green;
+	padding: 10px 30px;
 }
 
-
-h2{
-    font-family:Georgia;
-    color: rgba(4, 212, 94, 0.932);
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+table {
+	width: 227px;
 }
 
-#lato p{
-    font-size: 25px;
+body td {
+	text-align: center;
+	font-weight: bolder;
+	padding-bottom: 10px;
 }
 
+input {
+	border: 2px green inset;
+}

@@ -24,7 +24,7 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/prenota">Torna Indietro</a>
+			<a href="/torna">Torna Indietro</a>
 		</button>
 
 		<div class="menuPrenotaAuto">
@@ -38,9 +38,9 @@
 						<p id="comment" th:if="${!autoDisponibili.isEmpty()}">Scegli
 							un auto in linea con i tuoi bisogni lavorativi:</p>
 
-						<p id="comment" th:if="${autoDisponibili.isEmpty()}">Nelle date da te richieste non ci sono
-								auto disponibili:</p>
-							
+						<p id="comment" th:if="${autoDisponibili.isEmpty()}">Nelle
+							date da te richieste non ci sono auto disponibili:</p>
+
 						<!-- se ci sono auto disponibili verrà visualizzata una scelta tra le possibili auto da prenotare -->
 						<tr th:if="${!autoDisponibili.isEmpty()}">
 							<td class="closeLx2">Auto disponibili in base alle date da
@@ -53,8 +53,8 @@
 
 						<!-- se non ci sono auto disponibili verrà visualizzato un messaggio di non disponibilità-->
 						<tr th:if="${autoDisponibili.isEmpty()}">
-							<td class="closeLx2">Prova a cambiare l'orario di prenotazione, altrimenti 
-							rivolgiti ad un superiore.</td>
+							<td class="closeLx2">Prova a cambiare l'orario di
+								prenotazione, altrimenti rivolgiti ad un superiore.</td>
 						</tr>
 					</th:block>
 				</table>

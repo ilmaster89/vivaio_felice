@@ -9,8 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "prenotazioni")
@@ -31,9 +32,11 @@ public class Prenotazione {
 
 	@NotNull
 	@Column(name = "data_inizio")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataInizio;
 
 	@Column(name = "data_fine")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataFine;
 
 	Integer km;

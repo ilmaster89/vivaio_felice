@@ -18,12 +18,18 @@ public class Notifica {
 	Integer id;
 
 	@ManyToOne
-	@NotNull
+
 	Dipendente dipendente;
 
 	@NotNull
 	@Size(max = 250)
 	String descrizione;
+
+	@ManyToOne
+	Prenotazione prenotazione;
+
+	@ManyToOne
+	Auto auto;
 
 	@NotNull
 	Integer conferma;
@@ -31,13 +37,45 @@ public class Notifica {
 	public Notifica() {
 	}
 
-	public Notifica(Integer id, @NotNull Dipendente dipendente, @NotNull @Size(max = 250) String descrizione,
+	public Notifica(Integer id, Dipendente dipendente, @NotNull @Size(max = 250) String descrizione,
 			@NotNull Integer conferma) {
 		super();
 		this.id = id;
 		this.dipendente = dipendente;
 		this.descrizione = descrizione;
 		this.conferma = conferma;
+	}
+
+	public Notifica(@NotNull @Size(max = 250) String descrizione, Auto auto, @NotNull Integer conferma) {
+		super();
+
+		this.descrizione = descrizione;
+		this.auto = auto;
+		this.conferma = conferma;
+	}
+
+	public Notifica(Dipendente dipendente, @NotNull @Size(max = 250) String descrizione, Prenotazione prenotazione,
+			@NotNull Integer conferma) {
+		this.dipendente = dipendente;
+		this.descrizione = descrizione;
+		this.prenotazione = prenotazione;
+		this.conferma = conferma;
+	}
+
+	public Prenotazione getPrenotazione() {
+		return prenotazione;
+	}
+
+	public void setPrenotazione(Prenotazione prenotazione) {
+		this.prenotazione = prenotazione;
+	}
+
+	public Auto getAuto() {
+		return auto;
+	}
+
+	public void setAuto(Auto auto) {
+		this.auto = auto;
 	}
 
 	public Integer getId() {

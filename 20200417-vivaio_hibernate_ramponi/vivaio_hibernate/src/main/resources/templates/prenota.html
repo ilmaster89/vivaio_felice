@@ -39,13 +39,12 @@
 
 						<tr>
 							<td class="closeShort">Data di inizio:</td>
-							<td><input type="datetime" name="dataInizio"
+							<td><input type="datetime-local" name="dataInizio"
 								th:field="*{dataInizio}" /></td>
-						<!-- per visualizzazione inserimento date una sotto l'altra
+							<!-- per visualizzazione inserimento date una sotto l'altra
 						suddividere i 2 TD in 2 diversi TR -->
-							<td class="closeShort">Data di fine:</td>
-							<td><input type="datetime" name="dataFine"
-								th:field="*{dataFine}" /></td>
+							<td class="closeShort">Per quante ore?</td>
+							<td><input type="number" th:min="1" th:max="12" name="ore" /></td>
 						</tr>
 					</th:block>
 				</table>

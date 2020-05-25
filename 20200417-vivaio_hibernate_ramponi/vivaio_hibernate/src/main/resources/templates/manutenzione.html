@@ -59,16 +59,17 @@
 								th:value="${spesaManutenzione.descrizione}" name="descrizione" /></td>
 						</tr>
 						<tr>
-							<td class="closeShort">Data di inizio:</td>
-							<td class="closeShort"><input type="datetime"
-								name="dataInizio" th:field="*{dataInizio}" /></td>
+							<td class="closeShort">Per quale giorno è l'appuntamento?:</td>
+							<td class="closeShort"><input type="date"
+								name="giornoInizio" /></td>
 						</tr>
 						<tr>
-							<td class="closeShort">Data di fine (se nota):</td>
-							<td class="closeShort"><input type="datetime"
-								name="dataFine" th:field="*{dataFine}" /></td>
+							<td class="closeShort">Quanti giorni durerà la
+								manutenzione?:</td>
+							<td class="closeShort"><input type="number" th:min="1"
+								name="giorni" /></td>
 						</tr>
-						
+
 						<!-- Pulsante per resettare i campi di inserimento -->
 						<tr>
 							<td class="closeShort"><input type="reset" value="Resetta"></td>

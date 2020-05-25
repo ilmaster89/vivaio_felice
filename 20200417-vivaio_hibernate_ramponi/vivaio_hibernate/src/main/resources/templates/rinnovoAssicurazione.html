@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>Home</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+
+		<!-- frammento per replicare la barra dei menu -->
+		<div th:replace="fragments/menu :: menu"></div>
+
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/assRinnovata}" th:object="${auto}" method="post">
+				<th:block>
+					<table class="firstTable">
+
+						<h2 class="titleHdue">Rinnovo assicurazione</h2>
+						<p id="comment">Inserisci la data di rinnovo
+							dell'assicurazione per quest'auto:</p>
+
+						<tr>
+							<td class="closeLong">Marca:</td>
+							<td th:text="${session.autoDaRinnovare.marca}"></td>
+						</tr>
+						<tr>
+							<td class="closeLong">Modello:</td>
+							<td th:text="${session.autoDaRinnovare.modello}"></td>
+						</tr>
+						<tr>
+							<td class="closeLong">Targa:</td>
+							<td th:text="${session.autoDaRinnovare.targa}"></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Data Rinnovo:</td>
+							<td class="closeShort"><input type="date"
+								th:field="*{dataAss}" /></td>
+						</tr>
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+						<tr>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
+						</tr>
+						</th:block>
+					</table>
+					<section>
+						<input type="submit" value="Accetta modifiche">
+					</section>
+			</form>
+		</div>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

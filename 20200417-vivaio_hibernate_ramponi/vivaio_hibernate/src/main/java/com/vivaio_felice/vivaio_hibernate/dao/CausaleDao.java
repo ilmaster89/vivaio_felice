@@ -1,7 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate.dao;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,5 +19,11 @@ public interface CausaleDao extends CrudRepository<Causale, Integer> {
 
 	@Query(value = "select id from causale where descrizione like '%lavoro%'", nativeQuery = true)
 	Integer idLavoro();
+
+	@Query(value = "select id from causale where descrizione like '%manutenzione ordinaria%'", nativeQuery = true)
+	Integer idOrdinaria();
+
+	@Query(value = "select id from causale where descrizione like '%straordinaria%'", nativeQuery = true)
+	Integer idStraordinaria();
 
 }
