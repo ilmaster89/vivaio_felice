@@ -16,8 +16,8 @@ public class Carburante {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String tipologia;
 
 	public Carburante() {

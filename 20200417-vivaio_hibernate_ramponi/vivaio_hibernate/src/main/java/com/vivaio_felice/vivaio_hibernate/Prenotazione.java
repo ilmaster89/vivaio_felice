@@ -30,7 +30,7 @@ public class Prenotazione {
 	@OneToOne
 	Causale causale;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@Column(name = "data_inizio")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataInizio;

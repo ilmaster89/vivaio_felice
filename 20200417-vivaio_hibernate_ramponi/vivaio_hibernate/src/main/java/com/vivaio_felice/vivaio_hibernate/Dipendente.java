@@ -26,29 +26,28 @@ public class Dipendente {
 	@NotNull
 	Integer id;
 
-	// servono annotations?
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@OneToOne
 	Livello livello;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String nome;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String cognome;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	@Column(name = "user_name", unique = true)
 	String user;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String password;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@OneToOne(mappedBy = "dipendente", cascade = CascadeType.ALL)
 	SedeDipendente sedeDipendente;
 

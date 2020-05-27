@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "spesa_manutenzione")
@@ -27,9 +28,11 @@ public class SpesaManutenzione {
 	@Column(name = "data_spesa")
 	Date dataSpesa;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String descrizione;
 
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String dettaglio;
 
 	public SpesaManutenzione() {

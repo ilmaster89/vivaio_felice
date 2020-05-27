@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -29,8 +30,8 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/spesainserita}" th:object="${spesaManutenzione}"
-				method="post">
+			<form onsubmit="submitForm(this)" th:action="@{/spesainserita}"
+				th:object="${spesaManutenzione}" method="post">
 				<table class="firstTable">
 					<th:block>
 

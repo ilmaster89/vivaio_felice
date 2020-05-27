@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-3-Dip_Spese</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
+		<div th:replace="fragments/menu :: menu"></div>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form onsubmit="confermaPrenota(this)"
+				th:action="@{/prenoCancellata}" th:object="${prenotazione}"
+				method="post">
+				<table class="firstTable">
+					<th:block>
+
+						<h2 class="titleHdue">Cancella Prenotazione</h2>
+						<p id="comment">Seleziona la prenotazione da cancellare</p>
+
+						<tr>
+							<td class="closeShort">Prenotazione:</td>
+							<td class="closeShort"><select th:field="*{id}">
+									<option th:each="p : ${prenotazioniDip}" th:value="${p.id}"
+										th:text="${p.auto.marca + '&nbsp;' + p.auto.modello + '&nbsp;' + p.auto.targa + '&nbsp;' + p.dataInizio + '&nbsp;' + p.dataFine}"></option>
+							</select></td>
+						</tr>
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+					</th:block>
+				</table>
+				<section>
+					<input type="submit" value="Conferma la cancellazione">
+				</section>
+			</form>
+		</div>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

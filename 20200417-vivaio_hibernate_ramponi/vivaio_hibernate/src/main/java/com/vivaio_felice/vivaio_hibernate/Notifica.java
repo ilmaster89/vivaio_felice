@@ -21,8 +21,8 @@ public class Notifica {
 
 	Dipendente dipendente;
 
-	@NotNull
-	@Size(max = 250)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 250, message = "non può superare i 250 caratteri")
 	String descrizione;
 
 	@ManyToOne
@@ -37,10 +37,8 @@ public class Notifica {
 	public Notifica() {
 	}
 
-	public Notifica(Integer id, Dipendente dipendente, @NotNull @Size(max = 250) String descrizione,
-			@NotNull Integer conferma) {
-		super();
-		this.id = id;
+	public Notifica(Dipendente dipendente, @NotNull @Size(max = 250) String descrizione, @NotNull Integer conferma) {
+
 		this.dipendente = dipendente;
 		this.descrizione = descrizione;
 		this.conferma = conferma;

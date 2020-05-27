@@ -28,4 +28,7 @@ public interface NotificaDao extends CrudRepository<Notifica, Integer> {
 	@Query(value = "select * from notifiche where prenotazione_id = :idPren and conferma = 0", nativeQuery = true)
 	public Notifica notPren(Integer idPren);
 
+	@Query(value = "select * from notifiche where prenotazione_id = :idPren", nativeQuery = true)
+	public List<Notifica> notificheDaCancellare(Integer idPren);
+
 }

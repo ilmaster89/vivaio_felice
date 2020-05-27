@@ -28,7 +28,7 @@ public class PossessoPatenti {
 	@JoinColumn
 	Patente patente;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@Column(name = "data_possesso")
 	Date dataPoss;
 

@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,8 @@
 		</button>
 
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/assRinnovata}" th:object="${auto}" method="post">
+			<form onsubmit="submitForm(this)" th:action="@{/assRinnovata}"
+				th:object="${auto}" method="post">
 				<th:block>
 					<table class="firstTable">
 

@@ -17,8 +17,8 @@ public class Livello {
 	@NotNull
 	Integer id;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String mansione;
 
 	public Livello() {

@@ -1,5 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +48,32 @@ public class PrenotazioneController {
 	PatenteDao patDao;
 	@Autowired
 	NotificaDao notificaDao;
+
+	@Scheduled(cron = "0 0 18 * * ?")
+	public void controlloKm() {
+
+		for (Prenotazione p : prenotazioneDao.prenotazioniPerControlloKm(LocalDate.now().plus(1, ChronoUnit.DAYS))) {
+
+			if (p.getCausale().getId() == causaleDao.idLavoro()) {
+
+				String avviso = "Devi inserire i km per una prenotazione!";
+				notificaDao.save(new Notifica(p.getDipendente(), avviso, p, 0));
+
+			}
+
+			if (p.getCausale().getId() != causaleDao.idLavoro()) {
+				Prenotazione precedente = prenotazioneDao.precedente(p.getAuto().getId());
+				if (precedente != null)
+					p.setKm(precedente.getKm());
+				if (precedente == null)
+					p.setKm(0);
+				prenotazioneDao.save(p);
+
+			}
+
+		}
+
+	}
 
 	public static boolean datesMatch(Date d1, Date d2, Date d3, Date d4) {
 
@@ -131,6 +160,27 @@ public class PrenotazioneController {
 			session.removeAttribute("nuova");
 		}
 		return "prenota";
+	}
+
+	@RequestMapping("/cancella")
+	public String cancellaPreno(HttpSession session, Model model, Prenotazione prenotazione) {
+
+		Dipendente dip = (Dipendente) session.getAttribute("loggedUser");
+		List<Prenotazione> prenotazioniDip = prenotazioneDao.prenotazioniDelDip(dip.getId(), LocalDateTime.now());
+		model.addAttribute("prenotazioniDip", prenotazioniDip);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+		return "cancellaPrenotazione";
+
+	}
+
+	@RequestMapping(value = "/prenoCancellata", method = RequestMethod.POST)
+	public String cancellazioneEffettuata(HttpSession session, Model model, Prenotazione prenotazione) {
+		List<Notifica> notDaCanc = notificaDao.notificheDaCancellare(prenotazione.getId());
+		for (Notifica n : notDaCanc)
+			notificaDao.delete(n);
+		prenotazioneDao.delete(prenotazione);
+		return "redirect:/primapagina";
 	}
 
 	@RequestMapping("/torna")

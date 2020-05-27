@@ -15,7 +15,7 @@ public class Causale {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	String descrizione;
 
 	public Causale() {

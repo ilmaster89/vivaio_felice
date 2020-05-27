@@ -43,7 +43,7 @@ public class ManutenzioneController {
 //	le notifiche
 	public boolean prenoSuccessivaManu(Date dataInizio, Date dataFine, Date manu1, Date manu2) {
 
-		if (dataInizio.after(manu1) || dataFine.after(manu1) || dataFine.after(manu2))
+		if (PrenotazioneController.datesMatch(dataInizio, dataFine, manu1, manu2))
 			return true;
 		return false;
 

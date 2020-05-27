@@ -5,6 +5,8 @@
 			<ul class="subitems">
 				<li class="subli"><a href="/prenota">Prenota</a></li>
 				<li class="subli"><a href="/km">Inserisci Km</a></li>
+				<li class="subli"><a href="/cancella">Cancella una
+						prenotazione</a></li>
 			</ul>
 		</li>
 
@@ -16,8 +18,8 @@
 				<li class="subli"><a href="/inspat">Patente</a>
 			</ul>
 		</li>
-		
-		
+
+
 		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione
 			<ul class="subitems">
 				<li class="subli"><a href="/manu">Manutenzione</a></li>
@@ -26,10 +28,10 @@
 		</li>
 		<!-- if lv >= 3 -->
 		<li th:if="${session.loggedUser.responsabile()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
-		
-			
+
+
 		<!-- if lv >= 2 -->
 		<li th:if="${session.loggedUser.responsabile()}"><a href="/dash">&nbsp;Dashboard</a></li>
-		
+
 	</ul>
 </div>

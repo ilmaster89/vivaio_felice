@@ -20,7 +20,7 @@ public class Patente {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	String tipologia;
 
 	@NotNull

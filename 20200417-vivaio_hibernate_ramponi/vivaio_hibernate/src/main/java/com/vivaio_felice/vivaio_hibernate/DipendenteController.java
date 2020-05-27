@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,12 +61,11 @@ public class DipendenteController {
 
 			LocalDate dataAss = a.getDataAss().toLocalDate();
 			LocalDate scadenza = dataAss.plus(1, ChronoUnit.YEARS);
-			scadenza = scadenza.plus(1, ChronoUnit.MONTHS);
 			System.out.println(scadenza);
 			if (scadenza.compareTo(traUnMese) <= 0) {
 
-				String avviso = "L'assicurazione dell'auto: " + a.toString() + " scadrà il "
-						+ scadenza.minus(1, ChronoUnit.MONTHS) + ", ricordati di rinnovarla!";
+				String avviso = "L'assicurazione dell'auto: " + a.toString() + " scadrà il " + scadenza
+						+ ", ricordati di rinnovarla!";
 				System.out.println("notifica fatta");
 				notificaDao.save(new Notifica(avviso, a, 0));
 			}
@@ -152,8 +152,14 @@ public class DipendenteController {
 	}
 
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
-	public String inserimento(Dipendente dipendente, Model model, HttpSession session,
+	public String inserimento(@Valid Dipendente dipendente, BindingResult br, Model model, HttpSession session,
 			@RequestParam("password") String password1, @RequestParam("pass2") String password2) {
+
+//		if (br.hasErrors()) {
+//			model.addAttribute("livello", livelloDao.treLivelli(livelloDao.capo()));
+//			return "inserimentoDipendenti";
+//
+//		}
 
 		if (password1.equals(password2)) {
 			dipendente.getSedeDipendente().setSede(sedeDao.sedeSingola((Integer) session.getAttribute("sede")));

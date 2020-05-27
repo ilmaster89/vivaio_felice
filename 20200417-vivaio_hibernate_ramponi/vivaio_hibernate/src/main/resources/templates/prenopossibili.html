@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -28,8 +29,9 @@
 		</button>
 
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/confermadiprenotazione}"
-				th:object="${prenotazione}" method="post">
+			<form onsubmit="confermaPrenota(this)"
+				th:action="@{/confermadiprenotazione}" th:object="${prenotazione}"
+				method="post">
 				<table class="firstTable">
 					<th:block>
 
@@ -39,7 +41,7 @@
 							un auto in linea con i tuoi bisogni lavorativi:</p>
 
 						<p id="comment" th:if="${autoDisponibili.isEmpty()}">Nelle
-							date da te richieste non ci sono auto disponibili:</p>
+							date da te richieste non ci sono auto disponibili!</p>
 
 						<!-- se ci sono auto disponibili verrà visualizzata una scelta tra le possibili auto da prenotare -->
 						<tr th:if="${!autoDisponibili.isEmpty()}">

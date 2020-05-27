@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
 </head>
 
 <body>
@@ -30,8 +31,8 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/trasferimento}" th:object="${parcheggio}"
-				method="post">
+			<form onsubmit="confermaPrenota(this)" th:action="@{/trasferimento}"
+				th:object="${parcheggio}" method="post">
 				<table class="firstTable">
 					<th:block>
 

@@ -26,36 +26,36 @@ public class Auto {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@OneToOne
 	@JoinColumn(name = "patente_id")
 	Patente patente;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@OneToOne
 	@JoinColumn(name = "carburante_id")
 	Carburante carburante;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String marca;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	String modello;
 
-	@NotNull
-	@Size(max = 45)
+	@NotNull(message = "campo obbligatorio")
+	@Size(max = 45, message = "non può superare i 45 caratteri")
 	@Column(unique = true)
 	String targa;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	Double kw;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	Double tara;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@Column(name = "data_assicurazione")
 	Date dataAss;
 

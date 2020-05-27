@@ -20,10 +20,10 @@ public class Sede {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	String regione;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	String citta;
 
 	@OneToMany(mappedBy = "sede", cascade = CascadeType.ALL)

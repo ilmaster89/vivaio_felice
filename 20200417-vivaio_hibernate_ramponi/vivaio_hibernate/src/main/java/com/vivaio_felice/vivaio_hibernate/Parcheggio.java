@@ -21,12 +21,12 @@ public class Parcheggio {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@ManyToOne
 	@JoinColumn
 	Auto auto;
 
-	@NotNull
+	@NotNull(message = "campo obbligatorio")
 	@ManyToOne
 	@JoinColumn
 	Sede sede;

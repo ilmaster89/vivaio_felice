@@ -1,4 +1,7 @@
+function submitForm() {
+	return confirm("Confermi l'inserimento?");
+}
 
-function myFunction() {
-  alert("Il tuo livello non è abilitato ad usare questa funzione.");
+function confermaPrenota() {
+	return confirm("Confermi la tua scelta?");
 }

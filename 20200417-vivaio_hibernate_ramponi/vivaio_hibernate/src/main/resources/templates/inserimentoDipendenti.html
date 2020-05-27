@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
 <link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
 
 </head>
 
@@ -30,7 +31,8 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/insert}" th:object="${dipendente}" method="post">
+			<form onsubmit="submitForm(this)" th:action="@{/insert}"
+				th:object="${dipendente}" method="post">
 				<table class="firstTable">
 					<th:block>
 
@@ -53,19 +55,25 @@
 						<tr>
 							<td class="closeShort">Nome:</td>
 							<td class="closeShort"><input type="text" th:field="*{nome}" /></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('nome')}"
+								th:errors="*{nome}"></td>
 
 							<td class="closeShort">Cognome:</td>
 							<td class="closeShort"><input type="text"
 								th:field="*{cognome}" /></td>
+							<td th:if="${#fields.hasErrors('cognome')}"
+								th:errors="*{cognome}"></td>
 						</tr>
-
 						<tr>
 							<td class="closeShort">User:</td>
 							<td class="closeShort"><input type="text" th:field="*{user}" /></td>
+							<td th:if="${#fields.hasErrors('user')}" th:errors="*{user}"></td>
 
 							<td class="closeShort">Password:</td>
 							<td class="closeShort"><input type="password"
 								th:field="*{password}" /></td>
+							<td th:if="${#fields.hasErrors('password')}"
+								th:errors="*{password}"></td>
 
 							<td class="closeShort">Conferma Password:</td>
 							<td class="closeShort"><input type="password" name="pass2">
@@ -80,7 +88,9 @@
 					</th:block>
 				</table>
 				<section>
+
 					<input type="submit" value="Inserisci Dipendente">
+
 				</section>
 			</form>
 		</div>
