@@ -31,7 +31,7 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="submitForm(this)" th:action="@{/insert}"
+			<form onsubmit="return submitForm();" th:action="@{/insert}"
 				th:object="${dipendente}" method="post">
 				<table class="firstTable">
 					<th:block>
@@ -42,7 +42,7 @@
 
 						<td><input type="hidden" th:field="*{id}"></td>
 						<td><input type="hidden" th:field="*{sedeDipendente.sede.id}"
-							th:value="${sede}"></td>
+							th:value="${session.sede}"></td>
 
 						<tr>
 							<td class="closeShort">Livello:</td>

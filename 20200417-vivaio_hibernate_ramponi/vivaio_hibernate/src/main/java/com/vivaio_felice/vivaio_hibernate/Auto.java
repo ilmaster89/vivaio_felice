@@ -15,8 +15,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.vivaio_felice.vivaio_hibernate.customValidators.Targa;
 
 @Entity
 @Table(name = "auto")
@@ -26,37 +31,33 @@ public class Auto {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull(message = "campo obbligatorio")
 	@OneToOne
 	@JoinColumn(name = "patente_id")
 	Patente patente;
 
-	@NotNull(message = "campo obbligatorio")
 	@OneToOne
 	@JoinColumn(name = "carburante_id")
 	Carburante carburante;
 
-	@NotNull(message = "campo obbligatorio")
-	@Size(max = 45, message = "non può superare i 45 caratteri")
+	@NotBlank(message = "Campo obbligatorio")
 	String marca;
 
-	@NotNull(message = "campo obbligatorio")
-	@Size(max = 45, message = "non può superare i 45 caratteri")
+	@NotBlank(message = "Campo obbligatorio")
 	String modello;
 
-	@NotNull(message = "campo obbligatorio")
-	@Size(max = 45, message = "non può superare i 45 caratteri")
+	@Targa
 	@Column(unique = true)
 	String targa;
 
-	@NotNull(message = "campo obbligatorio")
+	@NotNull(message = "Campo obbligatorio.")
 	Double kw;
 
-	@NotNull(message = "campo obbligatorio")
+	@NotNull(message = "Campo obbligatorio.")
 	Double tara;
 
-	@NotNull(message = "campo obbligatorio")
+	@NotNull(message = "Campo obbligatorio.")
 	@Column(name = "data_assicurazione")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	Date dataAss;
 
 	@Transient

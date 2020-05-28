@@ -29,7 +29,7 @@
 		</button>
 
 		<div class="menuPrenotaAuto">
-			<form onsubmit="submitForm(this)" th:action="@{/assRinnovata}"
+			<form onsubmit="return submitForm();" th:action="@{/assRinnovata}"
 				th:object="${auto}" method="post">
 				<th:block>
 					<table class="firstTable">
@@ -54,6 +54,8 @@
 							<td class="closeShort">Data Rinnovo:</td>
 							<td class="closeShort"><input type="date"
 								th:field="*{dataAss}" /></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('dataAss')}"
+								th:errors="*{dataAss}"></td>
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->

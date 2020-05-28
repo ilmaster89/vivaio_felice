@@ -30,7 +30,7 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="submitForm(this)" th:action="@{/spesainserita}"
+			<form onsubmit="return submitForm();" th:action="@{/spesainserita}"
 				th:object="${spesaManutenzione}" method="post">
 				<table class="firstTable">
 					<th:block>
@@ -49,12 +49,16 @@
 						<tr>
 							<td class="closeShort">Dettaglio:</td>
 							<td class="closeShort"><input type="text"
-								th:field="*{dettaglio}" />
+								th:field="*{dettaglio}" /></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('dettaglio')"
+								th:errors="*{dettaglio}"></td>
 						</tr>
 						<tr>
 							<td class="closeShort">Spesa:</td>
 							<td class="closeShort"><input type="text"
 								th:field="*{spesa}" /></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('spesa')}"
+								th:errors="*{spesa}"></td>
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->

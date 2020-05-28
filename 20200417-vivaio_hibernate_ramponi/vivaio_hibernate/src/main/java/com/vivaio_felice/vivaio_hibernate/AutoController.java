@@ -51,8 +51,9 @@ public class AutoController {
 			Parcheggio parcheggio) {
 
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("errore", "devi inserire la data di assicurazione");
-			return "erroreMessaggio";
+			model.addAttribute("carburanti", carburanteDao.findAll());
+			model.addAttribute("patenti", patenteDao.findAll());
+			return "inserimentoAuto";
 		}
 		Sede questasede = sedeDao.sedeSingola((Integer) session.getAttribute("sede"));
 		autoDao.save(auto);
@@ -63,8 +64,10 @@ public class AutoController {
 	}
 
 	@RequestMapping(value = "/assRinnovata", method = RequestMethod.POST)
-	public String rinnovo(HttpSession session, Model model, Auto auto) {
+	public String rinnovo(HttpSession session, Model model, @Valid Auto auto, BindingResult br) {
 
+		if (br.hasErrors())
+			return "rinnovoAssicurazione";
 		Date nuovaAss = auto.getDataAss();
 		auto = (Auto) session.getAttribute("autoDaRinnovare");
 		auto.setDataAss(nuovaAss);

@@ -12,6 +12,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.vivaio_felice.vivaio_hibernate.customValidators.DataPatente;
+
 @Entity
 @Table(name = "possesso_patenti")
 public class PossessoPatenti {
@@ -28,7 +32,8 @@ public class PossessoPatenti {
 	@JoinColumn
 	Patente patente;
 
-	@NotNull(message = "campo obbligatorio")
+	@DataPatente
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "data_possesso")
 	Date dataPoss;
 

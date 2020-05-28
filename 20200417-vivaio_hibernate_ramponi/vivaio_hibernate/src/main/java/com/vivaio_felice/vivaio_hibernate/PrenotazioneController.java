@@ -1,6 +1,5 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -13,12 +12,14 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -198,10 +199,12 @@ public class PrenotazioneController {
 	}
 
 	@RequestMapping(value = "/richiestadiprenotazione", method = RequestMethod.POST)
-	public String ottieniAuto(HttpSession session, Model model, Prenotazione prenotazione,
+	public String ottieniAuto(HttpSession session, Model model, @Valid Prenotazione prenotazione, BindingResult br,
 			@RequestParam("dataInizio") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date dataInizio,
 			@RequestParam("ore") Integer ore) {
 
+		if (br.hasErrors())
+			return "prenota";
 		// la data di fine non viene inserita nel form ma si scelgono quante ore durerà
 		// la prenotazione, ore poi aggiunte alla data di inizio per trovare quella
 		// finale
@@ -209,20 +212,6 @@ public class PrenotazioneController {
 		LocalDateTime ldtFine = ldtInizio.plus(ore, ChronoUnit.HOURS);
 		ZonedDateTime zdtFine = ldtFine.atZone(ZoneId.systemDefault());
 		Date dataFine = Date.from(zdtFine.toInstant());
-
-		if (dataFine.compareTo(dataInizio) <= 0
-				|| dataInizio.before(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))) {
-			// model per caricare un messaggio di errore, sarà presente in ogni post dov'è
-			// possibile un errore
-			// ritorna ad una pagina di erroe unica con un messaggio diverso per ogni errore
-			model.addAttribute("errore", "le date sono sbagliate");
-			return "erroreMessaggio";
-		}
-
-		// non si possono prenotare auto per una data precedente ad oggi!
-		if (dataFine.compareTo(dataInizio) <= 0
-				|| dataInizio.before(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())))
-			return "erroreData";
 
 		Integer idSede = (Integer) session.getAttribute("sede");
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
@@ -306,6 +295,13 @@ public class PrenotazioneController {
 		if (precedente != null && prenotazione.getKm() <= precedente.getKm()
 				&& ultima.getDataFine().after(precedente.getDataFine()))
 			return "erroreKm";
+
+		if (session.getAttribute("nuovap") != null) {
+			Notifica n = notificaDao.notPren(ultima.getId());
+			n.setConferma(1);
+			notificaDao.save(n);
+			session.removeAttribute("nuovap");
+		}
 
 		ultima.setKm(prenotazione.getKm());
 		prenotazioneDao.save(ultima);

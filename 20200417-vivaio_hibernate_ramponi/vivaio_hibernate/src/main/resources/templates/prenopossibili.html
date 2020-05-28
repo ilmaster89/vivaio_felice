@@ -29,7 +29,7 @@
 		</button>
 
 		<div class="menuPrenotaAuto">
-			<form onsubmit="confermaPrenota(this)"
+			<form onsubmit="return confermaPrenota();"
 				th:action="@{/confermadiprenotazione}" th:object="${prenotazione}"
 				method="post">
 				<table class="firstTable">

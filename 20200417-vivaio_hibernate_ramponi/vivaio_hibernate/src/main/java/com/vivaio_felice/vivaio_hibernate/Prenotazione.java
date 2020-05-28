@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.vivaio_felice.vivaio_hibernate.customValidators.DataPrenotazione;
+
 @Entity
 @Table(name = "prenotazioni")
 public class Prenotazione {
@@ -30,7 +32,7 @@ public class Prenotazione {
 	@OneToOne
 	Causale causale;
 
-	@NotNull(message = "campo obbligatorio")
+	@DataPrenotazione
 	@Column(name = "data_inizio")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataInizio;

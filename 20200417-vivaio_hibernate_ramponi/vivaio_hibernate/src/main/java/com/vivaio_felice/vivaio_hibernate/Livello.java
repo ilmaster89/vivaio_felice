@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -14,17 +15,15 @@ public class Livello {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@NotNull
 	Integer id;
 
-	@NotNull(message = "campo obbligatorio")
-	@Size(max = 45, message = "non può superare i 45 caratteri")
+	@NotBlank(message = "Campo obbligatorio.")
 	String mansione;
 
 	public Livello() {
 	}
 
-	public Livello(@NotNull Integer id, @NotNull @Size(max = 45) String mansione) {
+	public Livello(Integer id, @NotNull @Size(max = 45) String mansione) {
 		this.id = id;
 		this.mansione = mansione;
 	}

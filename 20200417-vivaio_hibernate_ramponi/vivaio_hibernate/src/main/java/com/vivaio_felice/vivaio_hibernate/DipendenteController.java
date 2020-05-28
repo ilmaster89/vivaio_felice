@@ -152,14 +152,15 @@ public class DipendenteController {
 	}
 
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
-	public String inserimento(@Valid Dipendente dipendente, BindingResult br, Model model, HttpSession session,
-			@RequestParam("password") String password1, @RequestParam("pass2") String password2) {
+	public String inserimento(HttpSession session, Model model, @Valid Dipendente dipendente,
+			BindingResult bindingResult, @RequestParam("password") String password1,
+			@RequestParam("pass2") String password2) {
 
-//		if (br.hasErrors()) {
-//			model.addAttribute("livello", livelloDao.treLivelli(livelloDao.capo()));
-//			return "inserimentoDipendenti";
-//
-//		}
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("livello", livelloDao.treLivelli(livelloDao.capo()));
+			return "inserimentoDipendenti";
+
+		}
 
 		if (password1.equals(password2)) {
 			dipendente.getSedeDipendente().setSede(sedeDao.sedeSingola((Integer) session.getAttribute("sede")));
@@ -192,8 +193,15 @@ public class DipendenteController {
 	}
 
 	@RequestMapping(value = "/patenteInserita", method = RequestMethod.POST)
-	public String patenteInserita(HttpSession session, Model model, PossessoPatenti possessoPatenti) {
+	public String patenteInserita(HttpSession session, Model model, @Valid PossessoPatenti possessoPatenti,
+			BindingResult br) {
+		if (br.hasErrors()) {
+			Integer sede = (Integer) session.getAttribute("sede");
 
+			model.addAttribute("dipendenti", sedeDipendenteDao.findBySedeId(sede));
+			model.addAttribute("patenti", patenteDao.findAll());
+			return "inserimentoPatente";
+		}
 		possPatDao.save(possessoPatenti);
 		return "primapagina";
 

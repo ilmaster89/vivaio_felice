@@ -21,18 +21,17 @@ public class Parcheggio {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Integer id;
 
-	@NotNull(message = "campo obbligatorio")
 	@ManyToOne
 	@JoinColumn
 	Auto auto;
 
-	@NotNull(message = "campo obbligatorio")
 	@ManyToOne
 	@JoinColumn
 	Sede sede;
 
 	@Column(name = "data_parch")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@NotNull(message = "Campo obbligatorio.")
 	LocalDate dataParch;
 
 	public Parcheggio() {

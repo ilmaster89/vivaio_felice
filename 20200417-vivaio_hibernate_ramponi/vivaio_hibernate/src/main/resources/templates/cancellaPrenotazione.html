@@ -30,7 +30,7 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="confermaPrenota(this)"
+			<form onsubmit="return confermaPrenota();"
 				th:action="@{/prenoCancellata}" th:object="${prenotazione}"
 				method="post">
 				<table class="firstTable">

@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -23,16 +25,17 @@ public class SpesaManutenzione {
 	@OneToOne
 	Auto auto;
 
+	@NotNull
 	Double spesa;
 
 	@Column(name = "data_spesa")
+	@NotNull(message = "Campo obbligatorio")
 	Date dataSpesa;
 
-	@NotNull(message = "campo obbligatorio")
-	@Size(max = 45, message = "non può superare i 45 caratteri")
+	@NotBlank(message = "Campo obbligatorio.")
 	String descrizione;
 
-	@Size(max = 45, message = "non può superare i 45 caratteri")
+	@NotBlank(message = "Campo obbligatorio.")
 	String dettaglio;
 
 	public SpesaManutenzione() {

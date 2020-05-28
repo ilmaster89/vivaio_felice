@@ -84,6 +84,21 @@ public class NotificaController {
 			return "rinnovoAssicurazione";
 		}
 
+		if (notDaCambiare.getPrenotazione() != null && notDaCambiare.getDescrizione().contains("km")) {
+			Prenotazione nuovap = prenotazioneDao.findById(notDaCambiare.getPrenotazione().getId()).get();
+
+			Prenotazione precedente = null;
+			Prenotazione ultima = nuovap;
+
+			if (ultima != null)
+				precedente = prenotazioneDao.precedente(ultima.getAuto().getId());
+
+			session.setAttribute("nuovap", nuovap);
+			session.setAttribute("ultima", ultima);
+			session.setAttribute("precedente", precedente);
+			return "inserimentoKm";
+		}
+		
 		if (notDaCambiare.getPrenotazione() != null) {
 			Prenotazione nuovaPren = prenotazioneDao.findById(notDaCambiare.getPrenotazione().getId()).get();
 

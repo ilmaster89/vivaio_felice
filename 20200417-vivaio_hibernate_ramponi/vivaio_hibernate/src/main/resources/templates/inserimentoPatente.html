@@ -33,7 +33,7 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="submitForm(this)" th:action="@{/patenteInserita}"
+			<form onsubmit="return submitForm();" th:action="@{/patenteInserita}"
 				th:object="${possessoPatenti}" method="post">
 				<th:block>
 					<table class="firstTable">
@@ -63,6 +63,8 @@
 							<td class="closeShort">Data Ottenimento:</td>
 							<td class="closeShort"><input type="date"
 								th:field="*{dataPoss}" /></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('dataPoss')}"
+								th:errors="*{dataPoss}"></td>
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->

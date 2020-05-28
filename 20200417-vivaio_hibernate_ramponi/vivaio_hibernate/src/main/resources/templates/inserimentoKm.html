@@ -28,7 +28,7 @@
 		</button>
 		<!-- parte centrale della pagina dove verranno visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="submitForm(this)" th:action="@{/kminseriti}"
+			<form onsubmit="return submitForm();" th:action="@{/kminseriti}"
 				th:object="${prenotazione}" method="post">
 				<th:block>
 
@@ -69,6 +69,8 @@
 							<tr>
 								<td class="closeLong">Km attuali:</td>
 								<td><input type="text" th:field="*{km}"></td>
+								<td class="closeShort" th:if="${#fields.hasErrors('km')}"
+									th:errors="*{km}"></td>
 							</tr>
 							</th:block>
 						</div>

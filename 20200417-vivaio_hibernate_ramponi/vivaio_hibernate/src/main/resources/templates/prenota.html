@@ -41,6 +41,8 @@
 							<td class="closeShort">Data di inizio:</td>
 							<td><input type="datetime-local" name="dataInizio"
 								th:field="*{dataInizio}" /></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('dataInizio')}"
+								th:errors="*{dataInizio}"></td>
 							<!-- per visualizzazione inserimento date una sotto l'altra
 						suddividere i 2 TD in 2 diversi TR -->
 							<td class="closeShort">Per quante ore?</td>

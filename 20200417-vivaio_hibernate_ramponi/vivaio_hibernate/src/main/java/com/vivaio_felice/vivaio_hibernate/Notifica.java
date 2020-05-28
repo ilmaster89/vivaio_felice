@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,8 +22,7 @@ public class Notifica {
 
 	Dipendente dipendente;
 
-	@NotNull(message = "campo obbligatorio")
-	@Size(max = 250, message = "non può superare i 250 caratteri")
+	@NotBlank(message = "Campo obbligatorio.")
 	String descrizione;
 
 	@ManyToOne
@@ -31,7 +31,6 @@ public class Notifica {
 	@ManyToOne
 	Auto auto;
 
-	@NotNull
 	Integer conferma;
 
 	public Notifica() {

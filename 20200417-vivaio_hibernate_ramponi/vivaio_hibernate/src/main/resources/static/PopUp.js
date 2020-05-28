@@ -1,5 +1,6 @@
 function submitForm() {
 	return confirm("Confermi l'inserimento?");
+
 }
 
 function confermaPrenota() {

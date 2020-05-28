@@ -35,7 +35,7 @@
 
 
 
-			<form onsubmit="submitForm(this)" th:action="@{/insertAuto}"
+			<form onsubmit="return submitForm();" th:action="@{/insertAuto}"
 				th:object="${auto}" method="post">
 				<th:block>
 					<table class="firstTable">
@@ -49,14 +49,20 @@
 							<td class="closeShort">Marca:</td>
 							<td class="closeShort"><input type="text"
 								th:field="*{marca}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('marca')}"
+								th:errors="*{marca}"></td>
 
 							<td class="closeShort">Modello:</td>
 							<td class="closeShort"><input type="text"
 								th:field="*{modello}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('modello')}"
+								th:errors="*{modello}"></td>
 
 							<td class="closeShort">Targa:</td>
 							<td class="closeShort"><input type="text"
 								th:field="*{targa}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('targa')}"
+								th:errors="*{targa}"></td>
 						</tr>
 						<tr>
 							<td class="closeShort">Carburante:</td>
@@ -75,14 +81,20 @@
 						<tr>
 							<td class="closeShort">Kw:</td>
 							<td class="closeShort"><input type="text" th:field="*{kw}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('kw')}"
+								th:errors="*{kw}"></td>
 							<td class="closeShort">Tara:</td>
 							<td class="closeShort"><input type="text" th:field="*{tara}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('tara')}"
+								th:errors="*{tara}"></td>
 						</tr>
 
 						<tr>
 							<td class="closeLong">Data ultima assicurazione:</td>
 							<td class="closeShort"><input type="date"
 								th:field="*{dataAss}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('dataAss')}"
+								th:errors="*{dataAss}"></td>
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->

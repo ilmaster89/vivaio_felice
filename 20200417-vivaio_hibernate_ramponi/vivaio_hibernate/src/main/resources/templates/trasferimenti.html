@@ -31,8 +31,9 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="confermaPrenota(this)" th:action="@{/trasferimento}"
-				th:object="${parcheggio}" method="post">
+			<form onsubmit="return confermaPrenota();"
+				th:action="@{/trasferimento}" th:object="${parcheggio}"
+				method="post">
 				<table class="firstTable">
 					<th:block>
 
@@ -58,6 +59,8 @@
 							<td class="closeShort">Data del trasferimento:</td>
 							<td class="closeShort"><input type="date" name="dataParch"
 								th:field="*{dataParch}"></td>
+							<td class="closeShort" th:if="${#fields.hasErrors('datParch')}"
+								th:errors="*{dataParch}"></td>
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->
