@@ -1,5 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -50,30 +51,6 @@ public class DipendenteController {
 	@Autowired
 	AutoDao autoDao;
 
-//	Ogni lunedì alle 9 viene controllata la data di assicurazione
-//	di tutte le auto nel parco, in modo da generare eventuali 
-//	notifiche se la scadenza è entro il mese
-	@Scheduled(cron = "0 0 9 * * MON")
-	public void assicurazioniInScadenza() {
-
-		LocalDate traUnMese = LocalDate.now().plus(1, ChronoUnit.MONTHS);
-		for (Auto a : autoDao.findAll()) {
-
-			LocalDate dataAss = a.getDataAss().toLocalDate();
-			LocalDate scadenza = dataAss.plus(1, ChronoUnit.YEARS);
-			System.out.println(scadenza);
-			if (scadenza.compareTo(traUnMese) <= 0) {
-
-				String avviso = "L'assicurazione dell'auto: " + a.toString() + " scadrà il " + scadenza
-						+ ", ricordati di rinnovarla!";
-				System.out.println("notifica fatta");
-				notificaDao.save(new Notifica(avviso, a, 0));
-			}
-
-		}
-
-	}
-
 	@RequestMapping("/")
 	public String index() {
 		return "login";
@@ -82,6 +59,31 @@ public class DipendenteController {
 	@RequestMapping(value = "/logged", method = RequestMethod.POST)
 	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password, Model model,
 			HttpSession session) {
+
+		// prove strane per risalire ad una classe
+//		Dipendente d = new Dipendente("Alberto", "Ramponi");
+//
+//		String nome = "nome";
+//
+//		Field[] fields = d.getClass().getDeclaredFields();
+//
+//		for (Field f : fields)
+//			if (f.getName().equals(nome))
+//				System.out.println(true);
+
+//
+//		try {
+//			System.out.println(d.getClass().getDeclaredField("nome").get(d));
+//		} catch (NoSuchFieldException | SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IllegalArgumentException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		Dipendente logged = dipendenteDao.login(user_name, password);
 		List<Notifica> notifiche = new ArrayList<Notifica>();
@@ -108,17 +110,14 @@ public class DipendenteController {
 					if (notificaDao.notificheAuto(a.getId()) != null)
 						notifiche.add(notificaDao.notificheAuto(a.getId()));
 
-				if (parcheggioDao.parchDomani(a.getId(), LocalDate.now().plus(1, ChronoUnit.DAYS)) == null) {
-					parcheggioDao.save(new Parcheggio(a, questasede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
-				}
 			}
-
 		}
 
 		notifiche.addAll(notificaDao.notificheDip(logged.getId()));
 		model.addAttribute("notifiche", notifiche);
 
 		return "primapagina";
+
 	}
 
 // ogni volta che si torna indietro si richiama questo metodo, così

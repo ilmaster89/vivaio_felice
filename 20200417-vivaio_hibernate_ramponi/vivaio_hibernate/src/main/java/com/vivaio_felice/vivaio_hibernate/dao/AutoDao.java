@@ -32,4 +32,7 @@ public interface AutoDao extends CrudRepository<Auto, Integer> {
 
 	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where sede_id = :idSede and data_parch= :data", nativeQuery = true)
 	public List<Auto> autoInSede(Integer idSede, LocalDate data);
+
+	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where data_parch= :data", nativeQuery = true)
+	public List<Auto> autoParcheggiate(LocalDate data);
 }

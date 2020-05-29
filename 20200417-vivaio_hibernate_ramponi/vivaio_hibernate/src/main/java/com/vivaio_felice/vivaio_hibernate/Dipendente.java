@@ -56,15 +56,25 @@ public class Dipendente {
 
 	}
 
-	public Dipendente(@NotNull Integer id, @NotNull Livello livello, @NotNull @Size(max = 45) String nome,
-			@NotNull @Size(max = 45) String cognome, @NotNull @Size(max = 45) String user_name,
-			@NotNull @Size(max = 45) String password) {
+	public Dipendente(@NotBlank(message = "Campo obbligatorio.") String nome,
+			@NotBlank(message = "Campo obbligatorio.") String cognome) {
+		super();
+		this.nome = nome;
+		this.cognome = cognome;
+	}
+
+	public Dipendente(Integer id, Livello livello, @NotBlank(message = "Campo obbligatorio.") String nome,
+			@NotBlank(message = "Campo obbligatorio.") String cognome,
+			@NotBlank(message = "Campo obbligatorio.") String user,
+			@NotBlank(message = "Campo obbligatorio.") String password) {
+
 		this.id = id;
 		this.livello = livello;
 		this.nome = nome;
 		this.cognome = cognome;
-		this.user = user_name;
+		this.user = user;
 		this.password = password;
+
 	}
 
 	public Integer getId() {

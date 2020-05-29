@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +38,47 @@ public class AutoController {
 	SedeDao sedeDao;
 	@Autowired
 	NotificaDao notificaDao;
+
+//	Ogni lunedì alle 9 viene controllata la data di assicurazione
+//	di tutte le auto nel parco, in modo da generare eventuali 
+//	notifiche se la scadenza è entro il mese
+	@Scheduled(cron = "0 0 9 * * MON")
+	public void assicurazioniInScadenza() {
+
+		LocalDate traUnMese = LocalDate.now().plus(1, ChronoUnit.MONTHS);
+		for (Auto a : autoDao.findAll()) {
+
+			LocalDate dataAss = a.getDataAss().toLocalDate();
+			LocalDate scadenza = dataAss.plus(1, ChronoUnit.YEARS);
+			System.out.println(scadenza);
+			if (scadenza.compareTo(traUnMese) <= 0) {
+
+				String avviso = "L'assicurazione dell'auto: " + a.toString() + " scadrà il " + scadenza
+						+ ", ricordati di rinnovarla!";
+				System.out.println("notifica fatta");
+				notificaDao.save(new Notifica(avviso, a, 0));
+			}
+
+		}
+
+	}
+
+	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
+	// caricare al login del dipendente
+	@Scheduled(cron = "0 3 11 * * ?")
+	public void confermaParcheggi() {
+
+		for (Auto a : autoDao.autoParcheggiate(LocalDate.now())) {
+
+			Sede sede = sedeDao.sedeSingola(parcheggioDao.sedeOdierna(a.getId(), LocalDate.now()));
+			Parcheggio domani = parcheggioDao.parchDomani(a.getId(), LocalDate.now().plus(1, ChronoUnit.DAYS));
+
+			if (domani == null) {
+				parcheggioDao.save(new Parcheggio(a, sede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
+			}
+		}
+
+	}
 
 	@RequestMapping("/insauto")
 	public String insAuto(HttpSession session, Model model, Auto auto) {
