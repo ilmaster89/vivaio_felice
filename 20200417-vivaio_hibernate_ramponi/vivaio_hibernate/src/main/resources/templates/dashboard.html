@@ -3,11 +3,11 @@
     in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
 <html lang="en">
 <head>
-<title>Lvl-3-Dip_DashBoard</title>
+<title>Lvl-2-Resp_Trasferimenti</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
-
+<link rel="stylesheet" href="styleMenuPrenota.css">
 <script src="PopUp.js"></script>
 </head>
 
@@ -20,16 +20,40 @@
 	</header>
 
 	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
-
-		<input>STORICO</input>
-		<p>campi di inserimento per andare a filtrare per lo storico che
-			si vuole</p>
-		<button>
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
 		</button>
 
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/provaGrafico}" method="post">
+				<table class="firstTable">
+					<th:block>
+
+						<h2 class="titleHdue">Report Km/Date su auto in sede</h2>
+						<p id="comment">Seleziona l'auto:</p>
+						<tr>
+							<td class="closeShort">Auto da Controllare:</td>
+							<td class="closeShort"><select name="auto">
+									<option th:each="a : ${autoInSede}" th:value="${a.id}"
+										th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
+							</select></td>
+						</tr>
+
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+					</th:block>
+				</table>
+				<section>
+					<input type="submit" value="Prova Grafico">
+				</section>
+			</form>
+		</div>
 	</section>
 
 	<footer>

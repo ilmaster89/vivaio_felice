@@ -1,16 +1,19 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +28,7 @@ import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PossessoPatentiDao;
+import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDipendenteDao;
 
@@ -50,6 +54,8 @@ public class DipendenteController {
 	NotificaDao notificaDao;
 	@Autowired
 	AutoDao autoDao;
+	@Autowired
+	PrenotazioneDao prenoDao;
 
 	@RequestMapping("/")
 	public String index() {
@@ -99,7 +105,6 @@ public class DipendenteController {
 //			prendiamo tutte le auto in sede e, se non sono già state
 //			confermate o vengono trasferite il giorno dopo, si salvano
 //			i parcheggi del giorno successivo
-			Sede questasede = sedeDao.sedeSingola(idSede);
 			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
 
 			for (Auto a : autoInSede) {
@@ -182,6 +187,9 @@ public class DipendenteController {
 	@RequestMapping("/inspat")
 	public String inspat(HttpSession session, Model model, PossessoPatenti possessoPatenti) {
 
+		// ROBA CHE NON SERVE A UN CAZZO
+
+		// questo è ciò che va tenuto!!
 		Integer sede = (Integer) session.getAttribute("sede");
 
 		model.addAttribute("dipendenti", sedeDipendenteDao.findBySedeId(sede));
