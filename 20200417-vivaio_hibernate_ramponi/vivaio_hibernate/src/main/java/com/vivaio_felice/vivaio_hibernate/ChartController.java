@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,16 +39,16 @@ public class ChartController {
 	@RequestMapping("/provaGrafico")
 	public String provaGrafico(Model model, HttpSession session, @RequestParam("auto") Integer idAuto) {
 
-		List<Integer> kmAuto = prenoDao.kmPerGrafico(idAuto, LocalDateTime.now().plus(1, ChronoUnit.DAYS));
-		List<Date> dateAuto = prenoDao.dataPerGrafico(idAuto, LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+		List<Integer> kmAuto = prenoDao.kmPerGrafico(idAuto, LocalDateTime.now());
+		List<Date> dateAuto = prenoDao.dataPerGrafico(idAuto, LocalDateTime.now());
 
-		Map<Object, Object> reportAuto = new HashMap<Object, Object>();
+		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		for (int i = 0; i < dateAuto.size(); i++) {
-
-			reportAuto.put(sdf.format(dateAuto.get(i)), (kmAuto.get(i) - kmAuto.get(0)));
+		reportAuto.put((dateAuto.get(0)), 0);
+		for (int i = 1; i < dateAuto.size(); i++) {
+			reportAuto.put((dateAuto.get(i)), (kmAuto.get(i) - kmAuto.get(i - 1)));
 
 		}
 
