@@ -10,11 +10,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,9 +70,29 @@ public class ManutenzioneController {
 
 	@RequestMapping(value = "/confermamanutenzione", method = RequestMethod.POST)
 	public String confermaManu(HttpSession session, Model model, Prenotazione prenotazione,
-			SpesaManutenzione spesaManutenzione,
+			@Valid SpesaManutenzione spesaManutenzione, BindingResult br,
 			@RequestParam("giornoInizio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date giornoInizio,
 			@RequestParam("giorni") Integer giorni) {
+
+		if (giornoInizio == null) {
+			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
+			model.addAttribute("autoInSede",
+					autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+			SpesaManutenzione sm = new SpesaManutenzione();
+			model.addAttribute("spesaManutenzione", sm);
+
+			return "manutenzione";
+		}
+
+		if (br.hasErrors()) {
+			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
+			model.addAttribute("autoInSede",
+					autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+			SpesaManutenzione sm = new SpesaManutenzione();
+			model.addAttribute("spesaManutenzione", sm);
+
+			return "manutenzione";
+		}
 
 		// avanti di nove ore per inizio giornata
 		LocalDateTime ldtGiornoInizio = LocalDateTime.ofInstant(giornoInizio.toInstant(), ZoneId.systemDefault());

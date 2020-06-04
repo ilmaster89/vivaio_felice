@@ -31,7 +31,7 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/provaGrafico}" method="post">
+			<form th:action="@{/graficoKm}" method="post">
 				<table class="firstTable">
 					<th:block>
 
@@ -44,6 +44,17 @@
 										th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
 							</select></td>
 						</tr>
+
+						<tr>
+							<td class="closeShort">Data di inizio:</td>
+							<td class="closeShort"><input name="data1" type="date"></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Data di fine:</td>
+							<td class="closeShort"><input name="data2" type="date"></td>
+						</tr>
+
+
 
 
 						<!-- Pulsante per resettare i campi di inserimento -->

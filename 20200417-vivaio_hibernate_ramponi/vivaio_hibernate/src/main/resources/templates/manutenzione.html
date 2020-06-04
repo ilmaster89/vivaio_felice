@@ -59,14 +59,15 @@
 							<td class="closeShort">Motivazione:</td>
 							<td class="closeShort"><input type="text"
 								th:value="${spesaManutenzione.descrizione}" name="descrizione" /></td>
-							<td class="closeShort"
-								th:if="${#fields.hasErrors('descrizione')}"
-								th:errors="*{descrizione}"></td>
+							<td class="errore"
+								th:if="${#fields.hasErrors('${spesaManutenzione.descrizione}')}"
+								th:errors="${spesaManutenzione.descrizione}"></td>
 						</tr>
 						<tr>
 							<td class="closeShort">Per quale giorno è l'appuntamento?:</td>
 							<td class="closeShort"><input type="date"
 								name="giornoInizio" /></td>
+
 						</tr>
 						<tr>
 							<td class="closeShort">Quanti giorni durerà la

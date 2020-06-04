@@ -35,7 +35,6 @@ public class SpesaManutenzione {
 	@NotBlank(message = "Campo obbligatorio.")
 	String descrizione;
 
-	@NotBlank(message = "Campo obbligatorio.")
 	String dettaglio;
 
 	public SpesaManutenzione() {

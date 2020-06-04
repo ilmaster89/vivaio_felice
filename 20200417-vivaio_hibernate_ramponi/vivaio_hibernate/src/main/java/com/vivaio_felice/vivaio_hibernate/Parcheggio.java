@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,7 +33,7 @@ public class Parcheggio {
 
 	@Column(name = "data_parch")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "Campo obbligatorio.")
+	@Future(message = "La data del trasferimento può essere solo da domani in poi.")
 	LocalDate dataParch;
 
 	public Parcheggio() {

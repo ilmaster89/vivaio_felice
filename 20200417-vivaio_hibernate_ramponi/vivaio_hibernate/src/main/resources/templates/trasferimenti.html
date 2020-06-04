@@ -59,7 +59,7 @@
 							<td class="closeShort">Data del trasferimento:</td>
 							<td class="closeShort"><input type="date" name="dataParch"
 								th:field="*{dataParch}"></td>
-							<td class="closeShort" th:if="${#fields.hasErrors('datParch')}"
+							<td class="errore" th:if="${#fields.hasErrors('dataParch')}"
 								th:errors="*{dataParch}"></td>
 						</tr>
 

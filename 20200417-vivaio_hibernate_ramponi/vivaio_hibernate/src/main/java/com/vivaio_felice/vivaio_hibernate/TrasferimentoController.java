@@ -9,10 +9,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -80,7 +82,30 @@ public class TrasferimentoController {
 	}
 
 	@RequestMapping(value = "/trasferimento", method = RequestMethod.POST)
-	public String autoTrasferita(HttpSession session, Model model, Parcheggio parcheggio) {
+	public String autoTrasferita(HttpSession session, Model model, @Valid Parcheggio parcheggio, BindingResult br) {
+
+		if (br.hasErrors()) {
+			Integer idSede = (Integer) session.getAttribute("sede");
+			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+			List<Auto> autoTrasferibili = new ArrayList<Auto>();
+			LocalDate trasf = null;
+
+			for (Auto a : autoInSede) {
+
+				// se un'auto è già prenotata per un trasferimento non si può farne un secondo
+				// finché non arriva in sede
+				trasf = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
+
+				if (trasf == null)
+					autoTrasferibili.add(a);
+
+			}
+			// scelta della sede tra tutte tranne la corrente
+			List<Sede> sediTrasf = sedeDao.sediEccetto(idSede);
+			model.addAttribute("autoInSede", autoTrasferibili);
+			model.addAttribute("sedipossibili", sediTrasf);
+			return "trasferimenti";
+		}
 
 		// se per caso la data di trasferimento è il giorno di domani, si sostituisce il
 		// record del parcheggio già inserito in automatico al login

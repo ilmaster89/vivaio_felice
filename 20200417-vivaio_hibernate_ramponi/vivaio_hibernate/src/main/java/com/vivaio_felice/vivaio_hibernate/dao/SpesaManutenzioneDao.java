@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate.dao;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,11 @@ public interface SpesaManutenzioneDao extends CrudRepository<SpesaManutenzione, 
 
 	@Query("select s from SpesaManutenzione s where auto_id = :idAuto and spesa is null")
 	public List<SpesaManutenzione> manutenzioniSede(Integer idAuto);
+
+	@Query(value = "select spesa from spesa_manutenzione where auto_id = :idAuto and data_spesa between :data1 and :data2 order by data_spesa", nativeQuery = true)
+	List<Integer> speseAuto(Integer idAuto, LocalDate data1, LocalDate data2);
+
+	@Query(value = "select data_spesa from spesa_manutenzione where auto_id = :idAuto and data_spesa between :data1 and :data2 order by data_spesa", nativeQuery = true)
+	List<Date> dateManutenzione(Integer idAuto, LocalDate data1, LocalDate data2);
 
 }

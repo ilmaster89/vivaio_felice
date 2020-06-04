@@ -66,31 +66,6 @@ public class DipendenteController {
 	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password, Model model,
 			HttpSession session) {
 
-		// prove strane per risalire ad una classe
-//		Dipendente d = new Dipendente("Alberto", "Ramponi");
-//
-//		String nome = "nome";
-//
-//		Field[] fields = d.getClass().getDeclaredFields();
-//
-//		for (Field f : fields)
-//			if (f.getName().equals(nome))
-//				System.out.println(true);
-
-//
-//		try {
-//			System.out.println(d.getClass().getDeclaredField("nome").get(d));
-//		} catch (NoSuchFieldException | SecurityException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalArgumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
 		Dipendente logged = dipendenteDao.login(user_name, password);
 		List<Notifica> notifiche = new ArrayList<Notifica>();
 
@@ -186,8 +161,6 @@ public class DipendenteController {
 //	nuova patente
 	@RequestMapping("/inspat")
 	public String inspat(HttpSession session, Model model, PossessoPatenti possessoPatenti) {
-
-		// ROBA CHE NON SERVE A UN CAZZO
 
 		// questo è ciò che va tenuto!!
 		Integer sede = (Integer) session.getAttribute("sede");
