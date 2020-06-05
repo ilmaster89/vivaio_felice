@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>Home</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+
+		<!-- frammento per replicare la barra dei menu -->
+		<div th:replace="fragments/menu :: menu"></div>
+
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+		<div class="menuPrenotaAuto">
+
+			<th:block>
+				<table class="firstTable">
+
+					<h2 class="titleHdue">Dettaglio prenotazione</h2>
+
+					<tr>
+						<td class="closeLong">Auto:</td>
+						<td
+							th:text="${prenotazioneRichiesta.auto.marca + '&nbsp;' + prenotazioneRichiesta.auto.modello}"></td>
+					</tr>
+					<tr>
+						<td class="closeLong">Dipendente che l'ha effettuata:</td>
+						<td
+							th:text="${prenotazioneRichiesta.dipendente.nome + '&nbsp;' + prenotazioneRichiesta.dipendente.cognome}"></td>
+					</tr>
+					<tr>
+						<td class="closeLong">Causale della prenotazione:</td>
+						<td th:text="${prenotazioneRichiesta.causale.descrizione}"></td>
+					</tr>
+					<tr>
+						<td th:if="${spesaRelativa.id != null}" class="closeLong">Descrizione
+							della manutenzione:</td>
+						<td th:if="${spesaRelativa.id !=null}"
+							th:text="${spesaRelativa.descrizione}"></td>
+					</tr>
+
+					<!-- Pulsante per resettare i campi di inserimento -->
+
+					</th:block>
+				</table>
+		</div>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

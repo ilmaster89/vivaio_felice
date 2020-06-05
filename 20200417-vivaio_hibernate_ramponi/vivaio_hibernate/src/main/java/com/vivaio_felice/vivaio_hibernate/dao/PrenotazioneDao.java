@@ -13,7 +13,8 @@ import com.vivaio_felice.vivaio_hibernate.Prenotazione;
 
 public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 
-	Optional<Prenotazione> findById(Integer id);
+	@Query(value = "select * from prenotazioni where id = :id", nativeQuery = true)
+	Prenotazione prenoDaId(Integer id);
 
 	List<Prenotazione> findByDipendenteId(Integer id);
 
@@ -50,5 +51,8 @@ public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 
 	@Query(value = "select km from prenotazioni where auto_id = :idAuto and data_fine <= :data order by data_fine desc limit 1", nativeQuery = true)
 	public Integer kmPrecedenti(Integer idAuto, LocalDateTime data);
+
+	@Query(value = "select * from prenotazioni where auto_id = :idAuto and data_inizio >= now()", nativeQuery = true)
+	public List<Prenotazione> prenotazioniFuture(Integer idAuto);
 
 }

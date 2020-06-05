@@ -1,10 +1,11 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
+import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
 
@@ -32,6 +34,8 @@ public class ChartController {
 	AutoDao autoDao;
 	@Autowired
 	SpesaManutenzioneDao spesaDao;
+	@Autowired
+	CausaleDao causaleDao;
 
 	@RequestMapping("/dashKm")
 	public String dash(Model model, HttpSession session) {
@@ -52,6 +56,7 @@ public class ChartController {
 			return "dashKm";
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		LocalDateTime ldt1 = LocalDateTime.of(data1, LocalTime.MIDNIGHT);
 		LocalDateTime ldt2 = LocalDateTime.of(data2, LocalTime.MIDNIGHT);
 
@@ -64,14 +69,14 @@ public class ChartController {
 		if (kmPrec == null)
 			kmPrec = 0;
 		if (!kmAuto.isEmpty()) {
-			reportAuto.put((dateAuto.get(0)), kmAuto.get(0) - kmPrec);
+			reportAuto.put(sdf.format(dateAuto.get(0)), kmAuto.get(0) - kmPrec);
 			sommaKm += (kmAuto.get(0) - kmPrec);
 
 			for (int i = 1; i < dateAuto.size(); i++) {
 				if (kmAuto.get(i) == null)
-					reportAuto.put((dateAuto.get(i)), 0);
+					reportAuto.put(sdf.format(dateAuto.get(i)), 0);
 				if (kmAuto.get(i) != null) {
-					reportAuto.put((dateAuto.get(i)), (kmAuto.get(i) - kmAuto.get(i - 1)));
+					reportAuto.put(sdf.format(dateAuto.get(i)), (kmAuto.get(i) - kmAuto.get(i - 1)));
 					sommaKm += (kmAuto.get(i) - kmAuto.get(i - 1));
 				}
 			}
@@ -102,16 +107,29 @@ public class ChartController {
 		List<Date> date = spesaDao.dateManutenzione(idAuto, data1, data2);
 		Map<Object, Object> reportSpese = new LinkedHashMap<Object, Object>();
 		Integer sommaSpese = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		if (!spese.isEmpty()) {
+
+			for (Integer x : spese) {
+
+				if (x == null)
+					x = 0;
+				sommaSpese += x;
+			}
+
+			for (int i = 1; i < spese.size(); i++)
+
+				if (date.get(i).compareTo(date.get(i - 1)) == 0) {
+					spese.set(i, spese.get(i) + spese.get(i - 1));
+				}
 
 			for (int i = 0; i < spese.size(); i++) {
 
 				if (spese.get(i) == null)
-					reportSpese.put(date.get(i), 0);
+					reportSpese.put(sdf.format(date.get(i)), 0);
 				if (spese.get(i) != null)
-					reportSpese.put(date.get(i), spese.get(i));
-				sommaSpese = sommaSpese + spese.get(i);
+					reportSpese.put(sdf.format(date.get(i)), spese.get(i));
 
 			}
 
@@ -121,6 +139,34 @@ public class ChartController {
 		model.addAttribute("sommaSpese", sommaSpese);
 
 		return "graficoManu";
+
+	}
+
+	@RequestMapping("/prenotazioniFut")
+	public String dashPreno(HttpSession session, Model model) {
+
+		List<Prenotazione> prenotazioniFuture = new ArrayList<Prenotazione>();
+		Integer idSede = (Integer) session.getAttribute("sede");
+		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now()))
+			prenotazioniFuture.addAll(prenoDao.prenotazioniFuture(a.getId()));
+
+		model.addAttribute("prenotazioniFuture", prenotazioniFuture);
+		return "dashPreno";
+	}
+
+	@RequestMapping("/dettaglioPreno")
+	public String dettaglioPrenotazione(HttpSession session, Model model, @RequestParam("id") Integer id) {
+
+		Prenotazione prenotazioneRichiesta = prenoDao.prenoDaId(id);
+		SpesaManutenzione spesaRelativa = new SpesaManutenzione();
+
+		if (prenotazioneRichiesta.getCausale().getId() != causaleDao.idLavoro())
+			spesaRelativa = spesaDao.spesaDaId(id + 1);
+
+		model.addAttribute("prenotazioneRichiesta", prenotazioneRichiesta);
+		model.addAttribute("spesaRelativa", spesaRelativa);
+
+		return "dettaglioPrenotazione";
 
 	}
 

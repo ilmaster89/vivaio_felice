@@ -1,5 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,6 +42,9 @@ public class Prenotazione {
 	@Column(name = "data_fine")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataFine;
+
+	@Transient
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	Integer km;
 
@@ -128,8 +133,8 @@ public class Prenotazione {
 
 	@Override
 	public String toString() {
-		return "Prenotazione [id=" + id + ", dipendente=" + dipendente + ", auto=" + auto + ", causale=" + causale
-				+ ", dataInizio=" + dataInizio + ", dataFine=" + dataFine + ", km=" + km + "]";
+		return auto.getMarca() + " " + auto.getModello() + " " + auto.getTarga() + " "
+				+ sdf.format(this.getDataInizio()) + " " + sdf.format(this.getDataFine());
 	}
 
 }
