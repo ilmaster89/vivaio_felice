@@ -8,7 +8,7 @@ public class TargaGiusta implements ConstraintValidator<Targa, String> {
 	@Override
 	public boolean isValid(String s, ConstraintValidatorContext cxt) {
 
-		return s.matches("[A-Za-z].2[0-9].3[A-Za-z].2");
+		return s.matches("[a-zA-Z].2[0-9].3[a-zA-z].2");
 
 	}
 

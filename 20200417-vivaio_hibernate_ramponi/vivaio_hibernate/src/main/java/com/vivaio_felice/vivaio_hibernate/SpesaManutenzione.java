@@ -25,11 +25,9 @@ public class SpesaManutenzione {
 	@OneToOne
 	Auto auto;
 
-	@NotNull
 	Double spesa;
 
 	@Column(name = "data_spesa")
-	@NotNull(message = "Campo obbligatorio")
 	Date dataSpesa;
 
 	@NotBlank(message = "Campo obbligatorio.")

@@ -1,19 +1,22 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CarburanteDao;
@@ -48,7 +51,7 @@ public class AutoController {
 		LocalDate traUnMese = LocalDate.now().plus(1, ChronoUnit.MONTHS);
 		for (Auto a : autoDao.findAll()) {
 
-			LocalDate dataAss = a.getDataAss().toLocalDate();
+			LocalDate dataAss = a.getDataAss().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			LocalDate scadenza = dataAss.plus(1, ChronoUnit.YEARS);
 			System.out.println(scadenza);
 			if (scadenza.compareTo(traUnMese) <= 0) {
@@ -65,7 +68,7 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 54 9 * * ?")
+	@Scheduled(cron = "0 38 10 * * ?")
 	public void confermaParcheggi() {
 
 		for (Auto a : autoDao.autoParcheggiate(LocalDate.now())) {
@@ -89,14 +92,15 @@ public class AutoController {
 	}
 
 	@RequestMapping(value = "/insertAuto", method = RequestMethod.POST)
-	public String autoInserita(HttpSession session, Model model, @Valid Auto auto, BindingResult bindingResult,
-			Parcheggio parcheggio) {
+	public String autoInserita(HttpSession session, Model model, Auto auto, Parcheggio parcheggio) {
 
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("carburanti", carburanteDao.findAll());
-			model.addAttribute("patenti", patenteDao.findAll());
-			return "inserimentoAuto";
-		}
+
+//		if (bindingResult.hasErrors()) {
+//			model.addAttribute("carburanti", carburanteDao.findAll());
+//			model.addAttribute("patenti", patenteDao.findAll());
+//			return "inserimentoAuto";
+//		}
+
 		Sede questasede = sedeDao.sedeSingola((Integer) session.getAttribute("sede"));
 		autoDao.save(auto);
 		parcheggioDao.save(new Parcheggio(auto, questasede, LocalDate.now()));

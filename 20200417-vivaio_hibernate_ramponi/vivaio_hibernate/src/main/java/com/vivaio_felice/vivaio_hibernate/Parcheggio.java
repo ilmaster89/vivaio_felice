@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Future;
+
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,7 +33,6 @@ public class Parcheggio {
 
 	@Column(name = "data_parch")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Future(message = "La data del trasferimento può essere solo da domani in poi.")
 	LocalDate dataParch;
 
 	public Parcheggio() {

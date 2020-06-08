@@ -34,7 +34,6 @@ public class Prenotazione {
 	@OneToOne
 	Causale causale;
 
-	@DataPrenotazione
 	@Column(name = "data_inizio")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataInizio;

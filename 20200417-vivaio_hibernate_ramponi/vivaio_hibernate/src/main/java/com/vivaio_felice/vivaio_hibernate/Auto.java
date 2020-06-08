@@ -1,6 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class Auto {
 	@NotBlank(message = "Campo obbligatorio")
 	String modello;
 
-	@Targa
+	// @Targa
 	@Column(unique = true)
 	String targa;
 
@@ -55,7 +55,6 @@ public class Auto {
 	@NotNull(message = "Campo obbligatorio.")
 	Double tara;
 
-	@NotNull(message = "Campo obbligatorio.")
 	@Column(name = "data_assicurazione")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	Date dataAss;

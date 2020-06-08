@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -163,8 +164,8 @@ public class Dipendente {
 
 	public boolean neoP(List<PossessoPatenti> posPat, Integer idPat) {
 		for (PossessoPatenti pp : posPat) {
-			if (pp.getPatente().getId() == idPat
-					&& pp.getDataPoss().toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.YEARS)))
+			if (pp.getPatente().getId() == idPat && pp.getDataPoss().toInstant().atZone(ZoneId.systemDefault())
+					.toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.YEARS)))
 				return true;
 		}
 		return false;

@@ -91,10 +91,9 @@
 
 						<tr>
 							<td class="closeLong">Data ultima assicurazione:</td>
-							<td class="closeShort"><input type="date"
+							<td class="closeShort"><input type="date" name="dataAss"
 								th:field="*{dataAss}" /></td>
-							<td class="errore" th:if="${#fields.hasErrors('dataAss')}"
-								th:errors="*{dataAss}"></td>
+
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->
