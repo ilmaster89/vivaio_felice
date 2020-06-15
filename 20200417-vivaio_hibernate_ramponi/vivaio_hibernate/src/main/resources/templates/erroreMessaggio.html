@@ -31,20 +31,20 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/insert}" th:object="${dipendente}" method="post">
-				<table class="firstTable">
-					<th:block>
 
-						<h2 class="titleHdue">Qualcosa è andato storto..</h2>
-						<p id="comment">Segui le istruzioni:</p>
+			<table class="firstTable">
+				<th:block>
 
-						<tr>
-							<td th:text="${errore}"></td>
-						</tr>
-					</th:block>
-				</table>
+					<h2 class="titleHdue">Qualcosa è andato storto..</h2>
+					<p id="comment">Segui le istruzioni:</p>
 
-			</form>
+					<tr>
+						<td th:text="${errore}"></td>
+					</tr>
+				</th:block>
+			</table>
+
+
 		</div>
 	</section>
 

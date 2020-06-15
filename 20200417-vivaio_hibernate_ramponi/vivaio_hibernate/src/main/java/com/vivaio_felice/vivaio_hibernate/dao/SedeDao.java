@@ -16,10 +16,13 @@ public interface SedeDao extends CrudRepository<Sede, Integer> {
 
 	List<Sede> findByCitta(String citta);
 
-	@Query("select s from Sede s where id != :idSede")
+	@Query("select s from Sede s where id != :idSede and id != 13")
 	public List<Sede> sediEccetto(Integer idSede);
 
 	@Query("select s from Sede s where id = :idSede")
 	public Sede sedeSingola(Integer idSede);
+
+	@Query(value = "select id from sede where regione like '%tutte%'", nativeQuery = true)
+	Integer tutteLeSedi();
 
 }

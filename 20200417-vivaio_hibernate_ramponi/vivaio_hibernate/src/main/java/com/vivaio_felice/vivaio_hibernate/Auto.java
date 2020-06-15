@@ -1,7 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -45,7 +45,7 @@ public class Auto {
 	@NotBlank(message = "Campo obbligatorio")
 	String modello;
 
-	// @Targa
+	@Targa
 	@Column(unique = true)
 	String targa;
 
@@ -63,6 +63,9 @@ public class Auto {
 	@OneToMany(mappedBy = "auto", cascade = CascadeType.ALL)
 	@JoinColumn(name = "auto_id")
 	List<Parcheggio> parcheggio = new ArrayList<>();
+
+	@Column(name = "km_iniziali")
+	Integer kmIniziali = 0;
 
 	public Auto() {
 	}
@@ -160,6 +163,14 @@ public class Auto {
 
 	public void setDataAss(Date data_assicurazione) {
 		this.dataAss = data_assicurazione;
+	}
+
+	public Integer getKmIniziali() {
+		return kmIniziali;
+	}
+
+	public void setKmIniziali(Integer kmIniziali) {
+		this.kmIniziali = kmIniziali;
 	}
 
 	public boolean okForNeoP() {

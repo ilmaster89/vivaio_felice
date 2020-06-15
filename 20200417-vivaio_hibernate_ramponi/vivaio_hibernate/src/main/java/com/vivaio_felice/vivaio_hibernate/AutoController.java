@@ -68,7 +68,7 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 38 10 * * ?")
+	@Scheduled(cron = "0 12 9 * * ?")
 	public void confermaParcheggi() {
 
 		for (Auto a : autoDao.autoParcheggiate(LocalDate.now())) {
@@ -92,14 +92,14 @@ public class AutoController {
 	}
 
 	@RequestMapping(value = "/insertAuto", method = RequestMethod.POST)
-	public String autoInserita(HttpSession session, Model model, Auto auto, Parcheggio parcheggio) {
+	public String autoInserita(HttpSession session, Model model, @Valid Auto auto, BindingResult bindingResult,
+			Parcheggio parcheggio) {
 
-
-//		if (bindingResult.hasErrors()) {
-//			model.addAttribute("carburanti", carburanteDao.findAll());
-//			model.addAttribute("patenti", patenteDao.findAll());
-//			return "inserimentoAuto";
-//		}
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("carburanti", carburanteDao.findAll());
+			model.addAttribute("patenti", patenteDao.findAll());
+			return "inserimentoAuto";
+		}
 
 		Sede questasede = sedeDao.sedeSingola((Integer) session.getAttribute("sede"));
 		autoDao.save(auto);

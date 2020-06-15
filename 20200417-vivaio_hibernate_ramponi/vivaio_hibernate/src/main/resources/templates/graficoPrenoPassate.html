@@ -34,8 +34,8 @@
 
 
 
-			<h3 style="padding-left: 8%" id="comment"
-				th:text="${'Report relativo al periodo&nbsp;' + data1 + '-' + data2 + ' per ' + sede.toString()} "></h3>
+			<h3 style="padding-left: 8%" id="comment">Prenotazioni
+				effettuate nel periodo richiesto</h3>
 
 
 			<td th:if="${reportAuto.isEmpty()}">Non ci sono report per
@@ -61,7 +61,7 @@
             type: 'column'
         },
         title: {
-            text: 'Km percorsi'
+            text: 'Prenotazioni effettuate'
         },
         subtitle: {
             text: 'Vivaio Felice SPA'
@@ -72,7 +72,7 @@
         },
         yAxis: {
             min: 0,
-            max:1000,
+            max:10,
             title: {
                 text: 'Km'
             }
@@ -92,21 +92,13 @@
             }
         },
         series: [{
-            name: 'Km effettuati',
+            name: 'Totale prenotazioni',
             data: [[${reportAuto.values()}]]
         }]
     });
     });
 </script>
 
-				<form th:if="${autoInSede != null}" th:action="@{/dettaglioAutoKm}"
-					method="post">
-					<td class="closeShort"><select name="auto">
-							<option th:each="a : ${autoInSede}" th:value="${a.id}"
-								name="auto" th:text="${a.toString()}"></option>
-					</select></td>
-					<td class="closeShort"><input type="submit" value="Dettaglio"></td>
-				</form>
 
 			</div>
 	</section>

@@ -69,7 +69,7 @@ public class Sede {
 
 	@Override
 	public String toString() {
-		return "Sede [id=" + id + ", regione=" + regione + ", citta=" + citta + "]";
+		return this.getCitta();
 	}
 
 }

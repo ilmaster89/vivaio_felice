@@ -182,6 +182,13 @@ public class DipendenteController {
 			model.addAttribute("patenti", patenteDao.findAll());
 			return "inserimentoPatente";
 		}
+		List<PossessoPatenti> possPatDip = possPatDao.findByDipendenteId(possessoPatenti.getDipendente().getId());
+		for (PossessoPatenti a : possPatDip) {
+			if (a.getPatente() == possessoPatenti.getPatente()) {
+				model.addAttribute("errore", "Questo dipendente ha già una patente di questo tipo, riprova.");
+				return "erroreMessaggio";
+			}
+		}
 		possPatDao.save(possessoPatenti);
 		return "primapagina";
 

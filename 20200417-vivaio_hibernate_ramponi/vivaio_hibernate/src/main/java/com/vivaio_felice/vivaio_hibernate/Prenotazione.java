@@ -43,7 +43,9 @@ public class Prenotazione {
 	Date dataFine;
 
 	@Transient
-	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	@Transient
+	SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
 
 	Integer km;
 
@@ -133,7 +135,7 @@ public class Prenotazione {
 	@Override
 	public String toString() {
 		return auto.getMarca() + " " + auto.getModello() + " " + auto.getTarga() + " "
-				+ sdf.format(this.getDataInizio()) + " " + sdf.format(this.getDataFine());
+				+ sdf.format(this.getDataInizio()) + "-" + sdf2.format(this.getDataFine());
 	}
 
 }

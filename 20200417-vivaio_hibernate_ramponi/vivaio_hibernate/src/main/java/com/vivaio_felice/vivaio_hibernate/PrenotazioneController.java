@@ -79,7 +79,8 @@ public class PrenotazioneController {
 	public static boolean datesMatch(Date d1, Date d2, Date d3, Date d4) {
 
 		// partendo dal presupposto che il controllo si fa solo se il giorno è lo stesso
-		if (d1.toInstant().compareTo(d3.toInstant()) == 0) {
+		if (d1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+				.compareTo(d3.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) == 0) {
 
 			// queste sono le varie possibilità in cui le date cozzano
 			if (d1.compareTo(d3) == 0)
@@ -137,6 +138,7 @@ public class PrenotazioneController {
 
 			if (!prenotazioniSingolaAuto.isEmpty()) {
 				for (Prenotazione p : prenotazioniSingolaAuto)
+
 					if ((transfer
 							&& datesMatchWithTrans(dataInizio, dataFine, p.getDataInizio(), p.getDataFine(), trans))
 							|| (!transfer && datesMatch(dataInizio, dataFine, p.getDataInizio(), p.getDataFine())))
@@ -209,6 +211,10 @@ public class PrenotazioneController {
 		// la prenotazione, ore poi aggiunte alla data di inizio per trovare quella
 		// finale
 		LocalDateTime ldtInizio = LocalDateTime.ofInstant(dataInizio.toInstant(), ZoneId.systemDefault());
+		if (ldtInizio.isBefore(LocalDateTime.now())) {
+			model.addAttribute("errore", "Hai inserito una data passata, riprova.");
+			return "erroreMessaggio";
+		}
 		LocalDateTime ldtFine = ldtInizio.plus(ore, ChronoUnit.HOURS);
 		ZonedDateTime zdtFine = ldtFine.atZone(ZoneId.systemDefault());
 		Date dataFine = Date.from(zdtFine.toInstant());

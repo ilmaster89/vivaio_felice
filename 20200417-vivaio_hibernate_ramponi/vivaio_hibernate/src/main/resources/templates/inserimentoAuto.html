@@ -95,6 +95,14 @@
 								th:field="*{dataAss}" /></td>
 
 						</tr>
+						<tr>
+							<td class="closeLong">Kilometraggio iniziale:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{kmIniziali}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('kmIniziali')}"
+								th:errors="*{kmIniziali}"></td>
+
+						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->
 						<tr>

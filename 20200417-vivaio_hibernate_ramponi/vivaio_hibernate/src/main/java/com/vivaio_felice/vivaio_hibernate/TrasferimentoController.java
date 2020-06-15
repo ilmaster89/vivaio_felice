@@ -84,6 +84,10 @@ public class TrasferimentoController {
 	@RequestMapping(value = "/trasferimento", method = RequestMethod.POST)
 	public String autoTrasferita(HttpSession session, Model model, @Valid Parcheggio parcheggio, BindingResult br) {
 
+		if (parcheggio.getDataParch().isBefore((LocalDate.now().plus(1, ChronoUnit.DAYS)))) {
+			model.addAttribute("errore", "La data non può essere prima di domani, riprova.");
+			return "erroreMessaggio";
+		}
 		if (br.hasErrors()) {
 			Integer idSede = (Integer) session.getAttribute("sede");
 			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());

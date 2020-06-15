@@ -12,7 +12,8 @@ import com.vivaio_felice.vivaio_hibernate.Auto;
 
 public interface AutoDao extends CrudRepository<Auto, Integer> {
 
-	Optional<Auto> findById(Integer id);
+	@Query("select s from Auto s where id = :id")
+	Auto autoDaId(Integer id);
 
 	List<Auto> findByPatenteId(Integer id);
 

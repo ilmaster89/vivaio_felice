@@ -3,7 +3,7 @@
     in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
 <html lang="en">
 <head>
-<title>Lvl-3-Dip_Spese</title>
+<title>Lvl-2-Resp_Trasferimenti</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
@@ -22,6 +22,7 @@
 	<section id="central">
 		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
+
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
 			<a href="/indietro">Torna Indietro</a>
@@ -30,28 +31,33 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form onsubmit="return confermaPrenota();"
-				th:action="@{/prenoCancellata}" th:object="${prenotazione}"
-				method="post">
+			<form th:action="@{/graficoPrenoPassate}" method="post">
 				<table class="firstTable">
 					<th:block>
 
-						<h2 class="titleHdue">Cancella Prenotazione</h2>
-						<p id="comment">Seleziona la prenotazione da cancellare</p>
-
+						<h2 class="titleHdue">Report Km/Date su auto in sede</h2>
 						<tr>
-							<td class="closeShort">Prenotazione:</td>
-							<td class="closeShort"><select th:field="*{id}">
-									<option th:each="p : ${prenotazioniDip}" th:value="${p.id}"
-										th:text="${p.toString()}"></option>
+							<td class="closeShort">Sede:</td>
+							<td class="closeShort"><select name="sede">
+									<option th:each="s : ${sedi}" th:value="${s.id}"
+										th:text="${s.toString()}"></option>
 							</select></td>
 						</tr>
+						<tr>
+							<td class="closeShort">Di quante settimane vuoi andare
+								indietro?</td>
+							<td class="closeShort"><input name="settimane" type="number"
+								th:min="1"></td>
+						</tr>
+
+
+
 
 						<!-- Pulsante per resettare i campi di inserimento -->
 					</th:block>
 				</table>
 				<section>
-					<input type="submit" value="Conferma la cancellazione">
+					<input type="submit" value="Prova Grafico">
 				</section>
 			</form>
 		</div>
