@@ -46,6 +46,8 @@ public class Prenotazione {
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	@Transient
 	SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+	@Transient
+	SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy");
 
 	Integer km;
 
@@ -138,4 +140,7 @@ public class Prenotazione {
 				+ sdf.format(this.getDataInizio()) + "-" + sdf2.format(this.getDataFine());
 	}
 
+	public String dataFormattata() {
+		return sdf3.format(this.getDataInizio());
+	}
 }

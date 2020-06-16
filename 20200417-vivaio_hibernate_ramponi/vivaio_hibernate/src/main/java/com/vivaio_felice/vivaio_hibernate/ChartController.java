@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -163,7 +164,7 @@ public class ChartController {
 
 				}
 
-				reportPrenotazioni.put(ld, totPreno);
+				reportPrenotazioni.put(p.dataFormattata(), totPreno);
 			}
 		}
 
@@ -289,7 +290,7 @@ public class ChartController {
 		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now()))
 			prenotazioniFuture.addAll(prenoDao.prenotazioniFuture(a.getId()));
 
-		model.addAttribute("prenotazioniFuture", prenotazioniFuture);
+		model.addAttribute("prenotazioni", prenotazioniFuture);
 		return "dashPreno";
 	}
 
@@ -320,9 +321,70 @@ public class ChartController {
 			@RequestParam("settimane") Integer settimane) {
 
 		LocalDate dataLimite = LocalDate.now().minus(settimane, ChronoUnit.WEEKS);
-		model.addAttribute("reportAuto", caricaPrenoPassate(sede, dataLimite));
+		if (sede == sedeDao.tutteLeSedi()) {
+
+			Integer prenoGlobali = 0;
+			Map<Object, Object> reportSede = new LinkedHashMap<Object, Object>();
+			for (Sede s : sedeDao.sediEccetto(sedeDao.tutteLeSedi())) {
+
+				Integer totPrenoSede = 0;
+				Map<Object, Object> prenoPassateSede = caricaPrenoPassate(s.getId(), dataLimite);
+				for (Object o : prenoPassateSede.values()) {
+					Integer x = (Integer) o;
+					totPrenoSede += x;
+					prenoGlobali += x;
+				}
+
+				reportSede.put(s.toString(), totPrenoSede);
+			}
+
+			reportSede.put(sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString(), prenoGlobali);
+			model.addAttribute("reportAuto", reportSede);
+			return "graficoPrenoPassate";
+		}
+
+		Map<Object, Object> prenoPassate = caricaPrenoPassate(sede, dataLimite);
+		List<String> datePreno = new ArrayList<String>();
+		for (Object o : prenoPassate.keySet()) {
+			String s = (String) o;
+			datePreno.add(s);
+		}
+		model.addAttribute("reportAuto", prenoPassate);
+		model.addAttribute("listaDate", datePreno);
+		session.setAttribute("sedeScelta", sede);
 
 		return "graficoPrenoPassate";
 
+	}
+
+	@RequestMapping(value = "/dettaglioPrenoPassate", method = RequestMethod.POST)
+	public String dettaglioPrenoPassate(HttpSession session, Model model,
+			@RequestParam("dataScelta") String dataScelta) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		List<Prenotazione> prenotazioniDelGiornoScelto = new ArrayList<Prenotazione>();
+		Integer idSede = (Integer) session.getAttribute("sedeScelta");
+		try {
+			
+			java.util.Date dataDaStringa = sdf.parse(dataScelta);
+
+			LocalDateTime ldt1 = LocalDateTime
+					.of(dataDaStringa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.MIDNIGHT);
+			LocalDateTime ldt2 = ldt1.plus(23, ChronoUnit.HOURS);
+			ldt2 = ldt2.plus(59, ChronoUnit.MINUTES);
+			ldt2 = ldt2.plus(59, ChronoUnit.SECONDS);
+
+			for (Auto a : autoDao.autoInSede(idSede, LocalDate.now())) {
+
+				prenotazioniDelGiornoScelto.addAll(prenoDao.prenoDiUnGiorno(a.getId(), ldt1, ldt2));
+
+			}
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		model.addAttribute("prenotazioni", prenotazioniDelGiornoScelto);
+		return "dashPreno";
 	}
 }

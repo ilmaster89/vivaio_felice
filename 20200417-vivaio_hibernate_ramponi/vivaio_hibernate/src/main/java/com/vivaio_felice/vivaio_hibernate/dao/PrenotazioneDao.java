@@ -64,4 +64,7 @@ public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 	@Query(value = "select * from prenotazioni where data_inizio between :data and now() and causale_id = 3 order by data_inizio", nativeQuery = true)
 	public List<Prenotazione> prenoPassate(LocalDate data);
 
+	@Query(value = "select * from prenotazioni where auto_id = :idAuto and causale_id = 3 and data_inizio between :data1 and :data2 order by data_inizio", nativeQuery = true)
+	public List<Prenotazione> prenoDiUnGiorno(Integer idAuto, LocalDateTime data1, LocalDateTime data2);
+
 }

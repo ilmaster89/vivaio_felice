@@ -31,11 +31,9 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<td class="closeShort">Prenotazioni in programma per la tua
-				sede:</td>
 			<table class="firstTable">
 
-				<tr th:each="p: ${prenotazioniFuture}">
+				<tr th:each="p: ${prenotazioni}">
 					<td th:value="${p.id}" name="id" th:text="${p.toString()}"></td>
 					<td class="closeShort"><a
 						th:href="@{'/dettaglioPreno?id='+${p.getId()}}">Dettaglio</a></td>

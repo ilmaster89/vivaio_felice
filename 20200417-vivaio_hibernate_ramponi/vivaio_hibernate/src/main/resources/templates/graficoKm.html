@@ -101,9 +101,9 @@
 
 				<form th:if="${autoInSede != null}" th:action="@{/dettaglioAutoKm}"
 					method="post">
-					<td class="closeShort"><select name="auto">
+					<td class="closeShort"><select name=auto>
 							<option th:each="a : ${autoInSede}" th:value="${a.id}"
-								name="auto" th:text="${a.toString()}"></option>
+								th:text="${a.toString()}"></option>
 					</select></td>
 					<td class="closeShort"><input type="submit" value="Dettaglio"></td>
 				</form>

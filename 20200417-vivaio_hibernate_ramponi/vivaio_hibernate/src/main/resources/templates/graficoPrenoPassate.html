@@ -98,6 +98,13 @@
     });
     });
 </script>
+				<form th:if="${listaDate != null}"
+					th:action="@{/dettaglioPrenoPassate}" method="post">
+					<td class="closeShort"><select name="dataScelta">
+							<option th:each="d : ${listaDate}" th:value="${d}" th:text="${d}"></option>
+					</select></td>
+					<td class="closeShort"><input type="submit" value="Dettaglio"></td>
+				</form>
 
 
 			</div>
