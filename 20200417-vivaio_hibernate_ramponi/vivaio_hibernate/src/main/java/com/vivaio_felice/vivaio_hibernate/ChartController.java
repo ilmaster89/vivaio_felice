@@ -1,6 +1,5 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,6 +27,7 @@ import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
 import com.vivaio_felice.vivaio_hibernate.dao.DipendenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
+import com.vivaio_felice.vivaio_hibernate.dao.SedeDipendenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
 
 @Controller
@@ -45,6 +45,8 @@ public class ChartController {
 	SedeDao sedeDao;
 	@Autowired
 	DipendenteDao dipDao;
+	@Autowired
+	SedeDipendenteDao sedeDipendenteDao;
 
 	public Map<Object, Object> caricaKmSingolaAuto(Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
 
@@ -507,4 +509,69 @@ public class ChartController {
 		return "grafico";
 
 	}
+
+	@RequestMapping("/distribuzione")
+	public String dettaglioGenerale(HttpSession httpSession, Model model, Dipendente dipendente, Auto auto) {
+
+		List<Sede> allSedi = (List<Sede>) sedeDao.findAll();
+
+		// Mappa per AUTO in Sede
+		Map<Object, Object> graficoAuto = new LinkedHashMap<Object, Object>();
+
+		for (int i = 0; i < allSedi.size(); i++) {
+			Integer sedeScelta = allSedi.get(i).getId();
+			// Se la Sede è uguale a 13 si carica la somma di tutte le Auto
+			if (sedeScelta == sedeDao.tutteLeSedi()) {
+				Integer numAuto = autoDao.quantitaAuto();
+				graficoAuto.put(allSedi.get(i).citta, numAuto);
+			}
+			// Altrimenti si passa ogni sede sommando le auto per ogni singola Sede
+			else {
+				List<Auto> autoInSede = autoDao.autoInSede(sedeScelta, LocalDate.now());
+				Integer numAutoSede = 0;
+				// Se ci sono Auto in Sede si aumenta la variabile
+				for (int x = 0; x < autoInSede.size(); x++) {
+					numAutoSede++;
+				}
+				// Carico i dati nelle mappe, se è vuota una sede aggiungo "0"
+				if (autoInSede.isEmpty()) {
+					graficoAuto.put(allSedi.get(i).citta, 0);
+				} else
+					graficoAuto.put(allSedi.get(i).citta, numAutoSede);
+			}
+			model.addAttribute("graficoAuto", graficoAuto);
+		}
+
+		// Creo mappa per DIPENDENTI in sede
+		Map<Object, Object> graficoDipendenti = new LinkedHashMap<Object, Object>();
+		for (int i = 0; i < allSedi.size(); i++) {
+
+			Integer sedeSpecifica = allSedi.get(i).getId();
+			// Se la Sede è uguale a 13 si carica la somma di tutti i dipendenti
+			if (sedeSpecifica == sedeDao.tutteLeSedi()) {
+				Integer allDip = dipDao.quantitaDip();
+				graficoDipendenti.put(allSedi.get(i).citta, allDip);
+			}
+			// Altrimenti si passa ogni sede sommando i dipendenti per ogni singola Sede
+			else {
+				List<Integer> dipInSede = sedeDipendenteDao.dipendentiInSede(sedeSpecifica);
+				Integer numDipSede = 0;
+				// Se ci sono Dipendenti in Sede si aumenta la variabile
+				for (int x = 0; x < dipInSede.size(); x++) {
+					numDipSede++;
+				}
+				// Carico i dati nelle mappe, se è vuota una sede aggiungo "0"
+				if (dipInSede.isEmpty()) {
+					graficoDipendenti.put(allSedi.get(i).citta, 0);
+				} else
+					graficoDipendenti.put(allSedi.get(i).citta, numDipSede);
+			}
+		}
+
+		model.addAttribute("titolo", "Distribuzione di Auto e Dipendenti tra le sedi");
+
+		model.addAttribute("graficoDipendenti", graficoDipendenti);
+		return "graficoDensita";
+	}
+
 }

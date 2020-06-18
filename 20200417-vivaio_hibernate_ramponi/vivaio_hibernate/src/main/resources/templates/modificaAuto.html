@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-3-Dip_InserimentoAuto</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
+		<div th:replace="fragments/menu :: menu"></div>
+
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form onsubmit="return submitForm();" th:action="@{/autoModificata}"
+				th:object="${auto}" method="post">
+				<th:block>
+					<table class="firstTable">
+
+						<h2 class="titleHdue">Modifica Auto</h2>
+						<p id="comment">Inserisci i relativi campi per modificare l'auto:</p>
+
+						<td><input type="hidden" th:field="*{id}"></td>
+						<tr>
+							<td class="closeShort">Marca:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{marca}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('marca')}"
+								th:errors="*{marca}"></td>
+
+							<td class="closeShort">Modello:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{modello}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('modello')}"
+								th:errors="*{modello}"></td>
+
+							<td class="closeShort">Targa:</td>
+							<td class="closeShort"><input type="text"
+								th:field="*{targa}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('targa')}"
+								th:errors="*{targa}"></td>
+						</tr>
+						<tr>
+							<td class="closeShort">Carburante:</td>
+							<td class="closeShort"><select th:field="*{carburante}">
+									<option th:each="c : ${carburanti}" th:value="${c.id}"
+										th:text="${c.tipologia}"></option>
+							</select></td>
+
+							<td class="closeShort">Patente necessaria:</td>
+							<td class="closeShort"><select th:field="*{patente}">
+									<option th:each="p : ${patenti}" th:value="${p.id}"
+										th:text="${p.tipologia}"></option>
+							</select></td>
+						</tr>
+
+						<tr>
+							<td class="closeShort">Kw:</td>
+							<td class="closeShort"><input type="text" th:field="*{kw}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('kw')}"
+								th:errors="*{kw}"></td>
+							<td class="closeShort">Tara:</td>
+							<td class="closeShort"><input type="text" th:field="*{tara}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('tara')}"
+								th:errors="*{tara}"></td>
+							<td class="closeShort">Km Iniziali:</td>
+							<td class="closeShort"><input type="text" th:field="*{kmIniziali}" /></td>
+							<td class="errore" th:if="${#fields.hasErrors('kmIniziali')}"
+								th:errors="*{kmIniziali}"></td>
+						</tr>
+
+						<tr>
+							<td class="closeLong">Data ultima assicurazione:</td>
+							<td class="closeShort"><input type="date" name="dataAss"
+								th:field="*{dataAss}" /></td>
+
+						</tr>
+
+						<!-- Pulsante per resettare i campi di inserimento -->
+						<tr>
+							<td class="closeShort"><input type="reset" value="Resetta"></td>
+
+
+						</tr>
+
+						</th:block>
+					</table>
+					<section>
+
+						<input type="submit" value="Modifica Auto">
+
+					</section>
+			</form>
+		</div>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>

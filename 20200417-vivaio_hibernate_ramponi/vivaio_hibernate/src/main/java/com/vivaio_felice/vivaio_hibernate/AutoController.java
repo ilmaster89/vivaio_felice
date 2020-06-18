@@ -1,22 +1,21 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CarburanteDao;
@@ -124,6 +123,42 @@ public class AutoController {
 		session.removeAttribute("autoDaRinnovare");
 		return "redirect:/primapagina";
 
+	}
+
+	@RequestMapping("/modifica")
+	public String modificaAuto(HttpSession session, Model model, Auto auto) {
+		List<Auto> autosede = autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now());
+		model.addAttribute("autosede", autosede);
+		return "modAuto";
+	}
+
+	@RequestMapping(value = "/modificheAuto", method = RequestMethod.POST)
+	public String autoScelta(HttpSession session, Model model, Auto auto) {
+		Auto autoDaModificare = autoDao.findByTarga(auto.getTarga());
+		session.setAttribute("autoDaModificare", autoDaModificare);
+		model.addAttribute("carburanti", carburanteDao.findAll());
+		model.addAttribute("patenti", patenteDao.findAll());
+		return "modificaAuto";
+	}
+
+	@RequestMapping(value = "/autoModificata", method = RequestMethod.POST)
+	public String autoDaModificare(HttpSession session, Model model, @Valid Auto auto, BindingResult br) {
+		if (br.hasErrors()) {
+			model.addAttribute("errore", "Non hai inserito alcuni valori, riprova");
+			return "erroreMessaggio";
+		}
+		Auto autoCambiata = (Auto) session.getAttribute("autoDaModificare");
+		autoCambiata.setPatente(auto.getPatente());
+		autoCambiata.setCarburante(auto.getCarburante());
+		autoCambiata.setMarca(auto.getMarca());
+		autoCambiata.setModello(auto.getModello());
+		autoCambiata.setTarga(auto.getTarga());
+		autoCambiata.setKw(auto.getKw());
+		autoCambiata.setTara(auto.getTara());
+		autoCambiata.setDataAss(auto.getDataAss());
+		autoCambiata.setKmIniziali(auto.getKmIniziali());
+		autoDao.save(autoCambiata);
+		return "redirect:/primapagina";
 	}
 
 }

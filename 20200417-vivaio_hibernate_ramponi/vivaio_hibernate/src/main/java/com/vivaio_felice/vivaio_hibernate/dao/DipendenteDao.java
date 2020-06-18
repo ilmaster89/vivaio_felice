@@ -29,4 +29,8 @@ public interface DipendenteDao extends CrudRepository<Dipendente, Integer> {
 	@Query(value = "select * from dipendenti join sede_dip on dipendenti.id = sede_dip.dipendente_id where sede_id = :idSede", nativeQuery = true)
 	public List<Dipendente> dipendentiInSede(Integer idSede);
 
+	// conta quanti dipendenti sono presenti in VIVAIO FELICE
+	@Query(value = "select COUNT(id) from dipendenti", nativeQuery = true)
+	public Integer quantitaDip();
+
 }

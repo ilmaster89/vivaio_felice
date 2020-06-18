@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--Il livello 4 è l'operaio, questa pagina html si apre quando un dipendente entra con le credenziali di livello 4.
+    in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
+<html lang="en">
+<head>
+<title>Lvl-3-Dip_Manutenzione</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="stylePagina.css">
+<link rel="stylesheet" href="styleMenu.css">
+<link rel="stylesheet" href="styleMenuPrenota.css">
+<script src="PopUp.js"></script>
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Vivaio Felice</h1>
+		</div>
+		<img src="vivaio_felice_immagine.png">
+	</header>
+
+	<section id="central">
+		<!-- frammento per replicare la barra dei menu -->
+		<div th:replace="fragments/menu :: menu"></div>
+
+		<!-- Pulsante per tornare indietro o cambiare utente -->
+		<button id="BottoneCambio">
+			<a href="/indietro">Torna Indietro</a>
+		</button>
+
+		<!-- parte centrale della pagina dove verranno 
+				visualizzate le azioni che si potranno effettuare -->
+		<div class="menuPrenotaAuto">
+			<form th:action="@{/modificheAuto}" th:object="${auto}"
+				method="post">
+				<table class="firstTable">
+					<th:block>
+						<tr>
+							<td class="closeShort"> <a>Scegli Auto da Modificare:</a>
+							</td>
+							<td class="closeShort"> <select name="auto">
+							<option th:each="a: ${autosede}" th:value="${a.id}" 
+							th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}" ></option>
+							</select>
+							</td>
+						</tr>
+					</th:block>
+				</table>
+				<section>
+					<input type="submit" value="Modifica Auto">
+				</section>
+			</form>
+		</div>
+	</section>
+
+	<footer>
+		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+	</footer>
+
+</body>
+</html>
