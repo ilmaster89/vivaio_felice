@@ -22,7 +22,7 @@
 		<img src="vivaio_felice_immagine.png">
 	</header>
 
-	<section id="central">
+	<section id="central" class="wrapper">
 		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
@@ -34,8 +34,7 @@
 
 
 
-			<h3 style="padding-left: 8%" id="comment">Prenotazioni
-				effettuate nel periodo richiesto</h3>
+			<h3 style="padding-left: 8%" id="comment" th:text="${titolo}"></h3>
 
 
 			<td th:if="${reportAuto.isEmpty()}">Non ci sono report per
@@ -54,6 +53,7 @@
 					src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 				<script src="https://code.highcharts.com/highcharts.js"></script>
 				<script src="https://code.highcharts.com/modules/exporting.js"></script>
+				<script src="https://code.highcharts.com/modules/export-data.js"></script>
 				<script th:inline="javascript">
     $(function(){
     Highcharts.chart('container', {
@@ -61,7 +61,7 @@
             type: 'column'
         },
         title: {
-            text: 'Prenotazioni effettuate'
+            text: [[${titoletto}]]
         },
         subtitle: {
             text: 'Vivaio Felice SPA'
@@ -72,15 +72,15 @@
         },
         yAxis: {
             min: 0,
-            max:10,
+            max: [[${max}]],
             title: {
-                text: 'Km'
+                text: [[${asseY}]]
             }
         },
         tooltip: {
             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} K</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
             footerFormat: '</table>',
             shared: true,
             useHTML: true
@@ -92,12 +92,21 @@
             }
         },
         series: [{
-            name: 'Totale prenotazioni',
+            name: [[${serie}]],
             data: [[${reportAuto.values()}]]
         }]
     });
     });
 </script>
+
+				<form th:if="${autoInSede != null}" th:action="@{/dettaglioAutoKm}"
+					method="post">
+					<td class="closeShort"><select name=auto>
+							<option th:each="a : ${autoInSede}" th:value="${a.id}"
+								th:text="${a.toString()}"></option>
+					</select></td>
+					<td class="closeShort"><input type="submit" value="Dettaglio"></td>
+				</form>
 				<form th:if="${listaDate != null}"
 					th:action="@{/dettaglioPrenoPassate}" method="post">
 					<td class="closeShort"><select name="dataScelta">
@@ -105,13 +114,11 @@
 					</select></td>
 					<td class="closeShort"><input type="submit" value="Dettaglio"></td>
 				</form>
-
-
 			</div>
 	</section>
 
 
-	<footer>
+	<footer class="footer">
 		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
 	</footer>
 

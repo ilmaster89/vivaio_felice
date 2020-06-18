@@ -127,15 +127,11 @@ public class Dipendente {
 	}
 
 	public boolean impiegato() {
-		if (livello.getId() >= 2)
-			return true;
-		return false;
+		return this.livello.getId() >= 2;
 	}
 
 	public boolean responsabile() {
-		if (livello.getId() >= 3)
-			return true;
-		return false;
+		return this.livello.getId() >= 3;
 	}
 
 	public SedeDipendente getSedeDipendente() {
@@ -182,8 +178,7 @@ public class Dipendente {
 
 	@Override
 	public String toString() {
-		return "Dipendente [id=" + id + ", id_livello=" + livello.getId() + ", nome=" + nome + ", cognome=" + cognome
-				+ ", user_name=" + user + ", password=" + password + " possessoPatenti=" + possessoPatenti + "]";
+		return nome + " " + cognome;
 	}
 
 }

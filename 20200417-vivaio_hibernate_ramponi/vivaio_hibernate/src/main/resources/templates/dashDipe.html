@@ -19,7 +19,7 @@
 		<img src="vivaio_felice_immagine.png">
 	</header>
 
-	<section id="central">
+	<section id="central" class="wrapper">
 		<!-- frammento per replicare la barra dei menu -->
 		<div th:replace="fragments/menu :: menu"></div>
 
@@ -31,20 +31,18 @@
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
 		<div class="menuPrenotaAuto">
-			<form th:action="@{/graficoManu}" method="post">
+			<form th:action="@{/graficoDipe}" method="post">
 				<table class="firstTable">
 					<th:block>
 
-						<h2 class="titleHdue">Report spese Manutenzione</h2>
-						<p id="comment">Seleziona l'auto:</p>
+						<h2 class="titleHdue">Report Km/Date su auto in sede</h2>
 						<tr>
 							<td class="closeShort">Sede:</td>
-							<td class="closeShort"><select name="sede">
-									<option th:each="s : ${ognisede}" th:value="${s.id}"
-										th:text="${s.toString()}"></option>
+							<td class="closeShort"><select name="dipendente">
+									<option th:each="d : ${dipendenti}" th:value="${d.id}"
+										th:text="${d.toString()}"></option>
 							</select></td>
 						</tr>
-
 						<tr>
 							<td class="closeShort">Data di inizio:</td>
 							<td class="closeShort"><input name="data1" type="date"></td>
@@ -67,7 +65,7 @@
 		</div>
 	</section>
 
-	<footer>
+	<footer class="footer">
 		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
 	</footer>
 

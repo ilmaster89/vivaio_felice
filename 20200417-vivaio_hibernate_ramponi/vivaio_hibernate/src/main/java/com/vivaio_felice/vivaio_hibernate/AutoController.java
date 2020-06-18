@@ -68,7 +68,7 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 29 10 * * ?")
+	@Scheduled(cron = "0 48 10 * * ?")
 	public void confermaParcheggi() {
 
 		for (Auto a : autoDao.autoParcheggiate(LocalDate.now())) {

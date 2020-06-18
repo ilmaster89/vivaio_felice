@@ -20,9 +20,13 @@ public interface DipendenteDao extends CrudRepository<Dipendente, Integer> {
 
 	List<Dipendente> findByPassword(String password);
 
-	Optional<Dipendente> findById(Integer id);
+	@Query(value = "select * from dipendenti where id = :idDip", nativeQuery = true)
+	public Dipendente dipDaId(Integer idDip);
 
 	@Query("select s from Dipendente s where user_name = :user and password = :pass")
 	public Dipendente login(String user, String pass);
+
+	@Query(value = "select * from dipendenti join sede_dip on dipendenti.id = sede_dip.dipendente_id where sede_id = :idSede", nativeQuery = true)
+	public List<Dipendente> dipendentiInSede(Integer idSede);
 
 }

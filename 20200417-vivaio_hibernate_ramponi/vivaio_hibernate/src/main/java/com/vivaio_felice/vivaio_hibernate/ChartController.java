@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
+import com.vivaio_felice.vivaio_hibernate.dao.DipendenteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
@@ -42,6 +43,8 @@ public class ChartController {
 	CausaleDao causaleDao;
 	@Autowired
 	SedeDao sedeDao;
+	@Autowired
+	DipendenteDao dipDao;
 
 	public Map<Object, Object> caricaKmSingolaAuto(Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
 
@@ -88,33 +91,22 @@ public class ChartController {
 
 	}
 
-	public Map<Object, Object> caricaSpeseSingolaAuto(Integer idAuto, LocalDate data1, LocalDate data2) {
+	public Integer kmEffettuatiDipendente(Integer idDip, Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
 
-		List<Integer> spese = spesaDao.speseAuto(idAuto, data1, data2);
-		List<Date> date = spesaDao.dateManutenzione(idAuto, data1, data2);
-		Map<Object, Object> reportSpese = new LinkedHashMap<Object, Object>();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		List<Prenotazione> prenoDip = prenoDao.prenotazioniDipGrafico(idDip, idAuto, ldt1, ldt2);
 
-		if (!spese.isEmpty()) {
+		Integer kmPercorsiDalDip = 0;
 
-			for (int i = 1; i < spese.size(); i++)
+		for (Prenotazione p : prenoDip) {
+			Integer kmPrec = prenoDao.kmPrecedenti(p.getAuto().getId(),
+					p.getDataInizio().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+			if (kmPrec == null)
+				kmPrec = 0;
 
-				if (date.get(i).compareTo(date.get(i - 1)) == 0) {
-					spese.set(i, spese.get(i) + spese.get(i - 1));
-				}
-
-			for (int i = 0; i < spese.size(); i++) {
-
-				if (spese.get(i) == null)
-					reportSpese.put(sdf.format(date.get(i)), 0);
-				if (spese.get(i) != null)
-					reportSpese.put(sdf.format(date.get(i)), spese.get(i));
-
-			}
-
+			kmPercorsiDalDip += Math.min(p.getKm() - p.getAuto().getKmIniziali(), p.getKm() - kmPrec);
 		}
 
-		return reportSpese;
+		return kmPercorsiDalDip;
 	}
 
 	public Map<Object, Object> caricaPrenoPassate(Integer idSede, LocalDate data) {
@@ -185,13 +177,20 @@ public class ChartController {
 			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2,
 			@RequestParam("sede") Integer sede) {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		LocalDateTime ldt1 = LocalDateTime.of(data1, LocalTime.MIDNIGHT);
 		LocalDateTime ldt2 = LocalDateTime.of(data2, LocalTime.MIDNIGHT);
+
+		Sede sedeScelta = sedeDao.sedeSingola(sede);
 		if (data1 == null || data2 == null) {
 			model.addAttribute("sedi", sedeDao.findAll());
 			return "dashKm";
 		}
 
+		model.addAttribute("titoletto", "Km percorsi");
+		model.addAttribute("asseY", "Km");
+		model.addAttribute("serie", "Totale Km");
 		if (sede == sedeDao.tutteLeSedi()) {
 
 			Integer kmTuttoVivaio = 0;
@@ -210,13 +209,20 @@ public class ChartController {
 			kmPerSede.put(sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString(), kmTuttoVivaio);
 
 			model.addAttribute("reportAuto", kmPerSede);
-			model.addAttribute("sede", sedeDao.sedeSingola(sede).toString().toLowerCase());
-			model.addAttribute("data1", data1);
-			model.addAttribute("data2", data2);
-			return "graficoKm";
+			try {
+				String d1 = sdf.format(sdf1.parse(data1.toString()));
+				String d2 = sdf.format(sdf1.parse(data2.toString()));
+				model.addAttribute("titolo", "Km per auto nel periodo " + d1 + "-" + d2 + " per "
+						+ sedeDao.sedeSingola(sede).toString().toLowerCase());
+
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return "grafico";
 		}
 
-		Sede sedeScelta = sedeDao.sedeSingola(sede);
 		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
 
 		for (Auto a : autoDao.autoInSede(sede, LocalDate.now()))
@@ -225,12 +231,19 @@ public class ChartController {
 		model.addAttribute("autoInSede", autoDao.autoInSede(sede, LocalDate.now()));
 		model.addAttribute("reportAuto", reportAuto);
 		session.setAttribute("dataInizio", data1);
-		model.addAttribute("data1", data1);
-		model.addAttribute("data2", data2);
 		session.setAttribute("dataFine", data2);
-		model.addAttribute("sede", sedeScelta);
+		try {
+			String d1 = sdf.format(sdf1.parse(data1.toString()));
+			String d2 = sdf.format(sdf1.parse(data2.toString()));
+			model.addAttribute("titolo",
+					"Km per auto nel periodo " + d1 + "-" + d2 + " per la sede di " + sedeScelta.toString());
 
-		return "graficoKm";
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "grafico";
 
 	}
 
@@ -242,44 +255,93 @@ public class ChartController {
 		LocalDateTime ldt1 = LocalDateTime.of(data1, LocalTime.MIDNIGHT);
 		LocalDateTime ldt2 = LocalDateTime.of(data2, LocalTime.MIDNIGHT);
 		model.addAttribute("reportAuto", caricaKmSingolaAuto(auto, ldt1, ldt2));
-		model.addAttribute("autoScelta", autoDao.autoDaId(auto));
-		return "dettaglioKm";
+		model.addAttribute("titolo", "Dettaglio per l'auto " + autoDao.autoDaId(auto).toString());
+
+		model.addAttribute("titoletto", "Km percorsi");
+		model.addAttribute("asseY", "Km");
+		model.addAttribute("serie", "Totale Km");
+		return "grafico";
 
 	}
 
 	@RequestMapping("/dashManu")
-
-	public String dashboardManu(HttpSession session, Model model) {
-		Integer idSede = (Integer) session.getAttribute("sede");
-		model.addAttribute("autoInSede", autoDao.autoInSede(idSede, LocalDate.now()));
+	public String dashSpeseSede(HttpSession session, Model model) {
+		model.addAttribute("ognisede", sedeDao.findAll());
 		return "dashManu";
-
 	}
 
 	@RequestMapping(value = "/graficoManu", method = RequestMethod.POST)
-	public String graficoManutenzione(Model model, HttpSession session, @RequestParam("auto") Integer idAuto,
+	public String graficoSpeseSede(Model model, HttpSession session, @RequestParam("sede") Integer idSede,
 			@RequestParam("data1") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data1,
 			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2) {
 
-		List<Integer> spese = spesaDao.speseAuto(idAuto, data1, data2);
-		Map<Object, Object> reportSpese = caricaSpeseSingolaAuto(idAuto, data1, data2);
-		Integer sommaSpese = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		Map<Object, Object> reportSpeseSede = new LinkedHashMap<Object, Object>();
+		Map<Object, Object> speseSedi = new LinkedHashMap<Object, Object>();
+		Sede sedeScelta = sedeDao.sedeSingola(idSede);
+		Integer sommaSpeseSede = 0;
+		Integer sommaTotale = 0;
 
-		if (!spese.isEmpty()) {
+		model.addAttribute("titoletto", "Spese sostenute");
+		model.addAttribute("serie", "Totale spese in Euro");
+		model.addAttribute("asseY", "Spese");
+		if (idSede == sedeDao.tutteLeSedi()) {
+			for (Sede sd : sedeDao.findAll()) {
+				if (sd.getId() != sedeDao.tutteLeSedi()) {
+					for (Auto a : autoDao.autoInSede(sd.getId(), LocalDate.now())) {
+						if (!spesaDao.speseAuto(a.getId(), data1, data2).isEmpty()) {
+							for (Integer s : spesaDao.speseAuto(a.getId(), data1, data2)) {
+								sommaSpeseSede += s;
+								sommaTotale += s;
+							}
+						}
+					}
+				}
+				if (sd.getId() == sedeDao.tutteLeSedi()) {
+					speseSedi.put(sd.toString(), sommaTotale);
+				} else {
+					speseSedi.put(sd.toString(), sommaSpeseSede);
+				}
+				sommaSpeseSede = 0;
 
-			for (Integer x : spese) {
+			}
+			model.addAttribute("reportAuto", speseSedi);
+			try {
+				String d1 = sdf.format(sdf1.parse(data1.toString()));
+				String d2 = sdf.format(sdf1.parse(data2.toString()));
+				model.addAttribute("titolo", "Spese per auto nel periodo " + d1 + "-" + d2 + " per "
+						+ sedeDao.sedeSingola(idSede).toString().toLowerCase());
 
-				if (x == null)
-					x = 0;
-				sommaSpese += x;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return "grafico";
+		}
+
+		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now())) {
+			if (!spesaDao.speseAuto(a.getId(), data1, data2).isEmpty()) {
+				for (Integer s : spesaDao.speseAuto(a.getId(), data1, data2)) {
+					sommaSpeseSede += s;
+				}
+				reportSpeseSede.put(a.toString(), sommaSpeseSede);
+				sommaSpeseSede = 0;
 			}
 		}
 
-		model.addAttribute("reportSpese", reportSpese);
-		model.addAttribute("sommaSpese", sommaSpese);
+		try {
+			String d1 = sdf.format(sdf1.parse(data1.toString()));
+			String d2 = sdf.format(sdf1.parse(data2.toString()));
+			model.addAttribute("titolo",
+					"Spese per auto nel periodo " + d1 + "-" + d2 + " per la sede di " + sedeScelta.toString());
 
-		return "graficoManu";
-
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("reportAuto", reportSpeseSede);
+		return "grafico";
 	}
 
 	@RequestMapping("/prenotazioniFut")
@@ -320,7 +382,12 @@ public class ChartController {
 	public String graficoPassato(HttpSession session, Model model, @RequestParam("sede") Integer sede,
 			@RequestParam("settimane") Integer settimane) {
 
+		Sede sedeScelta = sedeDao.sedeSingola(sede);
 		LocalDate dataLimite = LocalDate.now().minus(settimane, ChronoUnit.WEEKS);
+
+		model.addAttribute("titoletto", "Prenotazioni effettuate");
+		model.addAttribute("asseY", "Prenotazioni");
+		model.addAttribute("serie", "Totale prenotazioni");
 		if (sede == sedeDao.tutteLeSedi()) {
 
 			Integer prenoGlobali = 0;
@@ -340,7 +407,9 @@ public class ChartController {
 
 			reportSede.put(sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString(), prenoGlobali);
 			model.addAttribute("reportAuto", reportSede);
-			return "graficoPrenoPassate";
+			model.addAttribute("titolo", "Prenotazioni effettuate nelle ultime " + settimane + " settimane per "
+					+ sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString().toLowerCase());
+			return "grafico";
 		}
 
 		Map<Object, Object> prenoPassate = caricaPrenoPassate(sede, dataLimite);
@@ -351,10 +420,11 @@ public class ChartController {
 		}
 		model.addAttribute("reportAuto", prenoPassate);
 		model.addAttribute("listaDate", datePreno);
+		model.addAttribute("titolo", "Prenotazioni effettuate nelle ultime " + settimane + " settimane nella sede di "
+				+ sedeScelta.toString());
 		session.setAttribute("sedeScelta", sede);
 
-		return "graficoPrenoPassate";
-
+		return "grafico";
 	}
 
 	@RequestMapping(value = "/dettaglioPrenoPassate", method = RequestMethod.POST)
@@ -365,7 +435,7 @@ public class ChartController {
 		List<Prenotazione> prenotazioniDelGiornoScelto = new ArrayList<Prenotazione>();
 		Integer idSede = (Integer) session.getAttribute("sedeScelta");
 		try {
-			
+
 			java.util.Date dataDaStringa = sdf.parse(dataScelta);
 
 			LocalDateTime ldt1 = LocalDateTime
@@ -386,5 +456,55 @@ public class ChartController {
 
 		model.addAttribute("prenotazioni", prenotazioniDelGiornoScelto);
 		return "dashPreno";
+	}
+
+	@RequestMapping("/kmDip")
+	public String kmDip(HttpSession session, Model model) {
+		Integer idSede = (Integer) session.getAttribute("sede");
+		model.addAttribute("dipendenti", dipDao.dipendentiInSede(idSede));
+		return "dashDipe";
+	}
+
+	@RequestMapping(value = "/graficoDipe", method = RequestMethod.POST)
+	public String graficoDipe(Model model, HttpSession session,
+			@RequestParam("data1") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data1,
+			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2,
+			@RequestParam("dipendente") Integer idDip) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		LocalDateTime ldt1 = LocalDateTime.of(data1, LocalTime.MIDNIGHT);
+		LocalDateTime ldt2 = LocalDateTime.of(data2, LocalTime.MIDNIGHT);
+
+		Dipendente dipScelto = dipDao.dipDaId(idDip);
+		Integer idSede = (Integer) session.getAttribute("sede");
+		if (data1 == null || data2 == null) {
+			model.addAttribute("sedi", sedeDao.findAll());
+			return "dashDipe";
+		}
+
+		model.addAttribute("titoletto", "Km percorsi");
+		model.addAttribute("asseY", "Km");
+		model.addAttribute("serie", "Totale Km");
+		try {
+			String d1 = sdf.format(sdf1.parse(data1.toString()));
+			String d2 = sdf.format(sdf1.parse(data2.toString()));
+			model.addAttribute("titolo",
+					"Km per auto nel periodo " + d1 + "-" + d2 + " percorsi da " + dipScelto.toString());
+
+		} catch (ParseException e) {
+
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
+
+		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now()))
+			reportAuto.put(a.toString(), kmEffettuatiDipendente(idDip, a.getId(), ldt1, ldt2));
+
+		model.addAttribute("reportAuto", reportAuto);
+
+		return "grafico";
+
 	}
 }
