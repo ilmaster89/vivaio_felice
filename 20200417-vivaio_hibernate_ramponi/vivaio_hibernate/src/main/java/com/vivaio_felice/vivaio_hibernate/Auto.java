@@ -66,6 +66,8 @@ public class Auto {
 
 	@Column(name = "km_iniziali")
 	Integer kmIniziali = 0;
+	
+	Integer disponibilita = 0;
 
 	public Auto() {
 	}
@@ -171,6 +173,14 @@ public class Auto {
 
 	public void setKmIniziali(Integer kmIniziali) {
 		this.kmIniziali = kmIniziali;
+	}
+
+	public Integer getDisponibilita() {
+		return disponibilita;
+	}
+
+	public void setDisponibilita(Integer disponibilita) {
+		this.disponibilita = disponibilita;
 	}
 
 	public boolean okForNeoP() {

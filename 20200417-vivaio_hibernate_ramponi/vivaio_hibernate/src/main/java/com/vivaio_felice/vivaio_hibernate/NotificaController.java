@@ -110,7 +110,7 @@ public class NotificaController {
 			Integer idSede = (Integer) session.getAttribute("sede");
 			Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 			boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()), patenteDao.idC());
-			boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patenteDao.idC());
+			boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patenteDao.idB());
 			List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
 			List<Auto> autoPrenotabili = autoPossibili(autoNellaSede, patC, neoP, idSede, dataInizio, dataFine);
 			model.addAttribute("autoDisponibili", autoPrenotabili);
