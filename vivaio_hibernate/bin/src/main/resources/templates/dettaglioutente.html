@@ -1,0 +1,45 @@
+<html>
+<body>
+	<table>
+		<tr>
+			<td>Nome:</td>
+		</tr>
+		<tr>
+			<td th:text="${utente.nome}"></td>
+		</tr>
+		<tr>
+			<td>Cognome:</td>
+		</tr>
+		<tr>
+			<td th:text="${utente.cognome}"></td>
+		</tr>
+
+		<tr>
+			<td>Livello:</td>
+		</tr>
+		<tr>
+			<td th:switch="${utente.id_livello}">
+				<p th:case="1">Operaio</p>
+				<p th:case="2">Impiegato</p>
+				<p th:case="3">Responsabile di sede</p>
+				<p th:case="4">Titolare dell'azienda</p>
+			</td>
+		</tr>
+
+		<tr>
+			<td>Username:</td>
+		</tr>
+		<tr>
+			<td th:text="${utente.user_name}"></td>
+		</tr>
+
+		<tr>
+			<td>Password:</td>
+		</tr>
+		<tr>
+			<td th:text="${utente.password}"></td>
+		</tr>
+
+	</table>
+</body>
+</html>

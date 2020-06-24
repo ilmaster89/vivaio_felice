@@ -127,14 +127,16 @@ public class PrenotazioneController {
 		LocalDate trans = null;
 		List<Auto> autoPrenotabili = new ArrayList<Auto>();
 		for (Auto a : autoNellaSede) {
-
+			System.out.println(a);
 			List<Prenotazione> prenotazioniSingolaAuto = prenotazioneDao.prenoAuto(a.getId());
+
 			boolean transfer = false;
 			boolean match = false;
 
 			trans = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
 			if (trans != null)
 				transfer = true;
+			System.out.println(transfer + " transfer");
 
 			if (!prenotazioniSingolaAuto.isEmpty()) {
 				for (Prenotazione p : prenotazioniSingolaAuto)
@@ -145,12 +147,12 @@ public class PrenotazioneController {
 						match = true;
 
 			}
-
-			if ((!patC && a.getPatente().getId() == patDao.idB()) || patC)
-				if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-					if (!match)
+			System.out.println(match + "m");
+			if ((!patC && a.getPatente().getId() == patDao.idB()) || patC) 
+				if (a.okForNeoP() || (!a.okForNeoP() && !neoP)) 
+					if (!match) 
 						autoPrenotabili.add(a);
-
+			
 		}
 
 		return autoPrenotabili;
@@ -222,9 +224,11 @@ public class PrenotazioneController {
 		Integer idSede = (Integer) session.getAttribute("sede");
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()), patDao.idC());
-		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patDao.idC());
+		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patDao.idB());
 		List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
+
 		List<Auto> autoPrenotabili = autoPossibili(autoNellaSede, patC, neoP, idSede, dataInizio, dataFine);
+
 		model.addAttribute("autoDisponibili", autoPrenotabili);
 		session.setAttribute("dataInizio", dataInizio);
 		session.setAttribute("dataFine", dataFine);

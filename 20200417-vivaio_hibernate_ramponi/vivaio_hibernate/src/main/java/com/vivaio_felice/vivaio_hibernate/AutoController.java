@@ -2,6 +2,7 @@ package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -16,12 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CarburanteDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PatenteDao;
+import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SedeDao;
 
 @Controller
@@ -35,7 +38,8 @@ public class AutoController {
 	PatenteDao patenteDao;
 	@Autowired
 	CarburanteDao carburanteDao;
-
+	@Autowired
+	PrenotazioneDao prenoDao;
 	@Autowired
 	SedeDao sedeDao;
 	@Autowired
@@ -67,17 +71,18 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 48 10 * * ?")
+	@Scheduled(cron = "0 15 15 * * ?")
 	public void confermaParcheggi() {
 
 		for (Auto a : autoDao.autoParcheggiate(LocalDate.now())) {
 
-			Sede sede = sedeDao.sedeSingola(parcheggioDao.sedeOdierna(a.getId(), LocalDate.now()));
-			Parcheggio domani = parcheggioDao.parchDomani(a.getId(), LocalDate.now().plus(1, ChronoUnit.DAYS));
+				Sede sede = sedeDao.sedeSingola(parcheggioDao.sedeOdierna(a.getId(), LocalDate.now()));
+				Parcheggio domani = parcheggioDao.parchDomani(a.getId(), LocalDate.now().plus(1, ChronoUnit.DAYS));
 
-			if (domani == null) {
-				parcheggioDao.save(new Parcheggio(a, sede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
-			}
+				if (domani == null) {
+					parcheggioDao.save(new Parcheggio(a, sede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
+				}	
+			
 		}
 
 	}
@@ -159,6 +164,38 @@ public class AutoController {
 		autoCambiata.setKmIniziali(auto.getKmIniziali());
 		autoDao.save(autoCambiata);
 		return "redirect:/primapagina";
+	}
+	
+	//carico con il get sul model tutte le auto di una sede
+	@RequestMapping("/cancAuto")
+	public String cancellaAuto(HttpSession session, Model model, Auto auto) {
+		List<Auto> autoCancellabili = autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now());
+		model.addAttribute("autoCancellabili", autoCancellabili);
+		return "cancellaAuto";
+	}
+	
+	//con il post setto a 1 la disponibilità, ovvero a false
+	@RequestMapping(value = "/autoCancellata", method = RequestMethod.POST)
+	public String autoEliminata(HttpSession session, Model model, @RequestParam("idAuto") Integer idAuto, Auto auto) {
+		Auto autoCanc = autoDao.autoDaId(idAuto);
+		//ho modificato anche le query in autoDao mettendoci la condizione sulla disponibilità
+		//ho aggiunto il controllo sulla disponibilita anche nel metodo auto possibili sul controller delle preno e sulle notifiche
+		autoCanc.setDisponibilita(1);
+		autoDao.save(autoCanc);
+		//creo una lista di prenotazioni con quell'auto cancellata
+		List<Prenotazione> prenoAutoC = prenoDao.findByAutoId(idAuto);
+		for (Prenotazione p : prenoAutoC) {
+			//controllo se la data è successiva o è di oggi, per far sì che i dipendenti possano modificarla
+			if ((p.getDataInizio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()).compareTo(LocalDate.now()) >= 0) {
+				Notifica n = new Notifica();
+				n.setDipendente(p.getDipendente());
+				n.setDescrizione("Auto eliminata, modifica la prenotazione");
+				n.setPrenotazione(p);
+				n.setConferma(0);
+				notificaDao.save(n);
+			}
+		}
+		return "primapagina";
 	}
 
 }
