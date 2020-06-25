@@ -43,7 +43,7 @@ a:hover {
 	padding-left: 0;
 	margin: 0;
 	display: none;
-	height: 75px;
+	height: auto;
 	/* serve per bloccare il menu li  e non far spostare il testo inferiore */
 	position: absolute;
 }
@@ -54,14 +54,14 @@ a:hover {
 	padding: 0px;
 	float: none;
 	color: black;
-	cursor: pointer;/*prova*/
+	cursor: pointer; /*prova*/
 }
 
 .subli {
 	border-right: none;
 	font-size: 20px;
 	outline: none;
-	cursor: pointer;/*prova*/
+	cursor: pointer; /*prova*/
 }
 
 #menu #about:hover .subitems {
@@ -85,4 +85,3 @@ a:hover {
 	color: green;
 	padding: 10px 30px;
 }
-

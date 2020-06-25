@@ -38,11 +38,11 @@
 					<td class="closeShort">Non hai notifiche da visualizzare!</td>
 				</div>
 				<div th:if="${!notifiche.isEmpty()}" th:each="n : ${notifiche}">
-				<tr>
-					<td th:value="${n.id}" name="id" th:text="${n.descrizione}"></td>
-					<td class="closeShort"><a
-						th:href="@{'/notificaok?id='+${n.getId()}}">Conferma</a></td>
-				</tr>
+					<tr>
+						<td th:value="${n.id}" name="id" th:text="${n.descrizione}"></td>
+						<td class="closeShort"><a
+							th:href="@{'/notificaok?id='+${n.getId()}}">Conferma</a></td>
+					</tr>
 				</div>
 			</table>
 
