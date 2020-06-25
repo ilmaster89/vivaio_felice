@@ -31,13 +31,13 @@ public interface AutoDao extends CrudRepository<Auto, Integer> {
 
 	List<Auto> findByDataAss(Date dataAss);
 
-	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where sede_id = :idSede and data_parch= :data", nativeQuery = true)
+	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where sede_id = :idSede and disponibilita = 0 and data_parch= :data", nativeQuery = true)
 	public List<Auto> autoInSede(Integer idSede, LocalDate data);
 
-	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where data_parch= :data", nativeQuery = true)
+	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where data_parch= :data and disponibilita = 0", nativeQuery = true)
 	public List<Auto> autoParcheggiate(LocalDate data);
 
 	// conta quante auto sono presenti in VIVAIO FELICE
-	@Query(value = "select COUNT(id) from auto", nativeQuery = true)
+	@Query(value = "select COUNT(id) from auto where disponibilita = 0", nativeQuery = true)
 	public Integer quantitaAuto();
 }

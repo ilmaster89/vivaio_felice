@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
 
 @Entity
 @Table(name = "dipendenti")
@@ -158,8 +158,12 @@ public class Dipendente {
 		this.notifiche = notifiche;
 	}
 
+	// il dipendente è neo patentato?
 	public boolean neoP(List<PossessoPatenti> posPat, Integer idPat) {
 		for (PossessoPatenti pp : posPat) {
+
+			// l'idPat è per la patente B e si controlla se andando indietro di un anno
+			// rispetto ad oggi la data possesso è precedente o successiva
 			if (pp.getPatente().getId() == idPat && pp.getDataPoss().toInstant().atZone(ZoneId.systemDefault())
 					.toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.YEARS)))
 				return true;
@@ -167,6 +171,8 @@ public class Dipendente {
 		return false;
 	}
 
+	// il dipendente ha la patente C, che abilita alla guida dei mezzi pesanti in
+	// fase di prenotazione?
 	public boolean patenteC(List<PossessoPatenti> posPat, Integer idPat) {
 		for (PossessoPatenti pp : posPat) {
 			// cambiare costante con query annotation

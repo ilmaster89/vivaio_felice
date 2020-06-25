@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -19,7 +20,6 @@ public class Notifica {
 	Integer id;
 
 	@ManyToOne
-
 	Dipendente dipendente;
 
 	@NotBlank(message = "Campo obbligatorio.")
@@ -31,32 +31,41 @@ public class Notifica {
 	@ManyToOne
 	Auto auto;
 
+	@ManyToOne
+	@JoinColumn(name = "causale")
+	CausaleNotifica causaleNotifica;
+
 	Integer conferma;
 
 	public Notifica() {
 	}
 
-	public Notifica(Dipendente dipendente, @NotNull @Size(max = 250) String descrizione, @NotNull Integer conferma) {
+	public Notifica(Dipendente dipendente, @NotNull @Size(max = 250) String descrizione, @NotNull Integer conferma,
+			CausaleNotifica causaleNotifica) {
 
 		this.dipendente = dipendente;
 		this.descrizione = descrizione;
 		this.conferma = conferma;
+		this.causaleNotifica = causaleNotifica;
 	}
 
-	public Notifica(@NotNull @Size(max = 250) String descrizione, Auto auto, @NotNull Integer conferma) {
+	public Notifica(@NotNull @Size(max = 250) String descrizione, Auto auto, @NotNull Integer conferma,
+			CausaleNotifica causaleNotifica) {
 		super();
 
 		this.descrizione = descrizione;
 		this.auto = auto;
 		this.conferma = conferma;
+		this.causaleNotifica = causaleNotifica;
 	}
 
 	public Notifica(Dipendente dipendente, @NotNull @Size(max = 250) String descrizione, Prenotazione prenotazione,
-			@NotNull Integer conferma) {
+			@NotNull Integer conferma, CausaleNotifica causaleNotifica) {
 		this.dipendente = dipendente;
 		this.descrizione = descrizione;
 		this.prenotazione = prenotazione;
 		this.conferma = conferma;
+		this.causaleNotifica = causaleNotifica;
 	}
 
 	public Prenotazione getPrenotazione() {
@@ -105,6 +114,14 @@ public class Notifica {
 
 	public void setConferma(Integer conferma) {
 		this.conferma = conferma;
+	}
+
+	public CausaleNotifica getCausaleNotifica() {
+		return causaleNotifica;
+	}
+
+	public void setCausaleNotifica(CausaleNotifica causaleNotifica) {
+		this.causaleNotifica = causaleNotifica;
 	}
 
 	@Override

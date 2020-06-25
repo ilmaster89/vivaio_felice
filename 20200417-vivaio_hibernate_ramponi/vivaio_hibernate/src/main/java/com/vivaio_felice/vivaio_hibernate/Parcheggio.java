@@ -89,7 +89,10 @@ public class Parcheggio {
 		return "Parcheggio [id=" + id + ", auto=" + auto + ", sede=" + sede + ", dataParch=" + dataParch + "]";
 	}
 
+	// si valuta se esiste una data in cui l'auto sarà trasferita in una sede
+	// diversa...
 	public LocalDate dataTrasferimento(Integer idSede) {
+		// ...controllando se esiste un parcheggio con una sede diversa dalla propria
 		if (this.getSede().getId() != idSede)
 			return this.getDataParch();
 		return null;

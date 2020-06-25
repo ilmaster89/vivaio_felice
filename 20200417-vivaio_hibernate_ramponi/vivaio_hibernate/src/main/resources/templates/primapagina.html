@@ -34,18 +34,23 @@
 				<p id="comment">Le seguenti notifiche hanno bisogno di una
 					conferma, controlla ogni notifica e premi "conferma":</p>
 
-				<div th:each="n : ${notifiche}">
-					<tr>
-						<td th:value="${n.id}" name="id" th:text="${n.descrizione}"></td>
-						<td class="closeShort"><a
-							th:href="@{'/notificaok?id='+${n.getId()}}">Conferma</a></td>
-					</tr>
+				<div th:if="${notifiche.isEmpty()}">
+					<td class="closeShort">Non hai notifiche da visualizzare!</td>
+				</div>
+				<div th:if="${!notifiche.isEmpty()}" th:each="n : ${notifiche}">
+				<tr>
+					<td th:value="${n.id}" name="id" th:text="${n.descrizione}"></td>
+					<td class="closeShort"><a
+						th:href="@{'/notificaok?id='+${n.getId()}}">Conferma</a></td>
+				</tr>
 				</div>
 			</table>
-			
+
 		</div>
 
 	</section>
+
+
 
 
 	<footer class="footer">

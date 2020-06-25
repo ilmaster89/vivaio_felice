@@ -2,6 +2,7 @@ package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
 import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
+import com.vivaio_felice.vivaio_hibernate.dao.CausaleNotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
 import com.vivaio_felice.vivaio_hibernate.dao.SpesaManutenzioneDao;
@@ -40,16 +42,11 @@ public class ManutenzioneController {
 	CausaleDao causaleDao;
 	@Autowired
 	NotificaDao notDao;
+	@Autowired
+	CausaleNotificaDao cauNotDao;
 
 //	restituisce true se esiste una prenotazione successiva alle date della manutenzione, in modo da creare
 //	le notifiche
-	public boolean prenoSuccessivaManu(Date dataInizio, Date dataFine, Date manu1, Date manu2) {
-
-		if (PrenotazioneController.datesMatch(dataInizio, dataFine, manu1, manu2))
-			return true;
-		return false;
-
-	}
 
 	@RequestMapping("/manu")
 	public String manu(HttpSession session, Model model, Prenotazione prenotazione,
@@ -68,12 +65,15 @@ public class ManutenzioneController {
 		return "manutenzione";
 	}
 
+	// effettuo una prenotazione per la manutenzione
 	@RequestMapping(value = "/confermamanutenzione", method = RequestMethod.POST)
 	public String confermaManu(HttpSession session, Model model, Prenotazione prenotazione,
 			@Valid SpesaManutenzione spesaManutenzione, BindingResult br,
 			@RequestParam("giornoInizio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date giornoInizio,
 			@RequestParam("giorni") Integer giorni) {
 
+		// se non specifico nessun giorno torno alla stessa pagina ricaricando tutto ciò
+		// che serve
 		if (giornoInizio == null) {
 			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
 			model.addAttribute("autoInSede",
@@ -117,10 +117,12 @@ public class ManutenzioneController {
 		if (prenotazione.getCausale().getId() == causaleDao.idOrdinaria())
 			dataInizio = giornoIntermedio;
 
-		if (prenotazione.getCausale().getId() == causaleDao.idStraordinaria())
+		if (prenotazione.getCausale().getId() == causaleDao.idStraordinaria()) {
 			dataInizio = Date
 					.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plus(9, ChronoUnit.HOURS).toInstant());
+			ldtGiornoInizio = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
 
+		}
 		prenotazione.setDataInizio(dataInizio);
 		prenotazione.setDataFine(dataFine);
 		prenotazione.setDipendente((Dipendente) session.getAttribute("loggedUser"));
@@ -128,28 +130,27 @@ public class ManutenzioneController {
 		spesaManutenzione.setAuto(prenotazione.getAuto());
 
 		// genero le notifiche per le prenotazioni successive
-		List<Prenotazione> prenoAuto = prenotazioneDao.findByAutoId(prenotazione.getAuto().getId());
+		List<Prenotazione> prenoAuto = prenotazioneDao.prenoDiUnPeriodo(prenotazione.getAuto().getId(), ldtGiornoInizio,
+				ldtFine);
 
 		for (Prenotazione p : prenoAuto) {
 
-			if (p.getCausale().getId() == causaleDao.idLavoro() && prenoSuccessivaManu(p.getDataInizio(),
-					p.getDataFine(), prenotazione.getDataInizio(), prenotazione.getDataFine())) {
-				Notifica not = new Notifica();
-				not.setDipendente(p.getDipendente());
-				not.setConferma(0);
-				not.setPrenotazione(p);
-				not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
-						+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
-						+ " deve essere modificata in quanto l'auto non sarà disponibile.");
-				notDao.save(not);
-			}
+			Notifica not = new Notifica();
+			not.setDipendente(p.getDipendente());
+			not.setConferma(0);
+			not.setPrenotazione(p);
+			not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
+					+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
+					+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+			not.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
+			notDao.save(not);
 
 		}
 
 		prenotazioneDao.save(prenotazione);
 		spesaManutenzioneDao.save(spesaManutenzione);
 
-		return "primapagina";
+		return "redirect:/primapagina";
 	}
 
 	@RequestMapping("/spese")
@@ -174,8 +175,13 @@ public class ManutenzioneController {
 
 	}
 
+	// inserisco spesa e dettaglio per completare la manutenzione
 	@RequestMapping(value = "/spesainserita", method = RequestMethod.POST)
 	public String spesaInserita(HttpSession session, Model model, SpesaManutenzione spesaManutenzione) {
+
+		// non posso andarmene senza inserire la spesa!
+		if (spesaManutenzione.getSpesa() == null)
+			return "spese";
 
 		SpesaManutenzione spesaConfermata = spesaManutenzioneDao.spesaDaId(spesaManutenzione.getId());
 		spesaConfermata.setDataSpesa(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
