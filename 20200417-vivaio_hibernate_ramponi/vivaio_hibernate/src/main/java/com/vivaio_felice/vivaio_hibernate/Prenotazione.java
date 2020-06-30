@@ -42,6 +42,8 @@ public class Prenotazione {
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	Date dataFine;
 
+	// transient perché non devono essere considerati attributi, verranno usati per
+	// il toString o per metodi sotto
 	@Transient
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	@Transient
@@ -140,6 +142,7 @@ public class Prenotazione {
 				+ sdf.format(this.getDataInizio()) + "-" + sdf2.format(this.getDataFine());
 	}
 
+	// restituisce una data già formattata in modo da usarla nei grafici
 	public String dataFormattata() {
 		return sdf3.format(this.getDataInizio());
 	}

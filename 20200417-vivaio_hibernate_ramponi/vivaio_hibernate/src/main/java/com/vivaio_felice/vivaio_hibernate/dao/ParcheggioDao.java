@@ -1,6 +1,7 @@
 package com.vivaio_felice.vivaio_hibernate.dao;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +28,7 @@ public interface ParcheggioDao extends CrudRepository<Parcheggio, Integer> {
 
 	@Query(value = "select sede_id from parcheggio where auto_id = :idAuto and data_parch = :data", nativeQuery = true)
 	public Integer sedeOdierna(Integer idAuto, LocalDate data);
-
+	
+	@Query(value = "select * from parcheggio where auto_id = :idAuto and data_parch between date(:data1) and date(:data2)", nativeQuery = true)
+	public List<Parcheggio> trasfPossibile(Integer idAuto, Date data1, Date data2);
 }

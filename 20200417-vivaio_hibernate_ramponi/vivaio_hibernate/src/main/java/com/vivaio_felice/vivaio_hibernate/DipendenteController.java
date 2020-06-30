@@ -53,22 +53,31 @@ public class DipendenteController {
 	@Autowired
 	PrenotazioneDao prenoDao;
 
+	// pagina di partenza dell'app
 	@RequestMapping("/")
 	public String index() {
 		return "login";
 	}
 
+	// login del dipendente
 	@RequestMapping(value = "/logged", method = RequestMethod.POST)
 	public String logged(@RequestParam("user") String user_name, @RequestParam("password") String password, Model model,
 			HttpSession session) {
 
-		Dipendente logged = dipendenteDao.login(user_name, password);
+		// la lista conterrà le notifica per il dipendente che entra
 		List<Notifica> notifiche = new ArrayList<Notifica>();
 
+		// si cerca il dipendente nel database...
+		Dipendente logged = dipendenteDao.login(user_name, password);
+
+		// ... tornando alla stessa pagina se non esiste
 		if (logged == null)
 			return "redirect:/";
 
 		else {
+
+			// carico il dipendente e l'id della sua sede nella session, variabili che NON
+			// saranno mai cancellate
 			Integer idSede = sedeDipendenteDao.findByDipendenteId(logged.getId()).sede.getId();
 			session.setAttribute("sede", idSede);
 			session.setAttribute("loggedUser", logged);
@@ -126,6 +135,7 @@ public class DipendenteController {
 		return "inserimentoDipendenti";
 	}
 
+	// inserimento di un nuovo dipendente
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	public String inserimento(HttpSession session, Model model, @Valid Dipendente dipendente,
 			BindingResult bindingResult, @RequestParam("password") String password1,
@@ -137,6 +147,7 @@ public class DipendenteController {
 
 		}
 
+		// controllo doppio sulla password inserita, devono essere due campi uguali
 		if (password1.equals(password2)) {
 			dipendente.getSedeDipendente().setSede(sedeDao.sedeSingola((Integer) session.getAttribute("sede")));
 			dipendente.getSedeDipendente().setDipendente(dipendente);
@@ -167,6 +178,7 @@ public class DipendenteController {
 
 	}
 
+	// aggiunta di una NUOVA patente per il dipendente
 	@RequestMapping(value = "/patenteInserita", method = RequestMethod.POST)
 	public String patenteInserita(HttpSession session, Model model, @Valid PossessoPatenti possessoPatenti,
 			BindingResult br) {
@@ -179,13 +191,14 @@ public class DipendenteController {
 		}
 		List<PossessoPatenti> possPatDip = possPatDao.findByDipendenteId(possessoPatenti.getDipendente().getId());
 		for (PossessoPatenti a : possPatDip) {
+			// non posso inserire una patente già presente nella lista del dipendente
 			if (a.getPatente() == possessoPatenti.getPatente()) {
 				model.addAttribute("errore", "Questo dipendente ha già una patente di questo tipo, riprova.");
 				return "erroreMessaggio";
 			}
 		}
 		possPatDao.save(possessoPatenti);
-		return "primapagina";
+		return "redirect:/primapagina";
 
 	}
 

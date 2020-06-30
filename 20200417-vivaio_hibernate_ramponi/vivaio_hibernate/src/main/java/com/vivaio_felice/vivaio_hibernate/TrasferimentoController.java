@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.vivaio_felice.vivaio_hibernate.dao.AutoDao;
+import com.vivaio_felice.vivaio_hibernate.dao.CausaleDao;
+import com.vivaio_felice.vivaio_hibernate.dao.CausaleNotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.NotificaDao;
 import com.vivaio_felice.vivaio_hibernate.dao.ParcheggioDao;
 import com.vivaio_felice.vivaio_hibernate.dao.PrenotazioneDao;
@@ -37,6 +40,10 @@ public class TrasferimentoController {
 	PrenotazioneDao prenotazioneDao;
 	@Autowired
 	NotificaDao notDao;
+	@Autowired
+	CausaleNotificaDao cauNotDao;
+	@Autowired
+	CausaleDao causaleDao;
 
 	// valuto se esiste una prenotazione precedente successiva alla data di
 	// trasferimento, per poi creare la notifica
@@ -88,6 +95,15 @@ public class TrasferimentoController {
 			model.addAttribute("errore", "La data non può essere prima di domani, riprova.");
 			return "erroreMessaggio";
 		}
+		//query aggiunta su prenotazioneDao
+		//controllo se nel periodo in cui ho scelto il trasferimento c'è già una manutenzione
+		List<Prenotazione> manuTrasferimento = prenotazioneDao.manuFuture(parcheggio.getAuto().getId(), parcheggio.getDataParch());
+			if (!manuTrasferimento.isEmpty()) {
+				model.addAttribute("errore", "In questa data c'è già una manutenzione, riprova.");
+				return "erroreMessaggio";
+
+			}
+		// ricarico tutto se ho fatto degli errori
 		if (br.hasErrors()) {
 			Integer idSede = (Integer) session.getAttribute("sede");
 			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
@@ -131,13 +147,14 @@ public class TrasferimentoController {
 				not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
 						+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
 						+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+				not.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
 				notDao.save(not);
 			}
 
 		}
 
 		parcheggioDao.save(parcheggio);
-		return "primapagina";
+		return "redirect:/primapagina";
 
 	}
 

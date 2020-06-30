@@ -16,8 +16,8 @@ public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 	@Query(value = "select * from prenotazioni where id = :id", nativeQuery = true)
 	Prenotazione prenoDaId(Integer id);
 
-//	List<Prenotazione> findByDipendenteId(Integer id);
-//
+	List<Prenotazione> findByDipendenteId(Integer id);
+
 	List<Prenotazione> findByAutoId(Integer id);
 //
 //	List<Prenotazione> findByCausaleId(Integer id);
@@ -43,10 +43,10 @@ public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 	@Query(value = "select * from prenotazioni where dipendente_id = :idDip and causale_id = 3 and data_inizio >= :data", nativeQuery = true)
 	public List<Prenotazione> prenotazioniDelDip(Integer idDip, LocalDateTime data);
 
-	@Query(value = "select km from prenotazioni where auto_id = :idAuto and causale_id = 3 and data_fine between :data1 and :data2 order by data_fine", nativeQuery = true)
+	@Query(value = "select km from prenotazioni where auto_id = :idAuto and causale_id = 3 and km is not null and data_fine between :data1 and :data2 order by data_fine", nativeQuery = true)
 	public List<Integer> kmPerGrafico(Integer idAuto, LocalDateTime data1, LocalDateTime data2);
 
-	@Query(value = "select data_fine from prenotazioni where auto_id = :idAuto and causale_id = 3 and data_fine between :data1 and :data2 order by data_fine", nativeQuery = true)
+	@Query(value = "select data_fine from prenotazioni where auto_id = :idAuto and causale_id = 3 and km is not null and data_fine between :data1 and :data2 order by data_fine", nativeQuery = true)
 	public List<Date> dataPerGrafico(Integer idAuto, LocalDateTime data1, LocalDateTime data2);
 
 	@Query(value = "select km from prenotazioni where auto_id = :idAuto and data_fine <= :data order by data_fine desc limit 1", nativeQuery = true)
@@ -65,9 +65,12 @@ public interface PrenotazioneDao extends CrudRepository<Prenotazione, Integer> {
 	public List<Prenotazione> prenoPassate(LocalDate data);
 
 	@Query(value = "select * from prenotazioni where auto_id = :idAuto and causale_id = 3 and data_inizio between :data1 and :data2 order by data_inizio", nativeQuery = true)
-	public List<Prenotazione> prenoDiUnGiorno(Integer idAuto, LocalDateTime data1, LocalDateTime data2);
+	public List<Prenotazione> prenoDiUnPeriodo(Integer idAuto, LocalDateTime data1, LocalDateTime data2);
 
 	@Query(value = "select * from prenotazioni where dipendente_id = :idDip and auto_id = :idAuto and km is not null and data_inizio between :data1 and :data2", nativeQuery = true)
 	public List<Prenotazione> prenotazioniDipGrafico(Integer idDip, Integer idAuto, LocalDateTime data1,
 			LocalDateTime data2);
+	
+	@Query(value = "select * from prenotazioni where auto_id = :idAuto and :data between date(data_inizio) and date(data_fine) and causale_id != 3", nativeQuery = true)
+	public List<Prenotazione> manuFuture(Integer idAuto, LocalDate data);
 }

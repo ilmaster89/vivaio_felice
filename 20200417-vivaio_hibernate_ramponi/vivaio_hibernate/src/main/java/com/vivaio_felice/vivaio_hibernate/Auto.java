@@ -66,7 +66,7 @@ public class Auto {
 
 	@Column(name = "km_iniziali")
 	Integer kmIniziali = 0;
-	
+
 	Integer disponibilita = 0;
 
 	public Auto() {
@@ -183,6 +183,8 @@ public class Auto {
 		this.disponibilita = disponibilita;
 	}
 
+	// controllo se l'auto può essere guidata dai neoPatentati, in tandem con il
+	// boolean del Dipendente
 	public boolean okForNeoP() {
 		// costanti dalla motorizzazione, da non modificare
 		if ((this.getKw() / ((this.getTara() + 75) / 1000) <= 55) && this.getKw() <= 70)

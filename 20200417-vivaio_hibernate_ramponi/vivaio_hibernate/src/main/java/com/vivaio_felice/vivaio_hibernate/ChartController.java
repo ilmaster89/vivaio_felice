@@ -48,28 +48,37 @@ public class ChartController {
 	@Autowired
 	SedeDipendenteDao sedeDipendenteDao;
 
+	// faccio la mappa che uso per il grafico del dettaglio di una singola auto
 	public Map<Object, Object> caricaKmSingolaAuto(Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+		// prendo km e date nel periodo considerato
 		List<Integer> kmAuto = prenoDao.kmPerGrafico(idAuto, ldt1, ldt2);
 		List<java.util.Date> dateAuto = prenoDao.dataPerGrafico(idAuto, ldt1, ldt2);
 
+		// preparo la mappa vuota
 		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
+		// carico eventuali km precedenti al periodo...
 		Integer kmPrec = prenoDao.kmPrecedenti(idAuto, ldt1);
 
+		// ... e uso quelli iniziali dell'auto se non ci sono, perché non ci sarebbero
+		// mai state nel caso prenotazioni
 		if (kmPrec == null)
 			kmPrec = autoDao.autoDaId(idAuto).getKmIniziali();
 
 		if (!kmAuto.isEmpty()) {
+
+			// carico manualmente il primo record della mappa, con la prima data e la
+			// differenza tra i km dello stesso indice e i kmPrec
 			reportAuto.put(sdf.format(dateAuto.get(0)), kmAuto.get(0) - kmPrec);
 
 			for (int i = 1; i < dateAuto.size(); i++) {
-				if (kmAuto.get(i) == null)
-					reportAuto.put(sdf.format(dateAuto.get(i)), 0);
-				if (kmAuto.get(i) != null) {
-					reportAuto.put(sdf.format(dateAuto.get(i)), (kmAuto.get(i) - kmAuto.get(i - 1)));
 
-				}
+				// ciclo per tutti gli altri valori, ad ogni km si toglie il precedente per
+				// mostrare effettivamente i km fatti e non il totale
+				reportAuto.put(sdf.format(dateAuto.get(i)), (kmAuto.get(i) - kmAuto.get(i - 1)));
+
 			}
 		}
 
@@ -79,38 +88,63 @@ public class ChartController {
 	// km effettuati da un'auto in un determinato periodo
 	public Integer kmEffettuati(Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
 
+		// carico i km più vicini alla data finale del periodo considerato
 		Integer kmFinali = prenoDao.kmFinali(idAuto, ldt1, ldt2);
 
+		// carico gli ultimi km fatti prima del periodo
 		Integer kmPrec = prenoDao.kmPrecedenti(idAuto, ldt1);
 
+		// in questo caso non ci sarebbero prenotazioni nel periodo considerato e quindi
+		// ZERO km fatti
 		if (kmFinali == null)
 			return 0;
 
+		// sottraggo i km precedenti solo se esistono...
 		if (kmPrec != null)
 			return kmFinali - kmPrec;
 
+		// ... altrimenti quelli iniziali dell'auto
 		return kmFinali - autoDao.autoDaId(idAuto).getKmIniziali();
 
 	}
 
+	// km che ha fatto un SINGOLO DIPENDENTE in un periodo con una singola auto
 	public Integer kmEffettuatiDipendente(Integer idDip, Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
 
+		// carico tutte le prenotazioni del dipendente in questione e di un'auto
+		// (ciclando nel request tra tutte le auto in sede)
 		List<Prenotazione> prenoDip = prenoDao.prenotazioniDipGrafico(idDip, idAuto, ldt1, ldt2);
 
+		// preparo l'integer che poi aumenterò con i controlli successivi prima di
+		// passarlo al metodo
 		Integer kmPercorsiDalDip = 0;
 
 		for (Prenotazione p : prenoDip) {
+
+			// cerco i km precedenti ALLA SINGOLA PRENOTAZIONE E NON AL PERIODO, quindi
+			// vanno bene anche km fatti nello stesso periodo, passando alla query l'auto
+			// della prenotazione su cui sto ciclando e la sua data, opportunamente
+			// trasformata in ldt
 			Integer kmPrec = prenoDao.kmPrecedenti(p.getAuto().getId(),
 					p.getDataInizio().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-			if (kmPrec == null)
-				kmPrec = 0;
 
-			kmPercorsiDalDip += Math.min(p.getKm() - p.getAuto().getKmIniziali(), p.getKm() - kmPrec);
+			// se non ci sono km precedenti (il controllo si estende in automatico ad oltre
+			// il periodo considerato perché non ho messo un limite inferiore) uso i km
+			// iniziali dell'auto
+			if (kmPrec == null) {
+				kmPrec = p.getAuto().getKmIniziali();
+
+			}
+
+			// aumento il totale dei km percorsi della differenza tra i km segnati nella
+			// prenotazione e i km precedenti (qualsiasi essi siano)
+			kmPercorsiDalDip += (p.getKm() - kmPrec);
 		}
 
 		return kmPercorsiDalDip;
 	}
 
+	// riempio la mappa per mostrare le prenotazioni passate nella sede scelta
 	public Map<Object, Object> caricaPrenoPassate(Integer idSede, LocalDate data) {
 
 		Map<Object, Object> reportPrenotazioni = new LinkedHashMap<Object, Object>();
@@ -190,20 +224,30 @@ public class ChartController {
 			return "dashKm";
 		}
 
+		// questi attributi li carico per usarli indifferentemente in tutti i grafici
 		model.addAttribute("titoletto", "Km percorsi");
 		model.addAttribute("asseY", "Km");
 		model.addAttribute("serie", "Totale Km");
+
+		// se si sceglie "tutte le sedi"...
 		if (sede == sedeDao.tutteLeSedi()) {
 
+			// integer che rappresenta tutti i km di tutte le sedi sommate
 			Integer kmTuttoVivaio = 0;
 			Map<Object, Object> kmPerSede = new LinkedHashMap<Object, Object>();
-			for (Sede s : sedeDao.sediEccetto(sedeDao.tutteLeSedi())) {
 
+			for (Sede s : sedeDao.sediEccetto(sedeDao.tutteLeSedi())) {
+				// ciclo all'interno delle sedi...
 				Integer kmTotaliSede = 0;
+
+				// ... e aggiungo ai km della singola sede tutti quelli effettuati dalle sue
+				// auto
 				for (Auto a : autoDao.autoInSede(s.getId(), LocalDate.now())) {
 					kmTotaliSede += kmEffettuati(a.getId(), ldt1, ldt2);
 				}
 
+				// al termine di ogni ciclo di sede aumento anche i km di tutto il vivaio, che a
+				// differenza di quelli della sede non tornano a zero ad ogni ciclo!
 				kmTuttoVivaio += kmTotaliSede;
 				kmPerSede.put(s.toString(), kmTotaliSede);
 			}
@@ -225,12 +269,17 @@ public class ChartController {
 			return "grafico";
 		}
 
+		// qui invece calcolo i km effettuati in una sede qualora se ne scegliesse una
+		// specifica...
 		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
 
 		for (Auto a : autoDao.autoInSede(sede, LocalDate.now()))
+			// ... usando il metodo corrispondente
 			reportAuto.put(a.toString(), kmEffettuati(a.getId(), ldt1, ldt2));
 
+		// carico anche la lista delle auto in sede per eventuali dettagli
 		model.addAttribute("autoInSede", autoDao.autoInSede(sede, LocalDate.now()));
+
 		model.addAttribute("reportAuto", reportAuto);
 		session.setAttribute("dataInizio", data1);
 		session.setAttribute("dataFine", data2);
@@ -249,6 +298,7 @@ public class ChartController {
 
 	}
 
+	// all'interno di una sede scelgo una singola auto di cui controllare i km
 	@RequestMapping("/dettaglioAutoKm")
 	public String dettaglioKm(HttpSession session, Model model, @RequestParam("auto") Integer auto) {
 
@@ -256,6 +306,8 @@ public class ChartController {
 		LocalDate data2 = (LocalDate) session.getAttribute("dataFine");
 		LocalDateTime ldt1 = LocalDateTime.of(data1, LocalTime.MIDNIGHT);
 		LocalDateTime ldt2 = LocalDateTime.of(data2, LocalTime.MIDNIGHT);
+
+		// vedi metodo in alto
 		model.addAttribute("reportAuto", caricaKmSingolaAuto(auto, ldt1, ldt2));
 		model.addAttribute("titolo", "Dettaglio per l'auto " + autoDao.autoDaId(auto).toString());
 
@@ -272,6 +324,7 @@ public class ChartController {
 		return "dashManu";
 	}
 
+	// mostra le spese sostenute in sede per la manutenzione
 	@RequestMapping(value = "/graficoManu", method = RequestMethod.POST)
 	public String graficoSpeseSede(Model model, HttpSession session, @RequestParam("sede") Integer idSede,
 			@RequestParam("data1") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data1,
@@ -288,6 +341,9 @@ public class ChartController {
 		model.addAttribute("titoletto", "Spese sostenute");
 		model.addAttribute("serie", "Totale spese in Euro");
 		model.addAttribute("asseY", "Spese");
+
+		// se si sceglie "tutte le sedi" si aumentano due integer come per i km (vedi
+		// sopra)
 		if (idSede == sedeDao.tutteLeSedi()) {
 			for (Sede sd : sedeDao.findAll()) {
 				if (sd.getId() != sedeDao.tutteLeSedi()) {
@@ -308,6 +364,7 @@ public class ChartController {
 				sommaSpeseSede = 0;
 
 			}
+
 			model.addAttribute("reportAuto", speseSedi);
 			try {
 				String d1 = sdf.format(sdf1.parse(data1.toString()));
@@ -322,9 +379,11 @@ public class ChartController {
 			return "grafico";
 		}
 
+		// se si sceglie una singola sede...
 		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now())) {
 			if (!spesaDao.speseAuto(a.getId(), data1, data2).isEmpty()) {
 				for (Integer s : spesaDao.speseAuto(a.getId(), data1, data2)) {
+					// ... si aumenta solo uno dei due integer iniziali
 					sommaSpeseSede += s;
 				}
 				reportSpeseSede.put(a.toString(), sommaSpeseSede);
@@ -339,13 +398,14 @@ public class ChartController {
 					"Spese per auto nel periodo " + d1 + "-" + d2 + " per la sede di " + sedeScelta.toString());
 
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		model.addAttribute("reportAuto", reportSpeseSede);
 		return "grafico";
 	}
 
+	// mostra le prenotazioni che ci saranno in futuro, con possibilità di dettaglio
 	@RequestMapping("/prenotazioniFut")
 	public String dashPreno(HttpSession session, Model model) {
 
@@ -361,10 +421,16 @@ public class ChartController {
 	@RequestMapping("/dettaglioPreno")
 	public String dettaglioPrenotazione(HttpSession session, Model model, @RequestParam("id") Integer id) {
 
+		// l'id che uso per trovare la prenotazione lo prendo direttamente dal form
 		Prenotazione prenotazioneRichiesta = prenoDao.prenoDaId(id);
+		// la spesa relativa a quella manutenzione è per ora vuota...
 		SpesaManutenzione spesaRelativa = new SpesaManutenzione();
 
+		// ... e la riempio solo se la prenotazione non è per lavoro ma appunto per
+		// manutenzione
 		if (prenotazioneRichiesta.getCausale().getId() != causaleDao.idLavoro())
+			// uso l'id aumentato di 1 perché la spesa viene salvata immediatamente dopo la
+			// prenotazione
 			spesaRelativa = spesaDao.spesaDaId(id + 1);
 
 		model.addAttribute("prenotazioneRichiesta", prenotazioneRichiesta);
@@ -385,11 +451,16 @@ public class ChartController {
 			@RequestParam("settimane") Integer settimane) {
 
 		Sede sedeScelta = sedeDao.sedeSingola(sede);
+		// la data limite non è indicata nel form ma si trova sulla base delle settimane
+		// richieste
 		LocalDate dataLimite = LocalDate.now().minus(settimane, ChronoUnit.WEEKS);
 
 		model.addAttribute("titoletto", "Prenotazioni effettuate");
 		model.addAttribute("asseY", "Prenotazioni");
 		model.addAttribute("serie", "Totale prenotazioni");
+
+		// similmente agli altri metodi, se si scelgono tutte le sedi si usano i due
+		// integer per trovare i report
 		if (sede == sedeDao.tutteLeSedi()) {
 
 			Integer prenoGlobali = 0;
@@ -416,6 +487,9 @@ public class ChartController {
 
 		Map<Object, Object> prenoPassate = caricaPrenoPassate(sede, dataLimite);
 		List<String> datePreno = new ArrayList<String>();
+
+		// per il dettaglio delle date prendo le date che ho e le carico in una lista di
+		// stringhe, in modo da usarle poi in un select
 		for (Object o : prenoPassate.keySet()) {
 			String s = (String) o;
 			datePreno.add(s);
@@ -429,6 +503,9 @@ public class ChartController {
 		return "grafico";
 	}
 
+	// uso lo stesso template per le prenotazioni future applicandolo a quelle che
+	// sono già passate, in modo da sfruttare anche il dettaglio di ogni singola
+	// prenotazione
 	@RequestMapping(value = "/dettaglioPrenoPassate", method = RequestMethod.POST)
 	public String dettaglioPrenoPassate(HttpSession session, Model model,
 			@RequestParam("dataScelta") String dataScelta) {
@@ -440,6 +517,8 @@ public class ChartController {
 
 			java.util.Date dataDaStringa = sdf.parse(dataScelta);
 
+			// genero le due date limite per ottenere tutte le prenotazioni di un singolo
+			// giorno, impostando manualmente gli orari, mezzanotte e le 23:59:59
 			LocalDateTime ldt1 = LocalDateTime
 					.of(dataDaStringa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalTime.MIDNIGHT);
 			LocalDateTime ldt2 = ldt1.plus(23, ChronoUnit.HOURS);
@@ -448,7 +527,7 @@ public class ChartController {
 
 			for (Auto a : autoDao.autoInSede(idSede, LocalDate.now())) {
 
-				prenotazioniDelGiornoScelto.addAll(prenoDao.prenoDiUnGiorno(a.getId(), ldt1, ldt2));
+				prenotazioniDelGiornoScelto.addAll(prenoDao.prenoDiUnPeriodo(a.getId(), ldt1, ldt2));
 
 			}
 		} catch (ParseException e1) {
@@ -478,6 +557,8 @@ public class ChartController {
 		LocalDateTime ldt1 = LocalDateTime.of(data1, LocalTime.MIDNIGHT);
 		LocalDateTime ldt2 = LocalDateTime.of(data2, LocalTime.MIDNIGHT);
 
+		// nel caso del grafico dei km fatti da un dipendente utilizzo solamente la mia
+		// sede, perché è una valutazione più "intima"
 		Dipendente dipScelto = dipDao.dipDaId(idDip);
 		Integer idSede = (Integer) session.getAttribute("sede");
 		if (data1 == null || data2 == null) {
@@ -501,6 +582,8 @@ public class ChartController {
 		}
 		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
 
+		// per tutte le auto in sede carico il totale dei km usando il metodo dichiarato
+		// sopra
 		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now()))
 			reportAuto.put(a.toString(), kmEffettuatiDipendente(idDip, a.getId(), ldt1, ldt2));
 
@@ -573,5 +656,4 @@ public class ChartController {
 		model.addAttribute("graficoDipendenti", graficoDipendenti);
 		return "graficoDensita";
 	}
-
 }
