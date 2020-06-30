@@ -188,7 +188,7 @@ public class PrenotazioneController {
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()), patDao.idC());
 		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patDao.idB());
-		List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
+		List<Auto> autoNellaSede = autoDao.autoInSede(idSede);
 		List<Auto> autoPrenotabili = autoPrenotabili(autoNellaSede, patC, neoP, idSede, ldtInizio, ldtFine);
 		model.addAttribute("autoDisponibili", autoPrenotabili);
 		session.setAttribute("dataInizio", dataInizio);

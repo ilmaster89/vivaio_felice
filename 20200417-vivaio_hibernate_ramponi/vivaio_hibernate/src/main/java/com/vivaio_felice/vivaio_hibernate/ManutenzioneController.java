@@ -55,7 +55,7 @@ public class ManutenzioneController {
 		// recupero tutte le causali di manutenzione e le auto in sede per scegliere
 		// quella da manutenere
 		model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
-		model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+		model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede")));
 
 		// carico una spesaManutenzione da affiancare alla prenotazione nel form, perché
 		// alcuni campi fanno riferimento ad essa
@@ -76,8 +76,7 @@ public class ManutenzioneController {
 		// che serve
 		if (giornoInizio == null) {
 			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
-			model.addAttribute("autoInSede",
-					autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+			model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede")));
 			SpesaManutenzione sm = new SpesaManutenzione();
 			model.addAttribute("spesaManutenzione", sm);
 
@@ -86,8 +85,7 @@ public class ManutenzioneController {
 
 		if (br.hasErrors()) {
 			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
-			model.addAttribute("autoInSede",
-					autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+			model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede")));
 			SpesaManutenzione sm = new SpesaManutenzione();
 			model.addAttribute("spesaManutenzione", sm);
 
@@ -130,10 +128,8 @@ public class ManutenzioneController {
 		spesaManutenzione.setAuto(prenotazione.getAuto());
 
 		// genero le notifiche per le prenotazioni successive
-		List<Prenotazione> prenoAuto = prenotazioneDao.prenoDiUnPeriodo(prenotazione.getAuto().getId(), ldtGiornoInizio,
-				ldtFine);
-
-		for (Prenotazione p : prenoAuto) {
+		for (Prenotazione p : prenotazioneDao.prenoDiUnPeriodo(prenotazione.getAuto().getId(), ldtGiornoInizio,
+				ldtFine)) {
 
 			Notifica not = new Notifica();
 			not.setDipendente(p.getDipendente());
@@ -159,7 +155,7 @@ public class ManutenzioneController {
 		// genero la lista delle spese ancora non inserite per farle scegliere al
 		// dipendente. Relative alla sede
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+		List<Auto> autoInSede = autoDao.autoInSede(idSede);
 		List<SpesaManutenzione> speseNonConfermate = new ArrayList<SpesaManutenzione>();
 
 		for (Auto a : autoInSede) {

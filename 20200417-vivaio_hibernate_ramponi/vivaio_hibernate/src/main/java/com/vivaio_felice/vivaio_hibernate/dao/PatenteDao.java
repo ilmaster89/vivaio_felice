@@ -9,7 +9,8 @@ import com.vivaio_felice.vivaio_hibernate.Patente;
 
 public interface PatenteDao extends CrudRepository<Patente, Integer> {
 
-	Optional<Patente> findById(Integer id);
+	@Query(value = "select * from patenti where id = :idPat", nativeQuery = true)
+	Patente patenteDaId(Integer id);
 
 	Patente findByTipologia(String tipologia);
 

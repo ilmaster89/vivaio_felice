@@ -53,24 +53,12 @@ public class AutoController {
 	@Scheduled(cron = "0 0 9 * * MON")
 	public void assicurazioniInScadenza() {
 
-		LocalDate traUnMese = LocalDate.now().plus(1, ChronoUnit.MONTHS);
-		for (Auto a : autoDao.findAll()) {
+		for (Auto a : autoDao.autoInScadenza()) {
 
-			LocalDate dataAss = a.getDataAss().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-			// la scadenza è dopo un anno dalla data segnata
-			LocalDate scadenza = dataAss.plus(1, ChronoUnit.YEARS);
-
-			// confronto scadenza e data un mese da oggi per poter valutare se
-			// l'assicurazione scade entro il mese
-			if (scadenza.compareTo(traUnMese) <= 0) {
-
-				String avviso = "L'assicurazione dell'auto: " + a.toString() + " scadrà il " + scadenza
-						+ ", ricordati di rinnovarla!";
-
-				notificaDao
-						.save(new Notifica(avviso, a, 0, cauNotDao.causaleDaInserire(cauNotDao.notPerAssicurazione())));
-			}
+			String avviso = "L'assicurazione dell'auto: " + a.toString() + " scadrà il "
+					+ a.getDataAss().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plus(1, ChronoUnit.YEARS)
+					+ ", ricordati di rinnovarla!";
+			notificaDao.save(new Notifica(avviso, a, 0, cauNotDao.causaleDaInserire(cauNotDao.notPerAssicurazione())));
 
 		}
 
@@ -78,7 +66,7 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 54 9 * * ?")
+	@Scheduled(cron = "0 34 12 * * ?")
 	public void confermaParcheggi() {
 
 		// carico le auto che sono in parcheggio OGGI
@@ -92,7 +80,9 @@ public class AutoController {
 
 			// se non ci sono parcheggi per la data di domani li creo
 			if (domani == null) {
+
 				parcheggioDao.save(new Parcheggio(a, sede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
+
 			}
 		}
 
@@ -119,6 +109,7 @@ public class AutoController {
 		}
 
 		Sede questasede = sedeDao.sedeSingola((Integer) session.getAttribute("sede"));
+		auto.setTarga(auto.getTarga().toUpperCase());
 		autoDao.save(auto);
 
 		// dopo aver inserito un'auto si salvano in automatico anche il parcheggio
@@ -155,7 +146,7 @@ public class AutoController {
 	public String modificaAuto(HttpSession session, Model model, Auto auto) {
 
 		// carico le auto per scegliere quella che va modificata
-		List<Auto> autosede = autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now());
+		List<Auto> autosede = autoDao.autoInSede((Integer) session.getAttribute("sede"));
 		model.addAttribute("autosede", autosede);
 		return "modAuto";
 	}
@@ -196,7 +187,7 @@ public class AutoController {
 
 	@RequestMapping("/cancAuto")
 	public String cancellaAuto(HttpSession session, Model model, Auto auto) {
-		List<Auto> autoCancellabili = autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now());
+		List<Auto> autoCancellabili = autoDao.autoInSede((Integer) session.getAttribute("sede"));
 		model.addAttribute("autoCancellabili", autoCancellabili);
 		return "cancellaAuto";
 	}
@@ -211,21 +202,20 @@ public class AutoController {
 		// sul controller delle preno e sulle notifiche
 		autoCanc.setDisponibilita(1);
 		autoDao.save(autoCanc);
-		// creo una lista di prenotazioni con quell'auto cancellata
-		List<Prenotazione> prenoAutoC = prenoDao.findByAutoId(idAuto);
-		for (Prenotazione p : prenoAutoC) {
-			// controllo se la data è successiva o è di oggi, per far sì che i dipendenti
-			// possano modificarla
-			if ((p.getDataInizio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-					.compareTo(LocalDate.now()) >= 0) {
-				Notifica n = new Notifica();
-				n.setDipendente(p.getDipendente());
-				n.setDescrizione("Auto eliminata, modifica la prenotazione");
-				n.setPrenotazione(p);
-				n.setConferma(0);
-				n.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
-				notificaDao.save(n);
-			}
+		// creo una lista di prenotazioni future per quell'auto cancellata
+		for (Prenotazione p : prenoDao.prenotazioniFuture(idAuto)) {
+
+			// creo la notifica per avvisare di cambiare l'auto
+			Notifica n = new Notifica();
+			n.setDipendente(p.getDipendente());
+			n.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
+					+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
+					+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+			n.setPrenotazione(p);
+			n.setConferma(0);
+			n.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
+			notificaDao.save(n);
+
 		}
 		return "redirect:/primapagina";
 	}

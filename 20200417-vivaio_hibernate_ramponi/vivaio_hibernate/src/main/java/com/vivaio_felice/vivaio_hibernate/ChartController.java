@@ -158,7 +158,7 @@ public class ChartController {
 
 		// elimino i controlli su auto non in sede
 		for (Prenotazione p0 : prenoPassate)
-			if (!autoDao.autoInSede(idSede, LocalDate.now()).contains(p0.getAuto()))
+			if (!autoDao.autoInSede(idSede).contains(p0.getAuto()))
 				controlliEffettuati[prenoPassate.indexOf(p0)] = true;
 
 		// ciclo nelle prenotazioni prese...
@@ -242,7 +242,7 @@ public class ChartController {
 
 				// ... e aggiungo ai km della singola sede tutti quelli effettuati dalle sue
 				// auto
-				for (Auto a : autoDao.autoInSede(s.getId(), LocalDate.now())) {
+				for (Auto a : autoDao.autoInSede(s.getId())) {
 					kmTotaliSede += kmEffettuati(a.getId(), ldt1, ldt2);
 				}
 
@@ -273,12 +273,12 @@ public class ChartController {
 		// specifica...
 		Map<Object, Object> reportAuto = new LinkedHashMap<Object, Object>();
 
-		for (Auto a : autoDao.autoInSede(sede, LocalDate.now()))
+		for (Auto a : autoDao.autoInSede(sede))
 			// ... usando il metodo corrispondente
 			reportAuto.put(a.toString(), kmEffettuati(a.getId(), ldt1, ldt2));
 
 		// carico anche la lista delle auto in sede per eventuali dettagli
-		model.addAttribute("autoInSede", autoDao.autoInSede(sede, LocalDate.now()));
+		model.addAttribute("autoInSede", autoDao.autoInSede(sede));
 
 		model.addAttribute("reportAuto", reportAuto);
 		session.setAttribute("dataInizio", data1);
@@ -347,7 +347,7 @@ public class ChartController {
 		if (idSede == sedeDao.tutteLeSedi()) {
 			for (Sede sd : sedeDao.findAll()) {
 				if (sd.getId() != sedeDao.tutteLeSedi()) {
-					for (Auto a : autoDao.autoInSede(sd.getId(), LocalDate.now())) {
+					for (Auto a : autoDao.autoInSede(sd.getId())) {
 						if (!spesaDao.speseAuto(a.getId(), data1, data2).isEmpty()) {
 							for (Integer s : spesaDao.speseAuto(a.getId(), data1, data2)) {
 								sommaSpeseSede += s;
@@ -380,7 +380,7 @@ public class ChartController {
 		}
 
 		// se si sceglie una singola sede...
-		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now())) {
+		for (Auto a : autoDao.autoInSede(idSede)) {
 			if (!spesaDao.speseAuto(a.getId(), data1, data2).isEmpty()) {
 				for (Integer s : spesaDao.speseAuto(a.getId(), data1, data2)) {
 					// ... si aumenta solo uno dei due integer iniziali
@@ -411,7 +411,7 @@ public class ChartController {
 
 		List<Prenotazione> prenotazioniFuture = new ArrayList<Prenotazione>();
 		Integer idSede = (Integer) session.getAttribute("sede");
-		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now()))
+		for (Auto a : autoDao.autoInSede(idSede))
 			prenotazioniFuture.addAll(prenoDao.prenotazioniFuture(a.getId()));
 
 		model.addAttribute("prenotazioni", prenotazioniFuture);
@@ -525,7 +525,7 @@ public class ChartController {
 			ldt2 = ldt2.plus(59, ChronoUnit.MINUTES);
 			ldt2 = ldt2.plus(59, ChronoUnit.SECONDS);
 
-			for (Auto a : autoDao.autoInSede(idSede, LocalDate.now())) {
+			for (Auto a : autoDao.autoInSede(idSede)) {
 
 				prenotazioniDelGiornoScelto.addAll(prenoDao.prenoDiUnPeriodo(a.getId(), ldt1, ldt2));
 
@@ -584,7 +584,7 @@ public class ChartController {
 
 		// per tutte le auto in sede carico il totale dei km usando il metodo dichiarato
 		// sopra
-		for (Auto a : autoDao.autoInSede(idSede, LocalDate.now()))
+		for (Auto a : autoDao.autoInSede(idSede))
 			reportAuto.put(a.toString(), kmEffettuatiDipendente(idDip, a.getId(), ldt1, ldt2));
 
 		model.addAttribute("reportAuto", reportAuto);
@@ -610,7 +610,7 @@ public class ChartController {
 			}
 			// Altrimenti si passa ogni sede sommando le auto per ogni singola Sede
 			else {
-				List<Auto> autoInSede = autoDao.autoInSede(sedeScelta, LocalDate.now());
+				List<Auto> autoInSede = autoDao.autoInSede(sedeScelta);
 				Integer numAutoSede = 0;
 				// Se ci sono Auto in Sede si aumenta la variabile
 				for (int x = 0; x < autoInSede.size(); x++) {

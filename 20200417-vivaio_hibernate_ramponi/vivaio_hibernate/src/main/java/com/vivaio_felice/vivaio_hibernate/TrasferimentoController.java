@@ -62,7 +62,7 @@ public class TrasferimentoController {
 	public String toTrans(HttpSession session, Model model, Parcheggio parcheggio) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+		List<Auto> autoInSede = autoDao.autoInSede(idSede);
 		List<Auto> autoTrasferibili = new ArrayList<Auto>();
 		LocalDate trasf = null;
 
@@ -95,7 +95,7 @@ public class TrasferimentoController {
 		// ricarico tutto se ho fatto degli errori
 		if (br.hasErrors()) {
 			Integer idSede = (Integer) session.getAttribute("sede");
-			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+			List<Auto> autoInSede = autoDao.autoInSede(idSede);
 			List<Auto> autoTrasferibili = new ArrayList<Auto>();
 			LocalDate trasf = null;
 
