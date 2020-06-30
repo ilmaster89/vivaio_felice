@@ -1,5 +1,6 @@
 package com.vivaio_felice.vivaio_hibernate;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,8 +51,6 @@ public class ManutenzioneController {
 	ParcheggioDao parcheggioDao;
 	@Autowired
 	DipendenteDao dipendenteDao;
-	@Autowired
-	CausaleNotificaDao causaleNotDao;
 
 //	restituisce true se esiste una prenotazione successiva alle date della manutenzione, in modo da creare
 //	le notifiche
@@ -63,7 +62,7 @@ public class ManutenzioneController {
 		// recupero tutte le causali di manutenzione e le auto in sede per scegliere
 		// quella da manutenere
 		model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
-		model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+		model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede")));
 
 		// carico una spesaManutenzione da affiancare alla prenotazione nel form, perché
 		// alcuni campi fanno riferimento ad essa
@@ -84,8 +83,7 @@ public class ManutenzioneController {
 		// che serve
 		if (giornoInizio == null) {
 			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
-			model.addAttribute("autoInSede",
-					autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+			model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede")));
 			SpesaManutenzione sm = new SpesaManutenzione();
 			model.addAttribute("spesaManutenzione", sm);
 
@@ -94,8 +92,7 @@ public class ManutenzioneController {
 
 		if (br.hasErrors()) {
 			model.addAttribute("causali", causaleDao.causaliEccetto(causaleDao.idLavoro()));
-			model.addAttribute("autoInSede",
-					autoDao.autoInSede((Integer) session.getAttribute("sede"), LocalDate.now()));
+			model.addAttribute("autoInSede", autoDao.autoInSede((Integer) session.getAttribute("sede")));
 			SpesaManutenzione sm = new SpesaManutenzione();
 			model.addAttribute("spesaManutenzione", sm);
 
@@ -121,6 +118,11 @@ public class ManutenzioneController {
 		ZonedDateTime zdtFine = ldtFine.atZone(ZoneId.systemDefault());
 		Date dataFine = Date.from(zdtFine.toInstant());
 
+		// calcolo un'eventuale data per il trasferimento
+		LocalDateTime ldtTrasf = ldtFine.plus(1, ChronoUnit.DAYS);
+		ZonedDateTime zdtTrasf = ldtTrasf.atZone(ZoneId.systemDefault());
+		Date dataTrasf = Date.from(zdtTrasf.toInstant());
+
 		// due diverse date inizio, a seconda del tipo di manutenzione
 		if (prenotazione.getCausale().getId() == causaleDao.idOrdinaria())
 			dataInizio = giornoIntermedio;
@@ -132,36 +134,38 @@ public class ManutenzioneController {
 
 		}
 
-		//uso una query per trovare se ci sono trasferimenti nel periodo della manutenzione
-		List<Parcheggio> trasferimentiImpossibili = parcheggioDao.trasfPossibile(prenotazione.getAuto().getId(), dataInizio,
-				dataFine);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Integer idSede = (Integer) session.getAttribute("sede");
+		List<Parcheggio> trasferimentiImpossibili = parcheggioDao.trasfContrastanti(prenotazione.getAuto().getId(),
+				dataInizio, dataFine, idSede);
 		Integer sedeDip = (Integer) session.getAttribute("sede");
-		
+
 		for (Parcheggio p : trasferimentiImpossibili) {
-			if(prenotazione.getCausale().getId() == causaleDao.idOrdinaria()) {
-				//sposto di un giorno il trasferimento se la manutenzione è ordinaria
+			if (prenotazione.getCausale().getId() == causaleDao.idOrdinaria()) {
+				// sposto di un giorno il trasferimento se la manutenzione è ordinaria
 				LocalDate datap = p.getDataParch().plus(1, ChronoUnit.DAYS);
 				p.setDataParch(datap);
 				Notifica notAutoTrasf = new Notifica();
 				notAutoTrasf.setConferma(0);
-				//nuova query su dipendenteDao per il responsabile
+				// nuova query su dipendenteDao per il responsabile
 				notAutoTrasf.setDipendente(dipendenteDao.respSede(sedeDip));
-				notAutoTrasf.setDescrizione("Trasferimento dell'auto " + p.getAuto().toString() + " è stato spostato di un giorno per una manutenzione.");
-				notAutoTrasf.setCausaleNotifica(causaleNotDao.causaleDaInserire(causaleNotDao.notGenerale()));
+				notAutoTrasf.setDescrizione("Il trasferimento dell'auto " + p.getAuto().toString()
+						+ " è stato spostato al " + sdf.format(dataTrasf) + " per una manutenzione.");
+				notAutoTrasf.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notGenerale()));
 				notDao.save(notAutoTrasf);
 			}
 			if (prenotazione.getCausale().getId() == causaleDao.idStraordinaria()) {
-				//se è straordinaria cancello il trasferimento
+				// se è straordinaria cancello il trasferimento
 				Notifica notAutoTrasf = new Notifica();
 				notAutoTrasf.setConferma(0);
 				notAutoTrasf.setDipendente(dipendenteDao.respSede(sedeDip));
-				notAutoTrasf.setDescrizione("Trasferimento dell'auto " + p.getAuto().toString() + " è stato cancellato per una manutenzione.");
-				notAutoTrasf.setCausaleNotifica(causaleNotDao.causaleDaInserire(causaleNotDao.notGenerale()));
+				notAutoTrasf.setDescrizione("Il trasferimento dell'auto " + p.getAuto().toString()
+						+ " è stato cancellato per una manutenzione.");
+				notAutoTrasf.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notGenerale()));
 				parcheggioDao.delete(p);
 				notDao.save(notAutoTrasf);
 			}
 		}
-		
 		prenotazione.setDataInizio(dataInizio);
 		prenotazione.setDataFine(dataFine);
 		prenotazione.setDipendente((Dipendente) session.getAttribute("loggedUser"));
@@ -169,10 +173,8 @@ public class ManutenzioneController {
 		spesaManutenzione.setAuto(prenotazione.getAuto());
 
 		// genero le notifiche per le prenotazioni successive
-		List<Prenotazione> prenoAuto = prenotazioneDao.prenoDiUnPeriodo(prenotazione.getAuto().getId(), ldtGiornoInizio,
-				ldtFine);
-
-		for (Prenotazione p : prenoAuto) {
+		for (Prenotazione p : prenotazioneDao.prenoDiUnPeriodo(prenotazione.getAuto().getId(), ldtGiornoInizio,
+				ldtFine)) {
 
 			Notifica not = new Notifica();
 			not.setDipendente(p.getDipendente());
@@ -198,7 +200,7 @@ public class ManutenzioneController {
 		// genero la lista delle spese ancora non inserite per farle scegliere al
 		// dipendente. Relative alla sede
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+		List<Auto> autoInSede = autoDao.autoInSede(idSede);
 		List<SpesaManutenzione> speseNonConfermate = new ArrayList<SpesaManutenzione>();
 
 		for (Auto a : autoInSede) {

@@ -1,6 +1,8 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,43 +40,22 @@ public class NotificaController {
 	ParcheggioDao parcheggioDao;
 	@Autowired
 	CausaleNotificaDao cauNotDao;
+	@Autowired
+	PatenteDao patDao;
 
-	// preso dalla prenotazione in quanto meglio se non statico, serve per cambiare
-	// le prenotazioni
-	public List<Auto> autoPossibili(List<Auto> autoNellaSede, boolean patC, boolean neoP, Integer idSede,
-			Date dataInizio, Date dataFine) {
+	public List<Auto> autoPrenotabili(List<Auto> autoNellaSede, boolean patC, boolean neoP, Integer idSede,
+			LocalDateTime dataInizio, LocalDateTime dataFine) {
 
-		LocalDate trans = null;
 		List<Auto> autoPrenotabili = new ArrayList<Auto>();
-		for (Auto a : autoNellaSede) {
 
-			List<Prenotazione> prenotazioniSingolaAuto = prenotazioneDao.prenoAuto(a.getId());
-			boolean transfer = false;
-			boolean match = false;
-
-			trans = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
-			if (trans != null)
-				transfer = true;
-
-			if (!prenotazioniSingolaAuto.isEmpty()) {
-				for (Prenotazione p : prenotazioniSingolaAuto)
-					if ((transfer && PrenotazioneController.datesMatchWithTrans(dataInizio, dataFine, p.getDataInizio(),
-							p.getDataFine(), trans))
-							|| (!transfer && PrenotazioneController.datesMatch(dataInizio, dataFine, p.getDataInizio(),
-									p.getDataFine())))
-						match = true;
-
-			}
-
-			if ((!patC && a.getPatente().getId() == patenteDao.idB()) || patC)
-				if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-					if (!match)
-						autoPrenotabili.add(a);
-
-		}
+		for (Auto a : autoNellaSede)
+			if (prenotazioneDao.prenoContrastanti(a.getId(), dataInizio, dataFine).isEmpty())
+				if (parcheggioDao.trasferimentoContrastante(a.getId(), dataFine, idSede).isEmpty())
+					if ((!patC && a.getPatente().getId() == patDao.idB()) || patC)
+						if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+							autoPrenotabili.add(a);
 
 		return autoPrenotabili;
-
 	}
 
 	// confermare le notifiche in modo che non vengano più mostrate
@@ -125,12 +106,15 @@ public class NotificaController {
 			Date dataInizio = notDaCambiare.getPrenotazione().getDataInizio();
 			Date dataFine = notDaCambiare.getPrenotazione().getDataFine();
 
+			LocalDateTime ldtInizio = LocalDateTime.ofInstant(dataInizio.toInstant(), ZoneId.systemDefault());
+			LocalDateTime ldtFine = LocalDateTime.ofInstant(dataFine.toInstant(), ZoneId.systemDefault());
+
 			Integer idSede = (Integer) session.getAttribute("sede");
 			Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 			boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()), patenteDao.idC());
 			boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patenteDao.idB());
-			List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
-			List<Auto> autoPrenotabili = autoPossibili(autoNellaSede, patC, neoP, idSede, dataInizio, dataFine);
+			List<Auto> autoNellaSede = autoDao.autoInSede(idSede);
+			List<Auto> autoPrenotabili = autoPrenotabili(autoNellaSede, patC, neoP, idSede, ldtInizio, ldtFine);
 			model.addAttribute("autoDisponibili", autoPrenotabili);
 			session.setAttribute("dataInizio", dataInizio);
 			session.setAttribute("dataFine", dataFine);

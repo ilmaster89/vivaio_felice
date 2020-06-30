@@ -84,85 +84,24 @@ public class PrenotazioneController {
 
 	}
 
-	public static boolean datesMatch(Date d1, Date d2, Date d3, Date d4) {
+	// metodo aggiornato per l'ottenimento auto
+	public List<Auto> autoPrenotabili(List<Auto> autoNellaSede, boolean patC, boolean neoP, Integer idSede,
+			LocalDateTime dataInizio, LocalDateTime dataFine) {
 
-		// partendo dal presupposto che il controllo si fa solo se il giorno è lo stesso
-		if (d1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-				.compareTo(d3.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) == 0) {
-
-			// queste sono le varie possibilità in cui le date cozzano
-			if (d1.compareTo(d3) == 0)
-				return true;
-			if (d2.compareTo(d4) == 0)
-				return true;
-			if (d1.after(d3) && d2.before(d4))
-				return true;
-			if (d1.before(d3) && d2.after(d4))
-				return true;
-			if ((d1.after(d3) && d1.before(d4)) && d2.after(d4))
-				return true;
-			if (d1.before(d3) && (d2.after(d3) && d2.before(d4)))
-				return true;
-
-		}
-
-		return false;
-	}
-
-	// vedi sopra, ma nel caso in cui esista un trasferimento per l'auto, che non
-	// viene mostrata se prenotata per una data successiva al trasferimento stesso
-	public static boolean datesMatchWithTrans(Date d1, Date d2, Date d3, Date d4, LocalDate trans) {
-
-		ZoneId dzi = ZoneId.systemDefault();
-		Instant inInizio = d1.toInstant();
-		LocalDate ldInizio = inInizio.atZone(dzi).toLocalDate();
-		Instant inFine = d2.toInstant();
-		LocalDate ldFine = inFine.atZone(dzi).toLocalDate();
-
-		if (ldInizio.compareTo(trans) >= 0 || ldFine.compareTo(trans) >= 0)
-			return true;
-
-		return datesMatch(d1, d2, d3, d4);
-
-	}
-
-	// carica le auto che effettivamente sono disponibili nelle date richieste,
-	// tenenedo conto della possibilità che non vadano bene per i neo patentati o
-	// per chi non ha la patente C
-	public List<Auto> autoPossibili(List<Auto> autoNellaSede, boolean patC, boolean neoP, Integer idSede,
-			Date dataInizio, Date dataFine) {
-
-		LocalDate trans = null;
+		// preparo la lista
 		List<Auto> autoPrenotabili = new ArrayList<Auto>();
-		for (Auto a : autoNellaSede) {
 
-			List<Prenotazione> prenotazioniSingolaAuto = prenotazioneDao.prenoAuto(a.getId());
-			boolean transfer = false;
-			boolean match = false;
-
-			trans = parcheggioDao.ultimoParch(a.getId()).dataTrasferimento(idSede);
-			if (trans != null)
-				transfer = true;
-
-			if (!prenotazioniSingolaAuto.isEmpty()) {
-				for (Prenotazione p : prenotazioniSingolaAuto)
-
-					if ((transfer
-							&& datesMatchWithTrans(dataInizio, dataFine, p.getDataInizio(), p.getDataFine(), trans))
-							|| (!transfer && datesMatch(dataInizio, dataFine, p.getDataInizio(), p.getDataFine())))
-						match = true;
-
-			}
-
-			if ((!patC && a.getPatente().getId() == patDao.idB()) || patC)
-				if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
-					if (!match)
-						autoPrenotabili.add(a);
-
-		}
+		for (Auto a : autoNellaSede)
+			// controllo se ci sono prenotazioni dell'auto che contrastano...
+			if (prenotazioneDao.prenoContrastanti(a.getId(), dataInizio, dataFine).isEmpty())
+				// ... o trasferimenti analoghi
+				if (parcheggioDao.trasferimentoContrastante(a.getId(), dataFine, idSede).isEmpty())
+					// ultimi controlli sulla patente C o la neo patente prima di caricare in lista
+					if ((!patC && a.getPatente().getId() == patDao.idB()) || patC)
+						if (a.okForNeoP() || (!a.okForNeoP() && !neoP))
+							autoPrenotabili.add(a);
 
 		return autoPrenotabili;
-
 	}
 
 	@RequestMapping("/prenota")
@@ -236,13 +175,12 @@ public class PrenotazioneController {
 		ZonedDateTime zdtFine = ldtFine.atZone(ZoneId.systemDefault());
 		Date dataFine = Date.from(zdtFine.toInstant());
 
-		for (Prenotazione p : prenotazioneDao.findByDipendenteId(loggato.getId()))
-			if (datesMatch(dataInizio, dataFine, p.getDataInizio(), p.getDataFine())) {
-				model.addAttribute("errore",
-						"Attenzione, per le date selezionate hai già una prenotazione. Se vuoi annullarla usa la pagina apposita e poi creane una nuova.");
-				return "erroreMessaggio";
+		if (!prenotazioneDao.prenoContrastantiDelDipendente(loggato.getId(), ldtInizio, ldtFine).isEmpty()) {
+			model.addAttribute("errore",
+					"Attenzione, per le date selezionate hai già una prenotazione. Se vuoi annullarla usa la pagina apposita e poi creane una nuova.");
+			return "erroreMessaggio";
 
-			}
+		}
 
 		// si trovano tutte le auto che si possono prenotare in base alle date e ai
 		// booleani circa la patente c e il neo patentato
@@ -250,8 +188,8 @@ public class PrenotazioneController {
 		Dipendente d = (Dipendente) session.getAttribute("loggedUser");
 		boolean patC = d.patenteC(posPatDao.findByDipendenteId(d.getId()), patDao.idC());
 		boolean neoP = d.neoP(posPatDao.findByDipendenteId(d.getId()), patDao.idB());
-		List<Auto> autoNellaSede = autoDao.autoInSede(idSede, LocalDate.now());
-		List<Auto> autoPrenotabili = autoPossibili(autoNellaSede, patC, neoP, idSede, dataInizio, dataFine);
+		List<Auto> autoNellaSede = autoDao.autoInSede(idSede);
+		List<Auto> autoPrenotabili = autoPrenotabili(autoNellaSede, patC, neoP, idSede, ldtInizio, ldtFine);
 		model.addAttribute("autoDisponibili", autoPrenotabili);
 		session.setAttribute("dataInizio", dataInizio);
 		session.setAttribute("dataFine", dataFine);

@@ -1,7 +1,5 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.time.LocalDate;
-
 import java.util.ArrayList;
 
 import java.util.List;
@@ -85,7 +83,7 @@ public class DipendenteController {
 //			prendiamo tutte le auto in sede e, se non sono già state
 //			confermate o vengono trasferite il giorno dopo, si salvano
 //			i parcheggi del giorno successivo
-			List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+			List<Auto> autoInSede = autoDao.autoInSede(idSede);
 
 			for (Auto a : autoInSede) {
 
@@ -112,7 +110,7 @@ public class DipendenteController {
 	public String primaPagina(HttpSession session, Model model, Dipendente dipendente) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
-		List<Auto> autoInSede = autoDao.autoInSede(idSede, LocalDate.now());
+		List<Auto> autoInSede = autoDao.autoInSede(idSede);
 		List<Notifica> notifiche = new ArrayList<Notifica>();
 		dipendente = (Dipendente) session.getAttribute("loggedUser");
 		Integer idDip = dipendente.getId();
@@ -189,13 +187,13 @@ public class DipendenteController {
 			model.addAttribute("patenti", patenteDao.findAll());
 			return "inserimentoPatente";
 		}
-		List<PossessoPatenti> possPatDip = possPatDao.findByDipendenteId(possessoPatenti.getDipendente().getId());
-		for (PossessoPatenti a : possPatDip) {
-			// non posso inserire una patente già presente nella lista del dipendente
-			if (a.getPatente() == possessoPatenti.getPatente()) {
-				model.addAttribute("errore", "Questo dipendente ha già una patente di questo tipo, riprova.");
-				return "erroreMessaggio";
-			}
+
+		// non posso inserire una patente già presente nella lista del dipendente
+		if (!possPatDao.patentePrecedente(possessoPatenti.getDipendente().getId(), possessoPatenti.getPatente().getId())
+				.isEmpty()) {
+			model.addAttribute("errore", "Questo dipendente ha già una patente di questo tipo, riprova.");
+			return "erroreMessaggio";
+
 		}
 		possPatDao.save(possessoPatenti);
 		return "redirect:/primapagina";
