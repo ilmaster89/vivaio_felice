@@ -35,4 +35,8 @@ public interface ParcheggioDao extends CrudRepository<Parcheggio, Integer> {
 
 	@Query(value = "select * from parcheggio where auto_id = :idAuto and data_parch between date(:data1) and date(:data2) and sede_id != :idSede", nativeQuery = true)
 	public List<Parcheggio> trasfContrastanti(Integer idAuto, Date data1, Date data2, Integer idSede);
+
+	// altra alternativa per unire parcheggio OGGI e DOMANI
+	@Query(value = "select * from parcheggio where auto_id = :idAuto and data_parch = date(now()) and not exists(select * from parcheggio where auto_id = :idAuto and data_parch = date_add(date(now()),INTERVAL 1 DAY))", nativeQuery = true)
+	Parcheggio autoNonConfermata(Integer idAuto);
 }

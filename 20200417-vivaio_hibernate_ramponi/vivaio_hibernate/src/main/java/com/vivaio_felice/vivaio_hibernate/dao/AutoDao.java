@@ -34,14 +34,16 @@ public interface AutoDao extends CrudRepository<Auto, Integer> {
 	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where sede_id = :idSede and disponibilita = 0 and data_parch= date(now())", nativeQuery = true)
 	public List<Auto> autoInSede(Integer idSede);
 
-	@Query(value = "select auto.* from parcheggio join auto on auto.id = parcheggio.auto_id where data_parch= :data and disponibilita = 0", nativeQuery = true)
-	public List<Auto> autoParcheggiate(LocalDate data);
-
 	// conta quante auto sono presenti in VIVAIO FELICE
 	@Query(value = "select COUNT(id) from auto where disponibilita = 0", nativeQuery = true)
 	public Integer quantitaAuto();
 
 	// quali auto hanno l'assicurazione in scadenza entro il mese?
-	@Query(value = "select * from auto where disponibilita = 0 date_add(data_assicurazione, INTERVAL 1 YEAR) <= date_add(now(), INTERVAL 1 MONTH)", nativeQuery = true)
+	@Query(value = "select * from auto where disponibilita = 0 and date_add(data_assicurazione, INTERVAL 1 YEAR) <= date_add(now(), INTERVAL 1 MONTH)", nativeQuery = true)
 	public List<Auto> autoInScadenza();
+
+	// auto disponibili in generale (una sorta di findAll con disponibilità)
+	@Query(value = "select * from auto where disponibilita = 0", nativeQuery = true)
+	List<Auto> autoDisponibili();
+
 }

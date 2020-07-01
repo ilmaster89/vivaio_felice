@@ -66,24 +66,19 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 34 12 * * ?")
+	@Scheduled(cron = "0 45 11 * * ?")
 	public void confermaParcheggi() {
 
-		// carico le auto che sono in parcheggio OGGI
-		for (Auto a : autoDao.autoParcheggiate(LocalDate.now())) {
+		// carico le auto disponibili in generale
+		for (Auto a : autoDao.autoDisponibili()) {
+			// carico l'eventuale record dell'auto che ha solo la data di oggi ma NON ESISTE
+			// LA DATA DI DOMANI
+			Parcheggio parchOdierno = parcheggioDao.autoNonConfermata(a.getId());
+			// se viene trovato qualcosa allora l'auto va confermata per domani, aggiungendo
+			// un nuovo parcheggio identico ma con la data di domani
+			if (parchOdierno != null)
+				parcheggioDao.save(new Parcheggio(a, parchOdierno.getSede(), LocalDate.now().plus(1, ChronoUnit.DAYS)));
 
-			// preparo la sede se devo aggiungerla al costruttore
-			Sede sede = sedeDao.sedeSingola(parcheggioDao.sedeOdierna(a.getId(), LocalDate.now()));
-
-			// carico gli eventuali parcheggi già confermati
-			Parcheggio domani = parcheggioDao.parchDomani(a.getId(), LocalDate.now().plus(1, ChronoUnit.DAYS));
-
-			// se non ci sono parcheggi per la data di domani li creo
-			if (domani == null) {
-
-				parcheggioDao.save(new Parcheggio(a, sede, LocalDate.now().plus(1, ChronoUnit.DAYS)));
-
-			}
 		}
 
 	}
