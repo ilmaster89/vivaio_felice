@@ -1,13 +1,14 @@
 package com.vivaio_felice.vivaio_hibernate;
 
 import java.util.ArrayList;
-
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,6 +51,8 @@ public class DipendenteController {
 	AutoDao autoDao;
 	@Autowired
 	PrenotazioneDao prenoDao;
+	@Autowired
+	MessageSource messageSource;
 
 	// pagina di partenza dell'app
 	@RequestMapping("/")
@@ -137,7 +140,7 @@ public class DipendenteController {
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	public String inserimento(HttpSession session, Model model, @Valid Dipendente dipendente,
 			BindingResult bindingResult, @RequestParam("password") String password1,
-			@RequestParam("pass2") String password2) {
+			@RequestParam("pass2") String password2, Locale loc) {
 
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("livello", livelloDao.treLivelli(livelloDao.capo()));
@@ -156,7 +159,7 @@ public class DipendenteController {
 			// possibile un errore
 			// ritorna ad una pagina di errore unica con un messaggio diverso per ogni
 			// errore
-			model.addAttribute("errore", "La password è errata, reinserire il dipendente");
+			model.addAttribute("errore", messageSource.getMessage("passDiversa", null, loc));
 			return "erroreMessaggio";// redirect a pagina di errore unica
 		}
 		return "redirect:/primapagina";
@@ -179,7 +182,7 @@ public class DipendenteController {
 	// aggiunta di una NUOVA patente per il dipendente
 	@RequestMapping(value = "/patenteInserita", method = RequestMethod.POST)
 	public String patenteInserita(HttpSession session, Model model, @Valid PossessoPatenti possessoPatenti,
-			BindingResult br) {
+			BindingResult br, Locale loc) {
 		if (br.hasErrors()) {
 			Integer sede = (Integer) session.getAttribute("sede");
 
@@ -191,7 +194,7 @@ public class DipendenteController {
 		// non posso inserire una patente già presente nella lista del dipendente
 		if (!possPatDao.patentePrecedente(possessoPatenti.getDipendente().getId(), possessoPatenti.getPatente().getId())
 				.isEmpty()) {
-			model.addAttribute("errore", "Questo dipendente ha già una patente di questo tipo, riprova.");
+			model.addAttribute("errore", messageSource.getMessage("patentePresente", null, loc));
 			return "erroreMessaggio";
 
 		}

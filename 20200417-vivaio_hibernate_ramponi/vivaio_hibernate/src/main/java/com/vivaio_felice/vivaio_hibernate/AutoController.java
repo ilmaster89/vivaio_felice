@@ -5,11 +5,13 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +48,8 @@ public class AutoController {
 	NotificaDao notificaDao;
 	@Autowired
 	CausaleNotificaDao cauNotDao;
+	@Autowired
+	MessageSource messageSource;
 
 //	Ogni lunedì alle 9 viene controllata la data di assicurazione
 //	di tutte le auto nel parco, in modo da generare eventuali 
@@ -158,9 +162,10 @@ public class AutoController {
 	}
 
 	@RequestMapping(value = "/autoModificata", method = RequestMethod.POST)
-	public String autoDaModificare(HttpSession session, Model model, @Valid Auto auto, BindingResult br) {
+	public String autoDaModificare(HttpSession session, Model model, @Valid Auto auto, BindingResult br, Locale loc) {
+
 		if (br.hasErrors()) {
-			model.addAttribute("errore", "Non hai inserito alcuni valori, riprova");
+			model.addAttribute("errore", messageSource.getMessage("erroreModAuto", null, loc));
 			return "erroreMessaggio";
 		}
 
@@ -189,7 +194,8 @@ public class AutoController {
 
 	// con il post setto a 1 la disponibilità, ovvero a false
 	@RequestMapping(value = "/autoCancellata", method = RequestMethod.POST)
-	public String autoEliminata(HttpSession session, Model model, @RequestParam("idAuto") Integer idAuto, Auto auto) {
+	public String autoEliminata(HttpSession session, Model model, @RequestParam("idAuto") Integer idAuto, Auto auto,
+			Locale loc) {
 		Auto autoCanc = autoDao.autoDaId(idAuto);
 		// ho modificato anche le query in autoDao mettendoci la condizione sulla
 		// disponibilità
@@ -203,9 +209,9 @@ public class AutoController {
 			// creo la notifica per avvisare di cambiare l'auto
 			Notifica n = new Notifica();
 			n.setDipendente(p.getDipendente());
-			n.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
-					+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
-					+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+			n.setDescrizione(messageSource.getMessage("cambioPrenoUno", null, loc) + " " + p.getAuto()
+					+ messageSource.getMessage("cambioPrenoDue", null, loc) + " " + p.getDataInizio() + " "
+					+ p.getDataFine() + " " + messageSource.getMessage("cambioPrenoTre", null, loc));
 			n.setPrenotazione(p);
 			n.setConferma(0);
 			n.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));

@@ -10,11 +10,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +49,8 @@ public class ChartController {
 	DipendenteDao dipDao;
 	@Autowired
 	SedeDipendenteDao sedeDipendenteDao;
+	@Autowired
+	MessageSource messageSource;
 
 	// faccio la mappa che uso per il grafico del dettaglio di una singola auto
 	public Map<Object, Object> caricaKmSingolaAuto(Integer idAuto, LocalDateTime ldt1, LocalDateTime ldt2) {
@@ -211,7 +215,7 @@ public class ChartController {
 	public String graficoKm(Model model, HttpSession session,
 			@RequestParam("data1") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data1,
 			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2,
-			@RequestParam("sede") Integer sede) {
+			@RequestParam("sede") Integer sede, Locale loc) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -225,9 +229,9 @@ public class ChartController {
 		}
 
 		// questi attributi li carico per usarli indifferentemente in tutti i grafici
-		model.addAttribute("titoletto", "Km percorsi");
-		model.addAttribute("asseY", "Km");
-		model.addAttribute("serie", "Totale Km");
+		model.addAttribute("titoletto", messageSource.getMessage("kmPercorsi", null, loc));
+		model.addAttribute("asseY", messageSource.getMessage("kmPerGrafico", null, loc));
+		model.addAttribute("serie", messageSource.getMessage("totaleKm", null, loc));
 
 		// se si sceglie "tutte le sedi"...
 		if (sede == sedeDao.tutteLeSedi()) {
@@ -258,9 +262,10 @@ public class ChartController {
 			try {
 				String d1 = sdf.format(sdf1.parse(data1.toString()));
 				String d2 = sdf.format(sdf1.parse(data2.toString()));
-				model.addAttribute("titolo", "Km per auto nel periodo " + d1 + "-" + d2 + " per "
-						+ sedeDao.sedeSingola(sede).toString().toLowerCase());
-
+				model.addAttribute("titolo",
+						messageSource.getMessage("titoloGraficoKm", null, loc) + " " + d1 + "-" + d2 + " "
+								+ messageSource.getMessage("perSede", null, loc) + " "
+								+ sedeDao.sedeSingola(sede).toString().toLowerCase());
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -286,8 +291,8 @@ public class ChartController {
 		try {
 			String d1 = sdf.format(sdf1.parse(data1.toString()));
 			String d2 = sdf.format(sdf1.parse(data2.toString()));
-			model.addAttribute("titolo",
-					"Km per auto nel periodo " + d1 + "-" + d2 + " per la sede di " + sedeScelta.toString());
+			model.addAttribute("titolo", messageSource.getMessage("titoloGraficoKm", null, loc) + " " + d1 + "-" + d2
+					+ " " + messageSource.getMessage("perSede", null, loc) + " " + sedeScelta.toString());
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -300,7 +305,7 @@ public class ChartController {
 
 	// all'interno di una sede scelgo una singola auto di cui controllare i km
 	@RequestMapping("/dettaglioAutoKm")
-	public String dettaglioKm(HttpSession session, Model model, @RequestParam("auto") Integer auto) {
+	public String dettaglioKm(HttpSession session, Model model, @RequestParam("auto") Integer auto, Locale loc) {
 
 		LocalDate data1 = (LocalDate) session.getAttribute("dataInizio");
 		LocalDate data2 = (LocalDate) session.getAttribute("dataFine");
@@ -309,11 +314,12 @@ public class ChartController {
 
 		// vedi metodo in alto
 		model.addAttribute("reportAuto", caricaKmSingolaAuto(auto, ldt1, ldt2));
-		model.addAttribute("titolo", "Dettaglio per l'auto " + autoDao.autoDaId(auto).toString());
+		model.addAttribute("titolo",
+				messageSource.getMessage("dettaglioAutoGrafico", null, loc) + " " + autoDao.autoDaId(auto).toString());
 
-		model.addAttribute("titoletto", "Km percorsi");
-		model.addAttribute("asseY", "Km");
-		model.addAttribute("serie", "Totale Km");
+		model.addAttribute("titoletto", messageSource.getMessage("kmPercorsi", null, loc));
+		model.addAttribute("asseY", messageSource.getMessage("km", null, loc));
+		model.addAttribute("serie", messageSource.getMessage("totaleKm", null, loc));
 		return "grafico";
 
 	}
@@ -328,7 +334,7 @@ public class ChartController {
 	@RequestMapping(value = "/graficoManu", method = RequestMethod.POST)
 	public String graficoSpeseSede(Model model, HttpSession session, @RequestParam("sede") Integer idSede,
 			@RequestParam("data1") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data1,
-			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2) {
+			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2, Locale loc) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -338,9 +344,9 @@ public class ChartController {
 		Integer sommaSpeseSede = 0;
 		Integer sommaTotale = 0;
 
-		model.addAttribute("titoletto", "Spese sostenute");
-		model.addAttribute("serie", "Totale spese in Euro");
-		model.addAttribute("asseY", "Spese");
+		model.addAttribute("titoletto", messageSource.getMessage("speseSostenute", null, loc));
+		model.addAttribute("serie", messageSource.getMessage("totaleSpeseEuro", null, loc));
+		model.addAttribute("asseY", messageSource.getMessage("spese", null, loc));
 
 		// se si sceglie "tutte le sedi" si aumentano due integer come per i km (vedi
 		// sopra)
@@ -369,8 +375,10 @@ public class ChartController {
 			try {
 				String d1 = sdf.format(sdf1.parse(data1.toString()));
 				String d2 = sdf.format(sdf1.parse(data2.toString()));
-				model.addAttribute("titolo", "Spese per auto nel periodo " + d1 + "-" + d2 + " per "
-						+ sedeDao.sedeSingola(idSede).toString().toLowerCase());
+				model.addAttribute("titolo",
+						messageSource.getMessage("spesePerAutoGrafico", null, loc) + " " + d1 + "-" + d2 + " "
+								+ messageSource.getMessage("perSede", null, loc) + " "
+								+ sedeDao.sedeSingola(idSede).toString().toLowerCase());
 
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -394,8 +402,8 @@ public class ChartController {
 		try {
 			String d1 = sdf.format(sdf1.parse(data1.toString()));
 			String d2 = sdf.format(sdf1.parse(data2.toString()));
-			model.addAttribute("titolo",
-					"Spese per auto nel periodo " + d1 + "-" + d2 + " per la sede di " + sedeScelta.toString());
+			model.addAttribute("titolo", messageSource.getMessage("spesePerAutoGrafico", null, loc) + " " + d1 + "-"
+					+ d2 + " " + messageSource.getMessage("perSede", null, loc) + " " + sedeScelta.toString());
 
 		} catch (ParseException e) {
 
@@ -448,16 +456,16 @@ public class ChartController {
 
 	@RequestMapping(value = "/graficoPrenoPassate", method = RequestMethod.POST)
 	public String graficoPassato(HttpSession session, Model model, @RequestParam("sede") Integer sede,
-			@RequestParam("settimane") Integer settimane) {
+			@RequestParam("settimane") Integer settimane, Locale loc) {
 
 		Sede sedeScelta = sedeDao.sedeSingola(sede);
 		// la data limite non è indicata nel form ma si trova sulla base delle settimane
 		// richieste
 		LocalDate dataLimite = LocalDate.now().minus(settimane, ChronoUnit.WEEKS);
 
-		model.addAttribute("titoletto", "Prenotazioni effettuate");
-		model.addAttribute("asseY", "Prenotazioni");
-		model.addAttribute("serie", "Totale prenotazioni");
+		model.addAttribute("titoletto", messageSource.getMessage("prenoEffettuate", null, loc));
+		model.addAttribute("asseY", messageSource.getMessage("prenotazioni", null, loc));
+		model.addAttribute("serie", messageSource.getMessage("totalePreno", null, loc));
 
 		// similmente agli altri metodi, se si scelgono tutte le sedi si usano i due
 		// integer per trovare i report
@@ -480,8 +488,10 @@ public class ChartController {
 
 			reportSede.put(sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString(), prenoGlobali);
 			model.addAttribute("reportAuto", reportSede);
-			model.addAttribute("titolo", "Prenotazioni effettuate nelle ultime " + settimane + " settimane per "
-					+ sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString().toLowerCase());
+			model.addAttribute("titolo",
+					messageSource.getMessage("prenoPassateUno", null, loc) + " " + settimane + " "
+							+ messageSource.getMessage("prenoPassateDue", null, loc) + " "
+							+ sedeDao.sedeSingola(sedeDao.tutteLeSedi()).toString().toLowerCase());
 			return "grafico";
 		}
 
@@ -496,8 +506,8 @@ public class ChartController {
 		}
 		model.addAttribute("reportAuto", prenoPassate);
 		model.addAttribute("listaDate", datePreno);
-		model.addAttribute("titolo", "Prenotazioni effettuate nelle ultime " + settimane + " settimane nella sede di "
-				+ sedeScelta.toString());
+		model.addAttribute("titolo", messageSource.getMessage("prenoPassateUno", null, loc) + " " + settimane + " "
+				+ messageSource.getMessage("prenoPassateDue", null, loc) + " " + sedeScelta.toString());
 		session.setAttribute("sedeScelta", sede);
 
 		return "grafico";
@@ -550,7 +560,7 @@ public class ChartController {
 	public String graficoDipe(Model model, HttpSession session,
 			@RequestParam("data1") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data1,
 			@RequestParam("data2") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data2,
-			@RequestParam("dipendente") Integer idDip) {
+			@RequestParam("dipendente") Integer idDip, Locale loc) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -566,14 +576,14 @@ public class ChartController {
 			return "dashDipe";
 		}
 
-		model.addAttribute("titoletto", "Km percorsi");
-		model.addAttribute("asseY", "Km");
-		model.addAttribute("serie", "Totale Km");
+		model.addAttribute("titoletto", messageSource.getMessage("kmPercorsi", null, loc));
+		model.addAttribute("asseY", messageSource.getMessage("kmPerGrafico", null, loc));
+		model.addAttribute("serie", messageSource.getMessage("totaleKm", null, loc));
 		try {
 			String d1 = sdf.format(sdf1.parse(data1.toString()));
 			String d2 = sdf.format(sdf1.parse(data2.toString()));
-			model.addAttribute("titolo",
-					"Km per auto nel periodo " + d1 + "-" + d2 + " percorsi da " + dipScelto.toString());
+			model.addAttribute("titolo", messageSource.getMessage("titoloGraficoKm", null, loc) + " " + d1 + "-" + d2
+					+ " " + messageSource.getMessage("percorsiDa", null, loc) + " " + dipScelto.toString());
 
 		} catch (ParseException e) {
 
@@ -594,7 +604,8 @@ public class ChartController {
 	}
 
 	@RequestMapping("/distribuzione")
-	public String dettaglioGenerale(HttpSession httpSession, Model model, Dipendente dipendente, Auto auto) {
+	public String dettaglioGenerale(HttpSession httpSession, Model model, Dipendente dipendente, Auto auto,
+			Locale loc) {
 
 		List<Sede> allSedi = (List<Sede>) sedeDao.findAll();
 
@@ -651,7 +662,7 @@ public class ChartController {
 			}
 		}
 
-		model.addAttribute("titolo", "Distribuzione di Auto e Dipendenti tra le sedi");
+		model.addAttribute("titolo", messageSource.getMessage("titoloGraficoDistr", null, loc));
 		model.addAttribute("graficoDipendenti", graficoDipendenti);
 		return "graficoDensita";
 	}

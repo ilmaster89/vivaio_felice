@@ -1,6 +1,5 @@
 package com.vivaio_felice.vivaio_hibernate;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,11 +8,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,8 @@ public class PrenotazioneController {
 	NotificaDao notificaDao;
 	@Autowired
 	CausaleNotificaDao cauNotDao;
+	@Autowired
+	MessageSource messageSource;
 
 	// controllo tutti i giorni se ci sono km da inserire
 	@Scheduled(cron = "0 0 18 * * ?")
@@ -157,7 +160,7 @@ public class PrenotazioneController {
 	@RequestMapping(value = "/richiestadiprenotazione", method = RequestMethod.POST)
 	public String ottieniAuto(HttpSession session, Model model, @Valid Prenotazione prenotazione, BindingResult br,
 			@RequestParam("dataInizio") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date dataInizio,
-			@RequestParam("ore") Integer ore) {
+			@RequestParam("ore") Integer ore, Locale loc) {
 		Dipendente loggato = (Dipendente) session.getAttribute("loggedUser");
 
 		if (br.hasErrors())
@@ -167,7 +170,7 @@ public class PrenotazioneController {
 		// finale
 		LocalDateTime ldtInizio = LocalDateTime.ofInstant(dataInizio.toInstant(), ZoneId.systemDefault());
 		if (ldtInizio.isBefore(LocalDateTime.now())) {
-			model.addAttribute("errore", "Hai inserito una data passata, riprova.");
+			model.addAttribute("errore", messageSource.getMessage("dataPassata", null, loc));
 			return "erroreMessaggio";
 		}
 
@@ -176,8 +179,7 @@ public class PrenotazioneController {
 		Date dataFine = Date.from(zdtFine.toInstant());
 
 		if (!prenotazioneDao.prenoContrastantiDelDipendente(loggato.getId(), ldtInizio, ldtFine).isEmpty()) {
-			model.addAttribute("errore",
-					"Attenzione, per le date selezionate hai già una prenotazione. Se vuoi annullarla usa la pagina apposita e poi creane una nuova.");
+			model.addAttribute("errore", messageSource.getMessage("prenoPresente", null, loc));
 			return "erroreMessaggio";
 
 		}
@@ -251,7 +253,7 @@ public class PrenotazioneController {
 	}
 
 	@RequestMapping(value = "/kminseriti", method = RequestMethod.POST)
-	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione) {
+	public String inseriti(HttpSession session, Model model, Prenotazione prenotazione, Locale loc) {
 
 		Prenotazione ultima = (Prenotazione) session.getAttribute("ultima");
 		Prenotazione precedente = (Prenotazione) session.getAttribute("precedente");
@@ -267,7 +269,7 @@ public class PrenotazioneController {
 			// model per caricare un messaggio di errore, sarà presente in ogni post dov'è
 			// possibile un errore
 			// ritorna ad una pagina di erroe unica con un messaggio diverso per ogni errore
-			model.addAttribute("errore", "Pare ci sia un errore nei km inseriti, controlla con attenzione!");
+			model.addAttribute("errore", messageSource.getMessage("erroreKm", null, loc));
 			return "erroreMessaggio";
 		}
 

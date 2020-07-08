@@ -10,11 +10,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +53,8 @@ public class ManutenzioneController {
 	ParcheggioDao parcheggioDao;
 	@Autowired
 	DipendenteDao dipendenteDao;
+	@Autowired
+	MessageSource messageSource;
 
 //	restituisce true se esiste una prenotazione successiva alle date della manutenzione, in modo da creare
 //	le notifiche
@@ -77,7 +81,7 @@ public class ManutenzioneController {
 	public String confermaManu(HttpSession session, Model model, Prenotazione prenotazione,
 			@Valid SpesaManutenzione spesaManutenzione, BindingResult br,
 			@RequestParam("giornoInizio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date giornoInizio,
-			@RequestParam("giorni") Integer giorni) {
+			@RequestParam("giorni") Integer giorni, Locale loc) {
 
 		// se non specifico nessun giorno torno alla stessa pagina ricaricando tutto ciò
 		// che serve
@@ -149,8 +153,9 @@ public class ManutenzioneController {
 				notAutoTrasf.setConferma(0);
 				// nuova query su dipendenteDao per il responsabile
 				notAutoTrasf.setDipendente(dipendenteDao.respSede(sedeDip));
-				notAutoTrasf.setDescrizione("Il trasferimento dell'auto " + p.getAuto().toString()
-						+ " è stato spostato al " + sdf.format(dataTrasf) + " per una manutenzione.");
+				notAutoTrasf.setDescrizione(messageSource.getMessage("manuTrasfUno", null, loc) + " "
+						+ p.getAuto().toString() + " " + messageSource.getMessage("manuTrasfDue", null, loc) + "  "
+						+ sdf.format(dataTrasf) + " " + messageSource.getMessage("manuTrasfTre", null, loc));
 				notAutoTrasf.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notGenerale()));
 				notDao.save(notAutoTrasf);
 			}
@@ -159,8 +164,8 @@ public class ManutenzioneController {
 				Notifica notAutoTrasf = new Notifica();
 				notAutoTrasf.setConferma(0);
 				notAutoTrasf.setDipendente(dipendenteDao.respSede(sedeDip));
-				notAutoTrasf.setDescrizione("Il trasferimento dell'auto " + p.getAuto().toString()
-						+ " è stato cancellato per una manutenzione.");
+				notAutoTrasf.setDescrizione(messageSource.getMessage("manuTrasfUno", null, loc) + " "
+						+ p.getAuto().toString() + " " + messageSource.getMessage("manuTrasfCanc", null, loc));
 				notAutoTrasf.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notGenerale()));
 				parcheggioDao.delete(p);
 				notDao.save(notAutoTrasf);
@@ -180,9 +185,9 @@ public class ManutenzioneController {
 			not.setDipendente(p.getDipendente());
 			not.setConferma(0);
 			not.setPrenotazione(p);
-			not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
-					+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
-					+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+			not.setDescrizione(messageSource.getMessage("cambioPrenoUno", null, loc) + " " + p.getAuto()
+					+ messageSource.getMessage("cambioPrenoDue", null, loc) + " " + p.getDataInizio() + " "
+					+ p.getDataFine() + " " + messageSource.getMessage("cambioPrenoTre", null, loc));
 			not.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
 			notDao.save(not);
 
