@@ -15,7 +15,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -26,7 +26,7 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/indietro">Torna Indietro</a>
+			<a href="/indietro" th:text="#{indietro}"></a>
 		</button>
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
@@ -36,16 +36,15 @@
 				<table class="firstTable">
 					<th:block>
 
-						<h2 class="titleHdue">Inserimento Dipendente</h2>
-						<p id="comment">Inserisci i relativi campi per creare una
-							nuovo dipendente:</p>
+						<h2 class="titleHdue" th:text="#{inserimentoDip}"></h2>
+						<p id="comment" th:text="#{compilaCampi}"></p>
 
 						<td><input type="hidden" th:field="*{id}"></td>
 						<td><input type="hidden" th:field="*{sedeDipendente.sede.id}"
 							th:value="${session.sede}"></td>
 
 						<tr>
-							<td class="closeShort">Livello:</td>
+							<td class="closeShort" th:text="#{livello}"></td>
 							<td class="closeShort"><select th:field="*{livello}">
 									<option th:each="l : ${livello}" th:value="${l.id}"
 										th:text="${l.mansione}"></option>
@@ -53,35 +52,35 @@
 						</tr>
 
 						<tr>
-							<td class="closeShort">Nome:</td>
+							<td class="closeShort" th:text="#{nome}">:</td>
 							<td class="closeShort"><input type="text" th:field="*{nome}" /></td>
 							<td class="closeShort" th:if="${#fields.hasErrors('nome')}"
 								th:errors="*{nome}"></td>
 
-							<td class="closeShort">Cognome:</td>
+							<td class="closeShort" th:text="#{cognome}"></td>
 							<td class="closeShort"><input type="text"
 								th:field="*{cognome}" /></td>
 							<td th:if="${#fields.hasErrors('cognome')}"
 								th:errors="*{cognome}"></td>
 						</tr>
 						<tr>
-							<td class="closeShort">User:</td>
+							<td class="closeShort" th:text="#{user}"></td>
 							<td class="closeShort"><input type="text" th:field="*{user}" /></td>
 							<td th:if="${#fields.hasErrors('user')}" th:errors="*{user}"></td>
 
-							<td class="closeShort">Password:</td>
+							<td class="closeShort" th:text="#{pass}"></td>
 							<td class="closeShort"><input type="password"
 								th:field="*{password}" /></td>
 							<td th:if="${#fields.hasErrors('password')}"
 								th:errors="*{password}"></td>
 
-							<td class="closeShort">Conferma Password:</td>
+							<td class="closeShort" th:text="#{passCon}"></td>
 							<td class="closeShort"><input type="password" name="pass2">
 						</tr>
 
 						<!-- Pulsante per resettare i campi di inserimento -->
 						<tr>
-							<td class="closeShort"><input type="reset" value="Resetta"></td>
+							<td class="closeShort"><input type="reset" value="Reset"></td>
 
 						</tr>
 
@@ -89,7 +88,7 @@
 				</table>
 				<section>
 
-					<input type="submit" value="Inserisci Dipendente">
+					<input type="submit" th:value="#{conferma}">
 
 				</section>
 			</form>
@@ -97,7 +96,7 @@
 	</section>
 
 	<footer class="footer">
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}"></p>
 	</footer>
 
 </body>

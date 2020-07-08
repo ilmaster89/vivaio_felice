@@ -14,7 +14,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -25,7 +25,7 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/indietro">Torna Indietro</a>
+			<a href="/indietro" th:text="#{indietro}"></a>
 		</button>
 
 		<!-- parte centrale della pagina dove verranno 
@@ -35,20 +35,20 @@
 				<table class="firstTable">
 					<th:block>
 
-						<h2 class="titleHdue">Report Km/Date su auto in sede</h2>
+						<h2 class="titleHdue" th:text="{dashKm}"></h2>
 						<tr>
-							<td class="closeShort">Sede:</td>
+							<td class="closeShort" th:text="#{sede}"></td>
 							<td class="closeShort"><select name="sede">
 									<option th:each="s : ${sedi}" th:value="${s.id}"
 										th:text="${s.toString()}"></option>
 							</select></td>
 						</tr>
 						<tr>
-							<td class="closeShort">Data di inizio:</td>
+							<td class="closeShort" th:text="{dataInizio}"></td>
 							<td class="closeShort"><input name="data1" type="date"></td>
 						</tr>
 						<tr>
-							<td class="closeShort">Data di fine:</td>
+							<td class="closeShort" th:text="#{dataFine}"></td>
 							<td class="closeShort"><input name="data2" type="date"></td>
 						</tr>
 
@@ -59,14 +59,14 @@
 					</th:block>
 				</table>
 				<section>
-					<input type="submit" value="Conferma">
+					<input type="submit" th:value="#{conferma}">
 				</section>
 			</form>
 		</div>
 	</section>
 
 	<footer class="footer">
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}"></p>
 	</footer>
 
 </body>

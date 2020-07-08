@@ -39,10 +39,8 @@
 
 
 			<div class="container">
-
-
 				<div id="container"
-					style="width: 550px; height: 400px; margin: 0 auto;"></div>
+					style="width: 550px; height: 380px; margin: 0 auto;"></div>
 			</div>
 			<script
 				src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -99,23 +97,10 @@
     });
     });
 </script>
-
-			<form th:if="${autoInSede != null}" th:action="@{/dettaglioAutoKm}"
-				method="post">
-				<td class="closeShort"><select name=auto>
-						<option th:each="a : ${autoInSede}" th:value="${a.id}"
-							th:text="${a.toString()}"></option>
-				</select></td>
-				<td class="closeShort"><input type="submit" value="Dettaglio"></td>
-			</form>
-			<form th:if="${listaDate != null}"
-				th:action="@{/dettaglioPrenoPassate}" method="post">
-				<td class="closeShort"><select name="dataScelta">
-						<option th:each="d : ${listaDate}" th:value="${d}" th:text="${d}"></option>
-				</select></td>
-				<td class="closeShort"><input type="submit" value="Dettaglio"></td>
-			</form>
+			<a href="/grfTorta">Grafico a torta per le Auto ||</a> <a
+				href="/grfTortaDip"> Grafico a torta per i Dipendenti</a>
 		</div>
+
 	</section>
 
 

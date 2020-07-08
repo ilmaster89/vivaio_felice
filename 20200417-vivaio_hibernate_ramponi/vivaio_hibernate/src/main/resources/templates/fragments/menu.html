@@ -1,50 +1,46 @@
 <div id="menu" th:fragment="menu">
 	<ul>
-
 		<li id="about">&nbsp;Prenotazioni
 			<ul class="subitems">
-				<li class="subli"><a href="/prenota">Prenota</a></li>
-				<li class="subli"><a href="/km">Inserisci Km</a></li>
-				<li class="subli"><a href="/cancella">Cancella una
-						prenotazione</a></li>
+				<li class="subli"><a href="/prenota" th:text="#{prenota}"></a></li>
+				<li class="subli"><a href="/km" th:text="#{km}"></a></li>
+				<li class="subli"><a href="/cancella" th:text="#{cancella}"></a></li>
 			</ul>
 		</li>
-
-
-		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Inserimenti
+		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Inserimento
 			<ul class="subitems">
-				<li class="subli"><a href="/insauto">Auto</a></li>
-				<li class="subli"><a href="/insdip">Dipendenti</a></li>
-				<li class="subli"><a href="/inspat">Patente</a>
-				<li class="subli"><a href="/modifica">Modifica Auto</a>
-				<li class="subli"><a href="/cancAuto">Elimina Auto</a>
+				<li class="subli"><a href="/insauto" th:text="#{auto}"></a></li>
+				<li class="subli"><a href="/insdip" th:text="#{dipendenti}"></a></li>
+				<li class="subli"><a href="/inspat" th:text="#{patente}"></a>
+				<li class="subli"><a href="/modifica" th:text="#{modificaAuto}"></a>
+				<li class="subli"><a href="/cancAuto" th:text="#{cancellaAuto}"></a>
 			</ul>
 		</li>
 
 
 		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione
 			<ul class="subitems">
-				<li class="subli"><a href="/manu">Manutenzione</a></li>
-				<li class="subli"><a href="/spese">Spese</a></li>
+				<li class="subli"><a href="/manu" th:text="#{prenoManu}"></a></li>
+				<li class="subli"><a href="/spese" th:text="#{spese}"></a></li>
 			</ul>
 		</li>
 		<!-- if lv >= 3 -->
-		<li th:if="${session.loggedUser.responsabile()}"><a href="/trans">&nbsp;Trasferimenti</a></li>
+		<li th:if="${session.loggedUser.responsabile()}"><a href="/trans"
+			th:text="#{trasferimenti}"></a></li>
 
 
 		<!-- if lv >= 2 -->
 		<li th:if="${session.loggedUser.responsabile()}" id="about">&nbsp;Dashboard
 			<ul class="subitems">
-				<li class="subli"><a href="/dashKm">Kilometraggio per sede</a></li>
-				<li class="subli"><a href="/kmDip">Kilometraggio per
-						dipendente</a></li>
-				<li class="subli"><a href="/dashManu">Manutenzione</a></li>
-				<li class="subli"><a href="/prenotazioniFut">Prenotazioni
-						future</a></li>
-				<li class="subli"><a href="/prenoPassate">Prenotazioni
-						passate</a></li>
-				<li class="subli"><a href="/distribuzione">Distribuzione
-						Auto e Dipendenti</a></li>
+				<li class="subli"><a href="/dashKm" th:text="#{dashKm}"></a></li>
+				<li class="subli"><a href="/kmDip" th:text="#{kmDip}"></a></li>
+				<li class="subli"><a href="/dashManu" th:text="#{dashManu}"></a></li>
+				<li class="subli"><a href="/prenotazioniFut"
+					th:text="#{prenotazioniFut}"></a></li>
+				<li class="subli"><a href="/prenoPassate"
+					th:text="#{prenoPassate}"></a></li>
+				<li class="subli"><a href="/distribuzione"
+					th:text="#{distribuzione}"></a></li>
 
 
 

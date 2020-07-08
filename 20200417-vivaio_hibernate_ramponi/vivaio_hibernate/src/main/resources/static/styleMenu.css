@@ -68,6 +68,10 @@ a:hover {
 	display: block;
 }
 
+#menu:hover li {
+	display: block;
+}
+
 /*CSS per pulsante di cambio UTENTE. Presente in tutte le nostre pagine */
 #BottoneCambio {
 	float: right;

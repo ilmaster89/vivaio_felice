@@ -14,7 +14,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -25,7 +25,7 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/indietro">Torna Indietro</a>
+			<a href="/indietro" th:text="#{indietro}"></a>
 		</button>
 
 		<!-- parte centrale della pagina dove verranno 
@@ -36,37 +36,37 @@
 				<th:block>
 					<table class="firstTable">
 
-						<h2 class="titleHdue">Modifica Auto</h2>
-						<p id="comment">Inserisci i relativi campi per modificare l'auto:</p>
+						<h2 class="titleHdue" th:text="#{modificaAuto}"></h2>
+						<p id="comment" th:text="#{compilaCampi}"></p>
 
 						<td><input type="hidden" th:field="*{id}"></td>
 						<tr>
-							<td class="closeShort">Marca:</td>
+							<td class="closeShort" th:text="#{marca}"></td>
 							<td class="closeShort"><input type="text"
 								th:field="*{marca}" /></td>
 							<td class="errore" th:if="${#fields.hasErrors('marca')}"
 								th:errors="*{marca}"></td>
 
-							<td class="closeShort">Modello:</td>
+							<td class="closeShort" th:text="#{modello}"></td>
 							<td class="closeShort"><input type="text"
 								th:field="*{modello}" /></td>
 							<td class="errore" th:if="${#fields.hasErrors('modello')}"
 								th:errors="*{modello}"></td>
 
-							<td class="closeShort">Targa:</td>
+							<td class="closeShort" th:text="#{targa}"></td>
 							<td class="closeShort"><input type="text"
 								th:field="*{targa}" /></td>
 							<td class="errore" th:if="${#fields.hasErrors('targa')}"
 								th:errors="*{targa}"></td>
 						</tr>
 						<tr>
-							<td class="closeShort">Carburante:</td>
+							<td class="closeShort" th:text="#{carburante}">S</td>
 							<td class="closeShort"><select th:field="*{carburante}">
 									<option th:each="c : ${carburanti}" th:value="${c.id}"
 										th:text="${c.tipologia}"></option>
 							</select></td>
 
-							<td class="closeShort">Patente necessaria:</td>
+							<td class="closeShort" th:text="#{patenteNec}"></td>
 							<td class="closeShort"><select th:field="*{patente}">
 									<option th:each="p : ${patenti}" th:value="${p.id}"
 										th:text="${p.tipologia}"></option>
@@ -74,22 +74,23 @@
 						</tr>
 
 						<tr>
-							<td class="closeShort">Kw:</td>
+							<td class="closeShort" th:text="#{kw}"></td>
 							<td class="closeShort"><input type="text" th:field="*{kw}" /></td>
 							<td class="errore" th:if="${#fields.hasErrors('kw')}"
 								th:errors="*{kw}"></td>
-							<td class="closeShort">Tara:</td>
+							<td class="closeShort" th:text="#{tara}"></td>
 							<td class="closeShort"><input type="text" th:field="*{tara}" /></td>
 							<td class="errore" th:if="${#fields.hasErrors('tara')}"
 								th:errors="*{tara}"></td>
-							<td class="closeShort">Km Iniziali:</td>
-							<td class="closeShort"><input type="text" th:field="*{kmIniziali}" /></td>
+							<td class="closeShort" th:text="#{kmIniziali}"></td>
+							<td class="closeShort"><input type="text"
+								th:field="*{kmIniziali}" /></td>
 							<td class="errore" th:if="${#fields.hasErrors('kmIniziali')}"
 								th:errors="*{kmIniziali}"></td>
 						</tr>
 
 						<tr>
-							<td class="closeLong">Data ultima assicurazione:</td>
+							<td class="closeLong" th:text="#{dataAss}"></td>
 							<td class="closeShort"><input type="date" name="dataAss"
 								th:field="*{dataAss}" /></td>
 
@@ -97,7 +98,7 @@
 
 						<!-- Pulsante per resettare i campi di inserimento -->
 						<tr>
-							<td class="closeShort"><input type="reset" value="Resetta"></td>
+							<td class="closeShort"><input type="reset" value="Reset"></td>
 
 
 						</tr>
@@ -106,7 +107,7 @@
 					</table>
 					<section>
 
-						<input type="submit" value="Modifica Auto">
+						<input type="submit" th:value="#{conferma}">
 
 					</section>
 			</form>
@@ -114,7 +115,7 @@
 	</section>
 
 	<footer>
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}"></p>
 	</footer>
 
 </body>

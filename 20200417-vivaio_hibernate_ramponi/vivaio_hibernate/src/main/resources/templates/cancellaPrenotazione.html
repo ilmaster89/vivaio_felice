@@ -14,7 +14,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -24,7 +24,7 @@
 		<div th:replace="fragments/menu :: menu"></div>
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/indietro">Torna Indietro</a>
+			<a href="/indietro" th:text="#{indietro}"></a>
 		</button>
 
 		<!-- parte centrale della pagina dove verranno 
@@ -36,11 +36,11 @@
 				<table class="firstTable">
 					<th:block>
 
-						<h2 class="titleHdue">Cancella Prenotazione</h2>
-						<p id="comment">Seleziona la prenotazione da cancellare</p>
+						<h2 class="titleHdue" th:text="#{cancella}"></h2>
+						<p id="comment" th:text="#{prenoDaCanc}"></p>
 
 						<tr>
-							<td class="closeShort">Prenotazione:</td>
+							<td class="closeShort" th:text="#{prenotazioni}"></td>
 							<td class="closeShort"><select th:field="*{id}">
 									<option th:each="p : ${prenotazioniDip}" th:value="${p.id}"
 										th:text="${p.toString()}"></option>
@@ -51,14 +51,14 @@
 					</th:block>
 				</table>
 				<section>
-					<input type="submit" value="Conferma la cancellazione">
+					<input type="submit" th:0value="#{conferma}">
 				</section>
 			</form>
 		</div>
 	</section>
 
 	<footer class="footer">
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}"></p>
 	</footer>
 
 </body>

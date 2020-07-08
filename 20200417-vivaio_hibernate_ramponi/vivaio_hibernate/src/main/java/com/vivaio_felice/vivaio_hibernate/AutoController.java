@@ -66,7 +66,7 @@ public class AutoController {
 
 	// metodo schedulato per caricare le auto nel parcheggio piuttosto che farle
 	// caricare al login del dipendente
-	@Scheduled(cron = "0 45 11 * * ?")
+	@Scheduled(cron = "0 35 8 * * ?")
 	public void confermaParcheggi() {
 
 		// carico le auto disponibili in generale

@@ -13,7 +13,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -25,8 +25,8 @@
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
 			<a href="#"
-				onclick="javascript:window.history.back(-1);return false;">Torna
-				Indietro</a>
+				onclick="javascript:window.history.back(-1);return false;"
+				th:text="#{indietro}"></a>
 		</button>
 		<!-- parte centrale della pagina dove verranno 
 				visualizzate le azioni che si potranno effettuare -->
@@ -35,8 +35,8 @@
 			<table class="firstTable">
 				<th:block>
 
-					<h2 class="titleHdue">Qualcosa è andato storto..</h2>
-					<p id="comment">Segui le istruzioni:</p>
+					<h2 class="titleHdue" th:text="#{titoloErrore}"></h2>
+					<p id="comment" th:text="#{istruzioni}"></p>
 
 					<tr>
 						<td th:text="${errore}"></td>
@@ -49,7 +49,7 @@
 	</section>
 
 	<footer class="footer">
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}"></p>
 	</footer>
 
 </body>

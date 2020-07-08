@@ -15,8 +15,7 @@
 </head>
 
 <body>
-	<td th:if="${reportSpese.isEmpty()}">Non ci sono report per
-		l'auto.</td>
+	<td th:if="${reportSpese.isEmpty()}" th:text="#{noReport}"></td>
 	<div th:if="${!reportSpese.isEmpty()}">
 		<div class="container">
 			<h2 align="center">REPORT</h2>
@@ -76,6 +75,5 @@
     });
 </script>
 	</div>
-	<td th:text="${'TOTALE SPESE EFFETTUATE NEL PERIODO: ' + sommaSpese}"></td>
 </body>
 </html>

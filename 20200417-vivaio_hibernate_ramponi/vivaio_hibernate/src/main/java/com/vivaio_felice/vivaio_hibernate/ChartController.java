@@ -652,8 +652,46 @@ public class ChartController {
 		}
 
 		model.addAttribute("titolo", "Distribuzione di Auto e Dipendenti tra le sedi");
-
 		model.addAttribute("graficoDipendenti", graficoDipendenti);
 		return "graficoDensita";
+	}
+
+	@RequestMapping("/grfTorta")
+	public String provaGraficoTorta(HttpSession httpSession, Model model, Dipendente dipendente, Auto auto) {
+
+		List<Sede> allSedi = (List<Sede>) sedeDao.findAll();
+		// Mappa per AUTO in Sede
+		Map<Object, Object> graficoAuto = new LinkedHashMap<Object, Object>();
+
+		for (int i = 0; i < allSedi.size(); i++) {
+			Integer sedeScelta = allSedi.get(i).getId();
+			List<Auto> autoInSede = autoDao.autoInSede(sedeScelta);
+			Integer numAutoSede = 0;
+			// Se ci sono Auto in Sede si aumenta la variabile
+			numAutoSede += autoInSede.size();
+			graficoAuto.put(allSedi.get(i).citta, numAutoSede);
+		}
+		model.addAttribute("graficoAuto", graficoAuto);
+
+		return "graficoTortaAuto";
+	}
+
+	@RequestMapping("/grfTortaDip")
+	public String provaGraficoTortaPROVA(HttpSession httpSession, Model model, Dipendente dipendente, Auto auto) {
+		List<Sede> allSedi = (List<Sede>) sedeDao.findAll();
+		// Mappa per DIPENDENTI in Sede
+		Map<Object, Object> graficoDip = new LinkedHashMap<Object, Object>();
+
+		for (int i = 0; i < allSedi.size(); i++) {
+			Integer sedeScelta = allSedi.get(i).getId();
+			// Se ci sono Dipendenti in Sede si aumenta la variabile
+			List<Dipendente> dipInSede = dipDao.dipendentiInSede(sedeScelta);
+			Integer numDipSede = 0;
+			numDipSede += dipInSede.size();
+			graficoDip.put(allSedi.get(i).citta, numDipSede);
+		}
+		model.addAttribute("graficoDips", graficoDip);
+
+		return "graficoTortaDip";
 	}
 }
