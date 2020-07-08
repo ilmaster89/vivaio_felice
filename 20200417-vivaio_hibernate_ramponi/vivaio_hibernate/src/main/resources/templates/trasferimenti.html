@@ -14,7 +14,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -25,7 +25,7 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/indietro">Torna Indietro</a>
+			<a href="/indietro" th:text="#{indietro}"></a>
 		</button>
 
 		<!-- parte centrale della pagina dove verranno 
@@ -37,18 +37,17 @@
 				<table class="firstTable">
 					<th:block>
 
-						<h2 class="titleHdue">Trasferimento Auto</h2>
-						<p id="comment">Seleziona l'auto, la sede del trasferimento e
-							la data in cui dovrà essere eseguito:</p>
+						<h2 class="titleHdue" th:text="#{trasferimenti}"></h2>
+						<p id="comment" th:text="#{istruTrasf}"></p>
 						<tr>
-							<td class="closeShort">Auto da trasferire:</td>
+							<td class="closeShort" th:text="#{auto}"></td>
 							<td class="closeShort"><select th:field="*{auto}">
 									<option th:each="a : ${autoInSede}" th:value="${a.id}"
 										th:text="${a.marca + '&nbsp;' + a.modello + '&nbsp;' + a.targa}"></option>
 							</select></td>
 						</tr>
 						<tr>
-							<td class="closeShort">Sede che la riceverà:</td>
+							<td class="closeShort" th:text="#{sedeTrasf}"></td>
 							<td class="closeShort"><select th:field="*{sede}">
 									<option th:each="s : ${sedipossibili}" th:value="${s.id}"
 										th:text="${s.regione + '&nbsp;' + s.citta}"></option>
@@ -56,7 +55,7 @@
 						</tr>
 
 						<tr>
-							<td class="closeShort">Data del trasferimento:</td>
+							<td class="closeShort" th:text="#{dataTraasf}"></td>
 							<td class="closeShort"><input type="date" name="dataParch"
 								th:field="*{dataParch}"></td>
 							<td class="errore" th:if="${#fields.hasErrors('dataParch')}"
@@ -77,7 +76,7 @@
 	</section>
 
 	<footer class="footer">
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}"></p>
 	</footer>
 
 </body>

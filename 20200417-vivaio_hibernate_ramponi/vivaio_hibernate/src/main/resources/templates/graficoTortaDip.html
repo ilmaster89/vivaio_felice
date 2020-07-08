@@ -17,7 +17,7 @@
 <body>
 	<header>
 		<div>
-			<h1>Vivaio Felice</h1>
+			<h1 th:text="#{vivaio}"></h1>
 		</div>
 		<img src="vivaio_felice_immagine.png">
 	</header>
@@ -28,7 +28,7 @@
 
 		<!-- Pulsante per tornare indietro o cambiare utente -->
 		<button id="BottoneCambio">
-			<a href="/distribuzione">Torna Indietro</a>
+			<a href="/distribuzione" th:text="#{indietro}"></a>
 		</button>
 		<div class="menuPrenotaAuto">
 			<script
@@ -44,7 +44,7 @@
 
 
 			<!-- GRAFICO PER I DIPENDENTI -->
-			
+
 			<div id="container" style="height: 400px"></div>
 			<script th:inline="javascript">
 		Highcharts.chart('container', {
@@ -90,7 +90,8 @@
 	</section>
 
 	<footer class="footer">
-		<p>Vivaio Felice Spa, Sede legale Milano via Ludovico il Moro</p>
+		<p th:text="#{footer}">Vivaio Felice Spa, Sede legale Milano via
+			Ludovico il Moro</p>
 	</footer>
 
 </body>
