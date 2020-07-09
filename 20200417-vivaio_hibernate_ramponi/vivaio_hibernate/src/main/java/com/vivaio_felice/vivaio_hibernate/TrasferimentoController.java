@@ -7,11 +7,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +42,8 @@ public class TrasferimentoController {
 	NotificaDao notDao;
 	@Autowired
 	CausaleNotificaDao cauNotDao;
+	@Autowired
+	MessageSource messageSource;
 
 	// valuto se esiste una prenotazione precedente successiva alla data di
 	// trasferimento, per poi creare la notifica
@@ -59,7 +63,7 @@ public class TrasferimentoController {
 	}
 
 	@RequestMapping("/trans")
-	public String toTrans(HttpSession session, Model model, Parcheggio parcheggio) {
+	public String toTrans(HttpSession session, Model model, Parcheggio parcheggio, Locale loc) {
 
 		Integer idSede = (Integer) session.getAttribute("sede");
 		List<Auto> autoInSede = autoDao.autoInSede(idSede);
@@ -85,17 +89,18 @@ public class TrasferimentoController {
 	}
 
 	@RequestMapping(value = "/trasferimento", method = RequestMethod.POST)
-	public String autoTrasferita(HttpSession session, Model model, @Valid Parcheggio parcheggio, BindingResult br) {
+	public String autoTrasferita(HttpSession session, Model model, @Valid Parcheggio parcheggio, BindingResult br,
+			Locale loc) {
 
 		if (parcheggio.getDataParch().isBefore((LocalDate.now().plus(1, ChronoUnit.DAYS)))) {
-			model.addAttribute("errore", "La data non può essere prima di domani, riprova.");
+			model.addAttribute("errore", messageSource.getMessage("dataTrasfErrore", null, loc));
 			return "erroreMessaggio";
 		}
 
 		List<Prenotazione> manuTrasferimento = prenotazioneDao.manuFuture(parcheggio.getAuto().getId(),
 				parcheggio.getDataParch());
 		if (!manuTrasferimento.isEmpty()) {
-			model.addAttribute("errore", "In questa data c'è già una manutenzione, riprova.");
+			model.addAttribute("errore", messageSource.getMessage("manuContrastante", null, loc));
 			return "erroreMessaggio";
 
 		}
@@ -140,9 +145,10 @@ public class TrasferimentoController {
 				not.setDipendente(p.getDipendente());
 				not.setPrenotazione(p);
 				not.setConferma(0);
-				not.setDescrizione("Attenzione, la tua prenotazione per l'auto: " + p.getAuto().toString()
-						+ ", prevista per queste date: " + p.getDataInizio() + " " + p.getDataFine()
-						+ " deve essere modificata in quanto l'auto non sarà disponibile.");
+				not.setDescrizione(messageSource.getMessage("cambioPrenoUno", null, loc) + " " + p.getAuto()
+						+ messageSource.getMessage("cambioPrenoDue", null, loc) + " " + p.getDataInizio() + " "
+						+ p.getDataFine() + " " + messageSource.getMessage("cambioPrenoTre", null, loc));
+				not.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
 				not.setCausaleNotifica(cauNotDao.causaleDaInserire(cauNotDao.notPerPrenotazione()));
 				notDao.save(not);
 			}

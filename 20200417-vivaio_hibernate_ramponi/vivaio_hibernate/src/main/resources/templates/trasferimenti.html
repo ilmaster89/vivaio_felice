@@ -3,7 +3,7 @@
     in questa pagina è possibile selezionare solamente l'opzione prenotazioni-->
 <html lang="en">
 <head>
-<title>Lvl-2-Resp_Trasferimenti</title>
+<title th:text="#{pagTrasferimenti}"></title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="stylePagina.css">
 <link rel="stylesheet" href="styleMenu.css">
@@ -55,7 +55,7 @@
 						</tr>
 
 						<tr>
-							<td class="closeShort" th:text="#{dataTraasf}"></td>
+							<td class="closeShort" th:text="#{dataTrasf}"></td>
 							<td class="closeShort"><input type="date" name="dataParch"
 								th:field="*{dataParch}"></td>
 							<td class="errore" th:if="${#fields.hasErrors('dataParch')}"
@@ -64,12 +64,12 @@
 
 						<!-- Pulsante per resettare i campi di inserimento -->
 						<tr>
-							<td class="closeShort"><input type="reset" value="Resetta"></td>
+							<td class="closeShort"><input type="reset" value="Reset"></td>
 						</tr>
 					</th:block>
 				</table>
 				<section>
-					<input type="submit" value="Conferma il Trasferimento">
+					<input type="submit" th:value="#{conferma}">
 				</section>
 			</form>
 		</div>

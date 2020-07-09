@@ -1,13 +1,14 @@
 <div id="menu" th:fragment="menu">
 	<ul>
-		<li id="about">&nbsp;Prenotazioni
+		<li id="about" th:inline="text">&nbsp;[[#{prenotazioni}]]
 			<ul class="subitems">
 				<li class="subli"><a href="/prenota" th:text="#{prenota}"></a></li>
 				<li class="subli"><a href="/km" th:text="#{km}"></a></li>
 				<li class="subli"><a href="/cancella" th:text="#{cancella}"></a></li>
 			</ul>
 		</li>
-		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Inserimento
+		<li th:if="${session.loggedUser.impiegato()}" id="about"
+			th:inline="text">&nbsp;[[#{inserimenti}]]
 			<ul class="subitems">
 				<li class="subli"><a href="/insauto" th:text="#{auto}"></a></li>
 				<li class="subli"><a href="/insdip" th:text="#{dipendenti}"></a></li>
@@ -18,7 +19,8 @@
 		</li>
 
 
-		<li th:if="${session.loggedUser.impiegato()}" id="about">&nbsp;Manutenzione
+		<li th:if="${session.loggedUser.impiegato()}" id="about"
+			th:inline="text">&nbsp;[[#{manutenzione}]]
 			<ul class="subitems">
 				<li class="subli"><a href="/manu" th:text="#{prenoManu}"></a></li>
 				<li class="subli"><a href="/spese" th:text="#{spese}"></a></li>
